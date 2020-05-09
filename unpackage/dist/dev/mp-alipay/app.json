@@ -1,0 +1,14 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/bind/index",
+    "pages/auth/index"
+  ],
+  "subPackages": [],
+  "window": {
+    "defaultTitle": "micha",
+    "titleBarColor": "#007AFF",
+    "backgroundColor": "#FFFFFF"
+  },
+  "usingComponents": {}
+}

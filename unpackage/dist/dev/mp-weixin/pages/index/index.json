@@ -1,0 +1,5 @@
+{
+  "usingComponents": {
+    "base-page": "/components/base-page/base-page"
+  }
+}

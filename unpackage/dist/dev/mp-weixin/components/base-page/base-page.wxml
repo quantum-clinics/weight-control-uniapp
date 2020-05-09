@@ -1,0 +1,1 @@
+<view class="base-page _div data-v-47531565"><view class="{{['error _div data-v-47531565',(errorMessageDisplay)?'error--active':'']}}">{{errorMessages}}</view><slot></slot></view>

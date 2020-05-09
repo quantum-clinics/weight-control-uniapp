@@ -1,0 +1,1 @@
+<base-page class="vue-ref" vue-id="8dd740cc-1" errorMessage="{{errorMessage}}" data-ref="basePage" bind:__l="__l" vue-slots="{{['default']}}"><view class="_div">这里是首页</view></base-page>

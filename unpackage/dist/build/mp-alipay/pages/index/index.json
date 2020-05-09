@@ -1,0 +1,6 @@
+{
+  "defaultTitle": "uni-ui基础项目",
+  "usingComponents": {
+    "uni-link": "/components/uni-link/uni-link"
+  }
+}
