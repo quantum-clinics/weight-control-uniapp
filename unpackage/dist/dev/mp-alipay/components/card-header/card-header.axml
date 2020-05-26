@@ -1,0 +1,1 @@
+<view class="_div data-v-c2d7443c"><view class="flex flex-ai-center _div data-v-c2d7443c"><image class="icon _img data-v-c2d7443c" src="{{icon||config.icon}}" alt></image><label class="title _span data-v-c2d7443c">{{title||config.title}}</label></view><block a:if="{{tip||config.tip}}"><view class="tip _div data-v-c2d7443c">{{tip||config.tip}}</view></block></view>

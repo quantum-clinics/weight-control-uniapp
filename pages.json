@@ -1,18 +1,46 @@
 {
-	"pages": [{
-		"path" : "pages/index/index",
-		"style" : {}
-	},{
-		"path" : "pages/bind/index",
-		"style" : {}
-	},{
-		"path" : "pages/auth/index",
-		"style" : {}
-	}],
+	"pages": [
+		{
+			"path": "pages/index/index",
+			"style": {}
+		},
+		{
+			"path": "pages/bind/index",
+			"style": {}
+		},
+		{
+			"path": "pages/auth/index",
+			"style": {}
+		},
+		{
+			"path": "pages/group/index",
+			"style": {}
+		}
+	],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",
 		"navigationBarTitleText": "micha",
 		"navigationBarBackgroundColor": "#007AFF",
 		"backgroundColor": "#FFFFFF"
+	},
+	"tabBar": {
+		"color": "#6e6986",
+		"selectedColor": "#ff7151",
+		"borderStyle": "black",
+		"backgroundColor": "#ffffff",
+		"list": [
+			{
+				"pagePath": "pages/index/index",
+				"text": "任务",
+				"iconPath": "static/images/task.png",
+				"selectedIconPath": "static/images/task-highlight.png"
+			},
+			{
+				"pagePath": "pages/group/index",
+				"text": "小组",
+				"iconPath": "static/images/group.png",
+				"selectedIconPath": "static/images/group-highlight.png"
+			}
+		]
 	}
 }

@@ -2,13 +2,33 @@
   "pages": [
     "pages/index/index",
     "pages/bind/index",
-    "pages/auth/index"
+    "pages/auth/index",
+    "pages/group/index"
   ],
   "subPackages": [],
   "window": {
     "defaultTitle": "micha",
     "titleBarColor": "#007AFF",
     "backgroundColor": "#FFFFFF"
+  },
+  "tabBar": {
+    "textColor": "#6e6986",
+    "selectedColor": "#ff7151",
+    "backgroundColor": "#ffffff",
+    "items": [
+      {
+        "pagePath": "pages/index/index",
+        "name": "任务",
+        "icon": "static/images/task.png",
+        "activeIcon": "static/images/task-highlight.png"
+      },
+      {
+        "pagePath": "pages/group/index",
+        "name": "小组",
+        "icon": "static/images/group.png",
+        "activeIcon": "static/images/group-highlight.png"
+      }
+    ]
   },
   "usingComponents": {}
 }

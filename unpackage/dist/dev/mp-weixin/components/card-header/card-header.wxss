@@ -1,0 +1,19 @@
+
+.icon.data-v-c2d7443c {
+  width: 48rpx;
+  height: 48rpx;
+  margin-right: 16rpx;
+}
+.title.data-v-c2d7443c {
+  font-size: 40rpx;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.85);
+  line-height: 56px;
+}
+.tip.data-v-c2d7443c {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.45);
+  line-height: 40rpx;
+}
+

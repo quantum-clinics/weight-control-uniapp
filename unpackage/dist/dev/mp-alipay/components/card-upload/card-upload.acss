@@ -1,0 +1,11 @@
+
+.upload__box.data-v-6f6b1a6c {
+  -webkit-flex-wrap: wrap;
+          flex-wrap: wrap;
+}
+.upload__image.data-v-6f6b1a6c,
+.upload__button.data-v-6f6b1a6c {
+  width: 192rpx;
+  height: 192rpx;
+}
+

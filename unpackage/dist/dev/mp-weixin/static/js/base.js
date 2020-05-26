@@ -1,5 +1,6 @@
-// const ENDPOINT = 'https://stg-weight-control.qtclinics.com/api';
-const ENDPOINT = 'http://localhost:9900/api';
+const ENDPOINT = 'https://stg-weight-control.qtclinics.com/api';
+// const ENDPOINT = 'https://weight-control.qtclinics.com/api'
+// const ENDPOINT = 'http://localhost:9900/api';
 const header = {
 	'Timezone-Offset': (new Date()).getTimezoneOffset(),
 };
@@ -32,7 +33,7 @@ function request(params) {
 					}
 				} = response;
 
-				console.log(code, data, msg)
+				// console.log(code, data, msg)
 				if (code === 1) {
 					resolve(data);
 					return

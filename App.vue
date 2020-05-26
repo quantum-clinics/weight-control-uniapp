@@ -1,95 +1,135 @@
 <script>
-	import {
-		userGetProviderInfo,
-		userLoginByUniApp,
-		getUserSettingByUniApp,
-		getUserInfoByUniApp,
-		userLoginByMiChaServer
-	} from "@/static/js/authLogin";
-	import { setRequestHeader } from "@/static/js/base";
+import {
+  userGetProviderInfo,
+  setProvider,
+  userInfoAuthSetting,
+  getUserSettingByUniApp,
+  userLoginByUniApp,
+  getUserInfoByUniApp,
+  userLoginByMiChaServer
+} from "@/static/apis/login";
+import { setRequestHeader } from "@/static/js/base";
 
-	export default {
-		globalData: {
-			openid: "",
-			provider: ""
-		},
-		async onLaunch() {
-			try {
-				// 获取当前服务端: [weixin, qq, ios..]
-				const { provider } = await userGetProviderInfo();
+function init() {}
 
-				this.globalData.provider = provider[0];
+export default {
+  globalData: {
+    openid: "",
+    provider: ""
+  },
+  onLaunch() {
+    this.login = new Promise(async (resolve, reject) => {
+      try {
+        // 获取当前服务端: [weixin, qq, ios..]
+        const { provider } = await userGetProviderInfo();
+        this.globalData.provider = provider[0];
+        setRequestHeader("QTC-Platform", provider[0]);
+        setProvider(provider[0]);
+        console.log("1, 获取当前平台信息", provider[0]);
 
-				const uniAppLoginRes = await userLoginByUniApp(provider[0]);
+        // 获取授权设置
+        const { authSetting } = await getUserSettingByUniApp();
+        console.log("2, 获取当前平台授权设置", authSetting);
 
-				const { authSetting } = await getUserSettingByUniApp();
+        // 当前用户是否授权
+        const userInfoAuth = userInfoAuthSetting(authSetting, "userInfo");
 
-				// 判断当前用户是否授权
-				if (!authSetting["scope.userInfo"]) {
-					uni.redirectTo({
-						url: "/pages/auth/index"
-					});
-					return;
-				}
+        console.log("3, 当前用户是否授权", userInfoAuth);
 
-				const { userInfo } = await getUserInfoByUniApp();
+        // 当前用户未授权
+        if (!userInfoAuth) {
+          this.loginResolve = resolve;
 
-				const miChaServerRes = await userLoginByMiChaServer(
-					uniAppLoginRes.code,
-					userInfo
-				);
+          uni.redirectTo({
+            url: "/pages/auth/index"
+          });
 
-				console.log(miChaServerRes);
+          return;
+        }
 
-				this.globalData.openid = miChaServerRes.result.profile.openid;
-				setRequestHeader("authorization", miChaServerRes.result.authorization);
+        // 获取用户平台code
+        const { code } = await userLoginByUniApp();
+        console.log("4, 获取当前授权code", code);
 
-				// 判断当前用户是否需要绑定手机号码
-				if (miChaServerRes.result.needBind) {
-					uni.redirectTo({
-						url: "/pages/bind/index"
-					});
-				}
-			} catch (err) {
-				console.error(err);
-			}
-		},
-		methods: {
-			auth() {}
-		}
-	};
+        // 获取用户平台数据
+        const platformInfo = await getUserInfoByUniApp();
+        this.globalData.userInfo = platformInfo.userInfo;
+        console.log("5, 获取当前平台用户信息", platformInfo);
+
+        // 获取用户米茶数据
+        const miChaServerRes = await userLoginByMiChaServer(
+          code,
+          platformInfo.userInfo
+        );
+        console.log("6, 登陆米茶服务器", miChaServerRes);
+
+        this.globalData.openid = miChaServerRes.result.openid;
+
+        // 判断当前用户是否需要绑定手机号码
+        if (miChaServerRes.result.needBind) {
+          this.loginResolve = resolve;
+
+          uni.redirectTo({
+            url: "/pages/bind/index"
+          });
+
+          return;
+        }
+
+        setRequestHeader("authorization", miChaServerRes.result.authorization);
+
+        resolve();
+      } catch (err) {
+        console.error(err);
+        reject(err);
+      }
+    });
+
+    this.init = function() {
+      return this.login;
+    };
+  }
+};
 </script>
 
 <style>
-	/* 解决头条小程序组件内引入字体不生效的问题 */
-	/* #ifdef MP-TOUTIAO */
-	@font-face {
-		font-family: uniicons;
-		src: url("/static/uni.ttf");
-	}
-	/* #endif */
+/* 解决头条小程序组件内引入字体不生效的问题 */
+/* #ifdef MP-TOUTIAO */
+@font-face {
+  font-family: uniicons;
+  src: url("/static/uni.ttf");
+}
+/* #endif */
 
-	.box {
-		box-sizing: border-box;
-	}
+.box {
+  box-sizing: border-box;
+}
 
-	.flex {
-		display: flex;
-	}
+.flex {
+  display: flex;
+}
 
-	.flex-1 {
-		flex: 1;
-	}
+.flex-wrap {
+  flex-wrap: wrap;
+}
 
-	.flex-ai-center {
-		align-items: center;
-	}
+.flex-column {
+  flex-direction: column;
+}
 
-	.flex-jc-center {
-		justify-content: center;
-	}
+.flex-1 {
+  flex: 1;
+}
 
-	.height-fill {
-		height: 100%;
-	}
+.flex-ai-center {
+  align-items: center;
+}
+
+.flex-jc-center {
+  justify-content: center;
+}
+
+.height-fill {
+  height: 100%;
+}
 </style>

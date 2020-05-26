@@ -62,7 +62,9 @@
 </template>
 
 <script>
-import { userFetchCheckCode, userBindAccount } from "./apis";
+import { userLoginByUniApp, userLoginByMiChaServer } from "@/static/apis/login";
+import { userFetchCheckCode, userBindAccount } from "@/static/apis/user";
+import { setRequestHeader } from "@/static/js/base";
 
 const app = getApp();
 
@@ -109,9 +111,24 @@ export default {
         app.globalData.openid,
         this.userPhoneNumber,
         this.userVerCode
-      ).then(res => {
-        uni.redirectTo({ url: "/pages/index/index" });
-      });
+      ).then(this.userAgainLogin);
+    },
+    // 用户再次发起登陆
+    async userAgainLogin() {
+      // 获取当前用户登陆code
+      const { code } = await userLoginByUniApp();
+
+      const miChaServerRes = await userLoginByMiChaServer(
+        code,
+        app.globalData.userInfo
+      );
+
+      setRequestHeader("authorization", miChaServerRes.result.authorization);
+
+      app.$vm.loginResolve();
+      app.$vm.loginResolve = null;
+
+      uni.redirectTo({ url: "/pages/index/index" });
     }
   }
 };

@@ -1,26 +1,26 @@
 
-.input__box.data-v-ff6d037c {
+.input__box.data-v-e3533f7e {
   width: 680rpx;
   margin: 50rpx auto;
 }
-.border.data-v-ff6d037c {
+.border.data-v-e3533f7e {
   border: 1rpx solid #ddd;
   border-radius: 100rpx;
 }
-.input.data-v-ff6d037c {
+.input.data-v-e3533f7e {
   height: 100rpx;
   padding-left: 40rpx;
 }
-.input__btn.data-v-ff6d037c {
+.input__btn.data-v-e3533f7e {
   height: 100rpx;
   margin-left: 40rpx;
 }
-.input__btn.data-v-ff6d037c {
+.input__btn.data-v-e3533f7e {
   width: 250rpx;
   text-align: center;
   line-height: 100rpx;
 }
-.bind.data-v-ff6d037c {
+.bind.data-v-e3533f7e {
   width: 680rpx;
   height: 100rpx;
   margin: auto;

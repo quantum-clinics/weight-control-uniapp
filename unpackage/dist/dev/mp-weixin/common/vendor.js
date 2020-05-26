@@ -7619,9 +7619,9 @@ module.exports = g;
 
 /***/ }),
 /* 4 */
-/*!***************************************************!*\
-  !*** /Users/jax/workspace/QTC/uni-app/pages.json ***!
-  \***************************************************/
+/*!*************************************************************!*\
+  !*** /Users/jax/workspace/weight-control-uniapp/pages.json ***!
+  \*************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -8525,20 +8525,20 @@ module.exports = {"_from":"@dcloudio/uni-stat@next","_id":"@dcloudio/uni-stat@2.
 
 /***/ }),
 /* 7 */
-/*!********************************************************************!*\
-  !*** /Users/jax/workspace/QTC/uni-app/pages.json?{"type":"style"} ***!
-  \********************************************************************/
+/*!******************************************************************************!*\
+  !*** /Users/jax/workspace/weight-control-uniapp/pages.json?{"type":"style"} ***!
+  \******************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = { "pages": { "pages/index/index": {}, "pages/bind/index": {}, "pages/auth/index": {} }, "globalStyle": { "navigationBarTextStyle": "white", "navigationBarTitleText": "micha", "navigationBarBackgroundColor": "#007AFF", "backgroundColor": "#FFFFFF" } };exports.default = _default;
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = { "pages": { "pages/index/index": {}, "pages/bind/index": {}, "pages/auth/index": {}, "pages/group/index": {} }, "globalStyle": { "navigationBarTextStyle": "white", "navigationBarTitleText": "micha", "navigationBarBackgroundColor": "#007AFF", "backgroundColor": "#FFFFFF" } };exports.default = _default;
 
 /***/ }),
 /* 8 */
-/*!*******************************************************************!*\
-  !*** /Users/jax/workspace/QTC/uni-app/pages.json?{"type":"stat"} ***!
-  \*******************************************************************/
+/*!*****************************************************************************!*\
+  !*** /Users/jax/workspace/weight-control-uniapp/pages.json?{"type":"stat"} ***!
+  \*****************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -9338,42 +9338,46 @@ if (hadRuntime) {
 
 /***/ }),
 /* 15 */
-/*!***************************************************************!*\
-  !*** /Users/jax/workspace/QTC/uni-app/static/js/authLogin.js ***!
-  \***************************************************************/
+/*!***********************************************************************!*\
+  !*** /Users/jax/workspace/weight-control-uniapp/static/apis/login.js ***!
+  \***********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.userGetProviderInfo = userGetProviderInfo;exports.userLoginByUniApp = userLoginByUniApp;exports.getUserSettingByUniApp = getUserSettingByUniApp;exports.getUserInfoByUniApp = getUserInfoByUniApp;exports.userLoginByMiChaServer = userLoginByMiChaServer;var _base = _interopRequireDefault(__webpack_require__(/*! ./base */ 16));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.userGetProviderInfo = userGetProviderInfo;exports.setProvider = setProvider;exports.userLoginByUniApp = userLoginByUniApp;exports.userInfoAuthSetting = userInfoAuthSetting;exports.getUserSettingByUniApp = getUserSettingByUniApp;exports.getUserInfoByUniApp = getUserInfoByUniApp;exports.userLoginByMiChaServer = userLoginByMiChaServer;var _base = _interopRequireDefault(__webpack_require__(/*! @/static/js/base */ 16));
+var _platformConfig = _interopRequireDefault(__webpack_require__(/*! @/static/js/platformConfig */ 17));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 
-// 01用户获取获取服务供应商信息
+var provider;
+
+// 用户获取获取服务供应商信息
 function userGetProviderInfo() {var service = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'oauth';
   return new Promise(function (resolve, reject) {
     uni.getProvider({
       service: service,
-      success: resolve });
+      success: resolve,
+      fail: reject });
 
   });
 }
 
-// 02用户使用uni-app预登陆(获取code)
-function userLoginByUniApp(provider) {
+// 设置provider
+function setProvider(platform) {
+  provider = platform;
+}
+
+// 用户使用uni-app登陆平台
+function userLoginByUniApp() {
   return new Promise(function (resolve, reject) {
-    var login = {
+    uni.login({
       provider: provider,
-      success: resolve };
+      success: resolve,
+      fail: reject });
 
-
-    if (provider === 'alipay') {
-      login.scopes = 'auth_base';
-    }
-
-    uni.login(login);
   });
 }
 
-// 03获取用户授权设置
+// 获取用户授权设置
 function getUserSettingByUniApp() {
   return new Promise(function (resolve, reject) {
     uni.getSetting({
@@ -9383,8 +9387,8 @@ function getUserSettingByUniApp() {
   });
 }
 
-// 04获取用户信息
-function getUserInfoByUniApp(provider) {
+// 获取用户平台信息
+function getUserInfoByUniApp() {
   return new Promise(function (resolve, reject) {
     uni.getUserInfo({
       provider: provider,
@@ -9394,31 +9398,37 @@ function getUserInfoByUniApp(provider) {
   });
 }
 
-// 05用户登陆米茶服务器
-function userLoginByMiChaServer(code, wechatProfile) {
+// 用户登陆米茶服务器
+function userLoginByMiChaServer(code, profile) {
   return (0, _base.default)({
     data: {
       method: "user.login",
       data: {
         code: code,
-        wechatProfile: wechatProfile } } });
+        profile: profile } } });
 
 
 
+}
+
+// 获取用户平台权限设置
+function userInfoAuthSetting(authSetting, power) {
+  return !!authSetting[_platformConfig.default[provider][power]];
 }
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
 /* 16 */
-/*!**********************************************************!*\
-  !*** /Users/jax/workspace/QTC/uni-app/static/js/base.js ***!
-  \**********************************************************/
+/*!********************************************************************!*\
+  !*** /Users/jax/workspace/weight-control-uniapp/static/js/base.js ***!
+  \********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.setRequestHeader = setRequestHeader;exports.default = void 0;function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;} // const ENDPOINT = 'https://stg-weight-control.qtclinics.com/api';
-var ENDPOINT = 'http://localhost:9900/api';
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.setRequestHeader = setRequestHeader;exports.default = void 0;function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}var ENDPOINT = 'https://stg-weight-control.qtclinics.com/api';
+// const ENDPOINT = 'https://weight-control.qtclinics.com/api'
+// const ENDPOINT = 'http://localhost:9900/api';
 var header = {
   'Timezone-Offset': new Date().getTimezoneOffset() };
 
@@ -9451,7 +9461,7 @@ function request(params) {var
 
         response.data,code = _response$data.code,data = _response$data.data,msg = _response$data.msg;
 
-        console.log(code, data, msg);
+        // console.log(code, data, msg)
         if (code === 1) {
           resolve(data);
           return;
@@ -9479,9 +9489,34 @@ request;exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 17 */,
+/* 17 */
+/*!******************************************************************************!*\
+  !*** /Users/jax/workspace/weight-control-uniapp/static/js/platformConfig.js ***!
+  \******************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0; // 通过uni.api请求的方法返回的参数因平台差异性不同需要转换成相同的模式
+
+// 接口传递参数需要配置
+// 接口返回参数需要配置
+
+var config = {
+  'weixin': {
+    userInfo: 'scope.userInfo' },
+
+  'alipay': {
+    userInfo: 'userInfo' } };var _default =
+
+
+
+config;exports.default = _default;
+
+/***/ }),
 /* 18 */,
-/* 19 */
+/* 19 */,
+/* 20 */
 /*!**********************************************************************************************************!*\
   !*** ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib/runtime/componentNormalizer.js ***!
   \**********************************************************************************************************/
@@ -9609,22 +9644,44 @@ function normalizeComponent (
 
 
 /***/ }),
-/* 20 */,
 /* 21 */,
 /* 22 */,
 /* 23 */,
 /* 24 */,
 /* 25 */,
 /* 26 */,
-/* 27 */,
+/* 27 */
+/*!************************************************************************!*\
+  !*** /Users/jax/workspace/weight-control-uniapp/static/apis/system.js ***!
+  \************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.userFetchTasks = userFetchTasks;var _base = _interopRequireDefault(__webpack_require__(/*! @/static/js/base */ 16));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+
+// 用户获取打卡任务
+function userFetchTasks() {
+  return (0, _base.default)({
+    data: {
+      method: "system.getTasks" } });
+
+
+}
+
+/***/ }),
 /* 28 */,
 /* 29 */,
 /* 30 */,
 /* 31 */,
-/* 32 */
-/*!***********************************************************!*\
-  !*** /Users/jax/workspace/QTC/uni-app/pages/bind/apis.js ***!
-  \***********************************************************/
+/* 32 */,
+/* 33 */,
+/* 34 */,
+/* 35 */,
+/* 36 */
+/*!**********************************************************************!*\
+  !*** /Users/jax/workspace/weight-control-uniapp/static/apis/user.js ***!
+  \**********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
