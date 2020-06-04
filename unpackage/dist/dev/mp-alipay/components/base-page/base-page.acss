@@ -1,4 +1,8 @@
 
+.base-page.data-v-2a510d24 {
+	width: 100vw;
+	overflow-x: hidden;
+}
 .error.data-v-2a510d24 {
 	position: fixed;
 	width: 750rpx;

@@ -101,35 +101,62 @@ export default {
 }
 /* #endif */
 
-.box {
+* {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
 }
 
-.flex {
-  display: flex;
-}
+/* flex */
+.flex { display: flex }
+.flex-wrap { flex-wrap: wrap }
+.flex-column { flex-direction: column }
+.flex-ai-start { align-items: flex-start }
+.flex-ai-center { align-items: center }
+.flex-ai-end { align-items: flex-end }
+.flex-jc-start { justify-content: flex-start }
+.flex-jc-center { justify-content: center }
+.flex-jc-end { justify-content: flex-end }
+.flex-jc-between { justify-content: space-between }
+.flex-fill { flex: 1 }
 
-.flex-wrap {
-  flex-wrap: wrap;
-}
+/* font-weight */
+.ft-lighter {font-weight: lighter}
+.ft-bolder {font-weight: bolder}
+.ft-thin {font-weight: 100}
+.ft-extra-light {font-weight: 200}
+.ft-light {font-weight: 300}
+.ft-normal {font-weight: 400}
+.ft-medium {font-weight: 500}
+.ft-semi-bold {font-weight: 600}
+.ft-bold {font-weight: 700}
+.ft-extra-bold {font-weight: 800}
+.ft-heavy {font-weight: 900}
 
-.flex-column {
-  flex-direction: column;
-}
+/* font-size */
+.ft-20 {font-size: 20rpx}
+.ft-22 {font-size: 22rpx}
+.ft-24 {font-size: 24rpx}
+.ft-26 {font-size: 26rpx}
+.ft-28 {font-size: 28rpx}
+.ft-30 {font-size: 30rpx}
+.ft-32 {font-size: 32rpx}
+.ft-34 {font-size: 34rpx}
+.ft-36 {font-size: 36rpx}
+.ft-38 {font-size: 38rpx}
+.ft-40 {font-size: 40rpx}
+.ft-48 {font-size: 48rpx}
 
-.flex-1 {
-  flex: 1;
-}
+/* fonr-color */
+.ft-fff {color: #fff }
 
-.flex-ai-center {
-  align-items: center;
-}
+/* normal */
+.height-fill { height: 100% }
+.line-fill {line-height: 1}
+.box { box-sizing: border-box }
+.relative { position: relative }
+.absolute { position: absolute }
+.fixed { position: fixed }
 
-.flex-jc-center {
-  justify-content: center;
-}
 
-.height-fill {
-  height: 100%;
-}
 </style>

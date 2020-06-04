@@ -1,3 +1,28 @@
+<style scoped>
+	.base-page {
+		width: 100vw;
+		overflow-x: hidden;
+	}
+
+	.error {
+		position: fixed;
+		width: 750rpx;
+		background: #e4393c;
+		color: #fff;
+		padding: 10rpx 20rpx;
+		top: 0;
+		left: 0;
+		transition: 0.36s linear;
+		transform: translateY(-100%);
+	}
+	.error--active {
+		transform: translateY(0);
+	}
+
+	.error--hide {
+	}
+</style>
+
 <template>
 	<div class="base-page">
 		<div class="error" :class="{ 'error--active': errorMessageDisplay }">{{errorMessages}}</div>
@@ -38,23 +63,3 @@
 		}
 	};
 </script>
-
-<style scoped>
-	.error {
-		position: fixed;
-		width: 750rpx;
-		background: #e4393c;
-		color: #fff;
-		padding: 10rpx 20rpx;
-		top: 0;
-		left: 0;
-		transition: 0.36s linear;
-		transform: translateY(-100%);
-	}
-	.error--active {
-		transform: translateY(0);
-	}
-
-	.error--hide {
-	}
-</style>

@@ -3,7 +3,9 @@
     "pages/index/index",
     "pages/bind/index",
     "pages/auth/index",
-    "pages/group/index"
+    "pages/class/index",
+    "pages/micha/index",
+    "pages/user/index"
   ],
   "subPackages": [],
   "window": {
@@ -12,21 +14,33 @@
     "backgroundColor": "#FFFFFF"
   },
   "tabBar": {
-    "textColor": "#6e6986",
-    "selectedColor": "#ff7151",
-    "backgroundColor": "#ffffff",
+    "textColor": "#606876",
+    "selectedColor": "#188CFC",
+    "backgroundColor": "rgba(249,249,249,0.94)",
     "items": [
       {
         "pagePath": "pages/index/index",
-        "name": "任务",
-        "icon": "static/images/task.png",
-        "activeIcon": "static/images/task-highlight.png"
+        "name": "首页",
+        "icon": "static/images/icon-home.png",
+        "activeIcon": "static/images/icon-home-active.png"
       },
       {
-        "pagePath": "pages/group/index",
-        "name": "小组",
-        "icon": "static/images/group.png",
-        "activeIcon": "static/images/group-highlight.png"
+        "pagePath": "pages/class/index",
+        "name": "课程",
+        "icon": "static/images/icon-class.png",
+        "activeIcon": "static/images/icon-class-active.png"
+      },
+      {
+        "pagePath": "pages/micha/index",
+        "name": "Hi,米茶",
+        "icon": "static/images/icon-micha.png",
+        "activeIcon": "static/images/icon-micha-active.png"
+      },
+      {
+        "pagePath": "pages/user/index",
+        "name": "我的",
+        "icon": "static/images/icon-my.png",
+        "activeIcon": "static/images/icon-my-active.png"
       }
     ]
   },

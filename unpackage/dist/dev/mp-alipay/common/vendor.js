@@ -9249,7 +9249,7 @@ module.exports = {"_from":"@dcloudio/uni-stat@next","_id":"@dcloudio/uni-stat@2.
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = { "pages": { "pages/index/index": {}, "pages/bind/index": {}, "pages/auth/index": {}, "pages/group/index": {} }, "globalStyle": { "defaultTitle": "micha", "titleBarColor": "#007AFF", "backgroundColor": "#FFFFFF" } };exports.default = _default;
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = { "pages": { "pages/index/index": { "usingComponents": {}, "usingAutoImportComponents": { "base-page": "/components/base-page/base-page" } }, "pages/bind/index": { "usingComponents": {}, "usingAutoImportComponents": {} }, "pages/auth/index": { "usingComponents": {}, "usingAutoImportComponents": {} }, "pages/group/index": { "usingComponents": {}, "usingAutoImportComponents": {} }, "pages/class/index": { "usingComponents": {}, "usingAutoImportComponents": {} }, "pages/micha/index": {}, "pages/user/index": {} }, "globalStyle": { "defaultTitle": "micha", "titleBarColor": "#007AFF", "backgroundColor": "#FFFFFF" } };exports.default = _default;
 
 /***/ }),
 /* 8 */
@@ -10367,35 +10367,13 @@ function normalizeComponent (
 /* 24 */,
 /* 25 */,
 /* 26 */,
-/* 27 */
-/*!************************************************************************!*\
-  !*** /Users/jax/workspace/weight-control-uniapp/static/apis/system.js ***!
-  \************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.userFetchTasks = userFetchTasks;var _base = _interopRequireDefault(__webpack_require__(/*! @/static/js/base */ 16));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
-
-// 用户获取打卡任务
-function userFetchTasks() {
-  return (0, _base.default)({
-    data: {
-      method: "system.getTasks" } });
-
-
-}
-
-/***/ }),
+/* 27 */,
 /* 28 */,
 /* 29 */,
 /* 30 */,
 /* 31 */,
 /* 32 */,
-/* 33 */,
-/* 34 */,
-/* 35 */,
-/* 36 */
+/* 33 */
 /*!**********************************************************************!*\
   !*** /Users/jax/workspace/weight-control-uniapp/static/apis/user.js ***!
   \**********************************************************************/
