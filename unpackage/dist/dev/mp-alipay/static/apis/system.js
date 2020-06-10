@@ -9,6 +9,28 @@ function userFetchTasks() {
   })
 }
 
+// 用户饮食打卡
+function userCheckinDiet(data) {
+  return request({
+    data: {
+      method: "system.checkin",
+      data,
+    }
+  })
+}
+
+// 用户运动打卡
+function userCheckinSport(data) {
+  return request({
+    data: {
+      method: "system.checkin",
+      data,
+    }
+  })
+}
+
 export {
   userFetchTasks,
+  userCheckinDiet,
+  userCheckinSport,
 }

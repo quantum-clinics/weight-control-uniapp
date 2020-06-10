@@ -12,10 +12,18 @@
 
 <template>
   <div class="upload__box flex">
-    <img class="upload__image" v-for="(item, index) in images" :key="index" :src="item" alt />
+    <img
+      class="upload__image"
+      v-for="(item, index) in images"
+      :key="index"
+      :src="item"
+      alt
+    />
+
     <img
       src="https://qtclinics-resource.oss-cn-shenzhen.aliyuncs.com/sleep/icons/upload-empty.png"
       class="upload__button"
+      v-if="!recordFinish"
       @click="handleUserChooseImage"
       alt
     />
@@ -27,15 +35,18 @@ export default {
   props: {
     images: {
       type: Array
-    }
+    },
+    recordFinish: {
+      type: Boolean,
+      value: false,
+    },
   },
   methods: {
     handleUserChooseImage() {
       uni.chooseImage({
         count: 4 - this.images.length,
-        success: res => {
-          console.log(res);
-          this.$emit("imagesUpLoad", res);
+        success: (chooseImageRes) => {
+          this.$emit("imagesUpLoad", chooseImageRes);
         }
       });
     }

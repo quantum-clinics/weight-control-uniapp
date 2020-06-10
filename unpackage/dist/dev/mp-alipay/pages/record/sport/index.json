@@ -1,0 +1,8 @@
+{
+  "usingComponents": {
+    "base-page": "/components/base-page/base-page",
+    "card-header": "/components/card-header/card-header",
+    "card-sport": "/components/card-sport/card-sport",
+    "card-textarea": "/components/card-textarea/card-textarea"
+  }
+}

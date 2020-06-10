@@ -156,10 +156,10 @@ function init() {}var _default =
 
                 console.log("6, 登陆米茶服务器", miChaServerRes);
 
-                _this.globalData.openid = miChaServerRes.result.openid;
+                _this.globalData.openid = miChaServerRes.data.result.openid;
 
                 // 判断当前用户是否需要绑定手机号码
-                if (!miChaServerRes.result.needBind) {_context.next = 39;break;}
+                if (!miChaServerRes.data.result.needBind) {_context.next = 39;break;}
                 _this.loginResolve = resolve;
 
                 uni.redirectTo({
@@ -169,7 +169,7 @@ function init() {}var _default =
 
 
 
-                (0, _base.setRequestHeader)("authorization", miChaServerRes.result.authorization);
+                (0, _base.setRequestHeader)("authorization", miChaServerRes.data.result.authorization);
 
                 resolve();_context.next = 47;break;case 43:_context.prev = 43;_context.t0 = _context["catch"](0);
 

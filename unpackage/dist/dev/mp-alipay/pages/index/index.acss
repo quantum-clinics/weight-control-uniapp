@@ -1,15 +1,15 @@
 
 .header.data-v-73f2cd38 {
   width: 100vw;
-  padding: 50rpx 24rpx 54rpx;
+  padding: 50rpx 24rpx 0;
 }
 .header.data-v-73f2cd38::after {
-  content: '';
+  content: "";
   display: block;
   position: absolute;
   width: 150vw;
   height: 100%;
-  background: #188CFC;
+  background: #188cfc;
   border-radius: 0 0 200px 200px;
   top: 0;
   left: 50%;
@@ -26,7 +26,7 @@
   margin-right: 8rpx;
 }
 .currency__span.data-v-73f2cd38 {
-  color: rgba(255, 255, 255, .45);
+  color: rgba(255, 255, 255, 0.45);
 }
 .info__count.data-v-73f2cd38 {
   font-size: 88rpx;
@@ -50,27 +50,38 @@
   padding-bottom: 32rpx;
   overflow: hidden;
   margin-top: 32rpx;
-  -webkit-box-shadow: 0 24rpx 48rpx 0 rgba(144, 181, 216, .25);
-          box-shadow: 0 24rpx 48rpx 0 rgba(144, 181, 216, .25);
+  -webkit-box-shadow: 0 24rpx 48rpx 0 rgba(144, 181, 216, 0.25);
+          box-shadow: 0 24rpx 48rpx 0 rgba(144, 181, 216, 0.25);
 }
 .card__mission.data-v-73f2cd38 {
-  width: 364rpx;
   height: 80rpx;
   padding: 0 14rpx;
-  background: -webkit-gradient(linear, left top, right top, from(rgba(255, 168, 33, 1)), to(rgba(255, 193, 33, 1)));
-  background: -webkit-linear-gradient(left, rgba(255, 168, 33, 1) 0%, rgba(255, 193, 33, 1) 100%);
-  background: linear-gradient(90deg, rgba(255, 168, 33, 1) 0%, rgba(255, 193, 33, 1) 100%);
+  background: -webkit-gradient(
+    linear,
+    left top, right top,
+    from(rgba(255, 168, 33, 1)),
+    to(rgba(255, 193, 33, 1))
+  );
+  background: -webkit-linear-gradient(
+    left,
+    rgba(255, 168, 33, 1) 0%,
+    rgba(255, 193, 33, 1) 100%
+  );
+  background: linear-gradient(
+    90deg,
+    rgba(255, 168, 33, 1) 0%,
+    rgba(255, 193, 33, 1) 100%
+  );
   border-radius: 24rpx;
-  margin: 32rpx auto 0;
+  margin-top: 32rpx;
 }
 .mission__image.data-v-73f2cd38 {
   width: 72rpx;
   height: 72rpx;
-  background: #ddd;
 }
 .mission__span.data-v-73f2cd38 {
   line-height: 32rpx;
-  text-shadow: 0 1rpx 0 rgba(239,127,4,1);
+  text-shadow: 0 1rpx 0 rgba(239, 127, 4, 1);
   margin: 24rpx 8rpx 0 0;
 }
 .mission__icon.data-v-73f2cd38 {
@@ -81,11 +92,24 @@
 .mission__float.data-v-73f2cd38 {
   width: 164rpx;
   height: 36rpx;
-  background: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 79, 31, 1)), to(rgba(255, 56, 55, 1)));
-  background: -webkit-linear-gradient(top, rgba(255, 79, 31, 1) 0%, rgba(255, 56, 55, 1) 100%);
-  background: linear-gradient(180deg, rgba(255, 79, 31, 1) 0%, rgba(255, 56, 55, 1) 100%);
-  -webkit-box-shadow: 0 8rpx 20rpx 0 rgba(255, 51, 51, .5);
-          box-shadow: 0 8rpx 20rpx 0 rgba(255, 51, 51, .5);
+  background: -webkit-gradient(
+    linear,
+    left top, left bottom,
+    from(rgba(255, 79, 31, 1)),
+    to(rgba(255, 56, 55, 1))
+  );
+  background: -webkit-linear-gradient(
+    top,
+    rgba(255, 79, 31, 1) 0%,
+    rgba(255, 56, 55, 1) 100%
+  );
+  background: linear-gradient(
+    180deg,
+    rgba(255, 79, 31, 1) 0%,
+    rgba(255, 56, 55, 1) 100%
+  );
+  -webkit-box-shadow: 0 8rpx 20rpx 0 rgba(255, 51, 51, 0.5);
+          box-shadow: 0 8rpx 20rpx 0 rgba(255, 51, 51, 0.5);
   border-radius: 12rpx 12rpx 12rpx 0;
   top: -20rpx;
   right: -48rpx;
@@ -99,24 +123,50 @@
   margin: 96rpx auto 66rpx;
   width: 702rpx;
   height: 128rpx;
-  background: -webkit-gradient(linear, left top, right top, from(rgba(255, 135, 30, 1)), to(rgba(255, 168, 30, 1)));
-  background: -webkit-linear-gradient(left, rgba(255, 135, 30, 1) 0%, rgba(255, 168, 30, 1) 100%);
-  background: linear-gradient(90deg, rgba(255, 135, 30, 1) 0%, rgba(255, 168, 30, 1) 100%);
-  -webkit-box-shadow: 0 2rpx 0 0 rgba(255, 255, 255, .3);
-          box-shadow: 0 2rpx 0 0 rgba(255, 255, 255, .3);
+  background: -webkit-gradient(
+    linear,
+    left top, right top,
+    from(rgba(255, 135, 30, 1)),
+    to(rgba(255, 168, 30, 1))
+  );
+  background: -webkit-linear-gradient(
+    left,
+    rgba(255, 135, 30, 1) 0%,
+    rgba(255, 168, 30, 1) 100%
+  );
+  background: linear-gradient(
+    90deg,
+    rgba(255, 135, 30, 1) 0%,
+    rgba(255, 168, 30, 1) 100%
+  );
+  -webkit-box-shadow: 0 2rpx 0 0 rgba(255, 255, 255, 0.3);
+          box-shadow: 0 2rpx 0 0 rgba(255, 255, 255, 0.3);
   border-radius: 30rpx;
 }
 .banner.data-v-73f2cd38::after {
-  content: '';
+  content: "";
   display: block;
   position: absolute;
   width: 100%;
   height: 100%;
   left: 0;
   bottom: -12rpx;
-  background: -webkit-gradient(linear, left top, right top, from(rgba(247, 117, 3, 1)), to(rgba(240, 140, 0, 1)));
-  background: -webkit-linear-gradient(left, rgba(247, 117, 3, 1) 0%, rgba(240, 140, 0, 1) 100%);
-  background: linear-gradient(90deg, rgba(247, 117, 3, 1) 0%, rgba(240, 140, 0, 1) 100%);
+  background: -webkit-gradient(
+    linear,
+    left top, right top,
+    from(rgba(247, 117, 3, 1)),
+    to(rgba(240, 140, 0, 1))
+  );
+  background: -webkit-linear-gradient(
+    left,
+    rgba(247, 117, 3, 1) 0%,
+    rgba(240, 140, 0, 1) 100%
+  );
+  background: linear-gradient(
+    90deg,
+    rgba(247, 117, 3, 1) 0%,
+    rgba(240, 140, 0, 1) 100%
+  );
   -webkit-box-shadow: 0 2rpx 0 0 rgba(217, 100, 52, 1);
           box-shadow: 0 2rpx 0 0 rgba(217, 100, 52, 1);
   border-radius: 30rpx;
@@ -126,8 +176,6 @@
   width: 232rpx;
   height: 170rpx;
   margin: -42rpx 32rpx 0 0;
-  /* TODO DELETE */
-  background: #ddd;
 }
 .banner__intro.data-v-73f2cd38 {
   padding-top: 24rpx;
@@ -143,7 +191,7 @@
 }
 .info__spc.data-v-73f2cd38 {
   text-shadow: 0 1rpx 0 rgba(196, 116, 1, 1);
-  color: rgba(255, 255, 255, .8);
+  color: rgba(255, 255, 255, 0.8);
 }
 .info__price.data-v-73f2cd38 {
   height: 32rpx;
@@ -158,5 +206,4 @@
   width: 28rpx;
   height: 28rpx;
 }
-
 

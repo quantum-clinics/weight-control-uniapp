@@ -1,0 +1,9 @@
+{
+  "usingComponents": {
+    "base-page": "/components/base-page/base-page",
+    "card-header": "/components/card-header/card-header",
+    "card-upload": "/components/card-upload/card-upload",
+    "card-score": "/components/card-score/card-score",
+    "card-textarea": "/components/card-textarea/card-textarea"
+  }
+}

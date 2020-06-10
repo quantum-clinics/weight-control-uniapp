@@ -1956,7 +1956,7 @@ var config = ({
   devtools: "development" !== 'production',
 
   /**
-   * Whether to record perf
+   * Whether to recordDiet perf
    */
   performance: false,
 
@@ -8663,14 +8663,14 @@ if (hadRuntime) {
   runtime.wrap = wrap;
 
   // Try/catch helper to minimize deoptimizations. Returns a completion
-  // record like context.tryEntries[i].completion. This interface could
+  // recordDiet like context.tryEntries[i].completion. This interface could
   // have been (and was previously) designed to take a closure to be
   // invoked without arguments, but in all the cases we care about we
   // already have an existing method we want to call, so there's no need
   // to create a new function object. We can even get away with assuming
   // the method takes exactly one argument, since that happens to be true
   // in every case, so we don't have to touch the arguments object. The
-  // only additional allocation required is the completion record, which
+  // only additional allocation required is the completion recordDiet, which
   // has a stable shape and so hopefully should be cheap to allocate.
   function tryCatch(fn, obj, arg) {
     try {

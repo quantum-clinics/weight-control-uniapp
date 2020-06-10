@@ -1,5 +1,7 @@
+<!-- 首页打卡组件 -->
 <style scoped>
   .card {
+    width: 100%;
     padding: 48rpx 32rpx 32rpx;
     background: #fff;
   }
@@ -38,10 +40,6 @@
 
   .item__imagebox {
     margin-bottom: 16rpx;
-  }
-
-  .item__image {
-    background: #ddd;
   }
 
   .item__status {
@@ -93,74 +91,47 @@
     <div class="card__title ft-semi-bold ft-40">打卡签到(4/8)</div>
     <div class="card__spc ft-28">每天完成所有打卡自动签到</div>
     <div class="card__list flex flex-ai-center">
-      <div
+      <navigator
         class="list__item flex flex-ai-center flex-jc-center flex-column"
-        v-for="(item, index) in list"
+        v-for="(item, index) in tasks"
         :key="index"
+        :url="`/pages/record/index?id=${item.id}`"
       >
         <div class="item__imagebox relative">
           <img
             class="item__image"
-            :src="item.missionFinishLength === item.missionLength ? item.finishImage: item.image"
-            alt=""
+            :src="item.icon"
           >
 
           <div class="item__status absolute ft-bold ft-fff ft-20">
+            <!--
             <div
               class="status__unfinish"
-              v-if="item.missionLength > item.missionFinishLength + 1"
+              v-if="item.missionCount > item.missionFinishCount + 1"
             >
-              {{item.missionLength - item.missionFinishLength}}
+              {{item.missionCount - item.missionFinishCount}}
             </div>
+            -->
 
             <img
               class="status__icon"
-              v-if="item.missionLength === item.missionFinishLength"
-              src=""
+              v-if="item.done"
+              src
             >
           </div>
         </div>
-        <div :class="item.missionLength === item.missionFinishLength ? 'item__span--finish' : 'item__span--unfinish'">{{item.target}}</div>
-      </div>
+        <div :class="item.done ? 'item__span--finish' : 'item__span--unfinish'">{{item.title}}</div>
+      </navigator>
     </div>
   </div>
 </template>
 
 <script>
-  // missionLength 任务数量, missionFinishLength 完成的任务数量
-  const list = [
-    {
-      target: '三餐打卡',
-      image: '',
-      finishImage: '',
-      missionLength: 2,
-      missionFinishLength: 0,
-    }, {
-      target: '运动打卡',
-      image: '',
-      finishImage: '',
-      missionLength: 1,
-      missionFinishLength: 1,
-    }, {
-      target: '体重打卡',
-      image: '',
-      finishImage: '',
-      missionLength: 1,
-      missionFinishLength: 0,
-    }, {
-      target: '腰围打卡',
-      image: '',
-      finishImage: '',
-      missionLength: 1,
-      missionFinishLength: 1,
-    }
-  ];
-
   export default {
-    data() {
-      return {
-        list,
-      }
+    props: {
+      tasks: {
+        type: Array,
+      },
     }
   }
 </script>

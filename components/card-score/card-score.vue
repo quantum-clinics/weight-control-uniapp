@@ -1,24 +1,36 @@
 <style scoped>
-.star-box {
-  width: 92rpx;
-  height: 80rpx;
-}
+  .star-box {
+    width: 496rpx;
+  }
 
-.star {
-  width: 80rpx;
-  height: 80rpx;
-}
+  .star-box--finish {
+    width: 332rpx;
+  }
+
+  .star {
+    width: 80rpx;
+    height: 80rpx;
+  }
+
+  .star--finish {
+    width: 70rpx;
+    height: 70rpx;
+  }
 </style>
 
 <template>
-  <div class="flex flex-ai-center">
+  <div :class="['star-box flex flex-ai-center flex-jc-between', { 'star-box--finish': recordFinish }]">
     <div
       v-for="(item, index) in scoreList"
       :key="index"
       @click="handleUserUpdateScore(item)"
-      class="star-box flex flex-ai-center flex-jc-center"
+      class="flex flex-ai-center flex-jc-center"
     >
-      <img class="star" :src="index < score ? activeLink : hideLink" alt />
+      <img
+        :class="['star', {'star--finish': recordFinish}]"
+        :src="index < score ? activeLink : hideLink"
+        alt
+      />
     </div>
   </div>
 </template>
@@ -31,7 +43,11 @@ export default {
     score: {
       type: Number,
       value: 0
-    }
+    },
+    recordFinish: {
+      type: Boolean,
+      value: false,
+    },
   },
   data() {
     return {
@@ -42,6 +58,10 @@ export default {
   },
   methods: {
     handleUserUpdateScore(score) {
+      if (this.recordFinish) {
+        return;
+      }
+
       this.$emit("userUpdateScore", score);
     }
   }

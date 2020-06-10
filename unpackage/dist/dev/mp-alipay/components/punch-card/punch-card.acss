@@ -1,5 +1,6 @@
 
 .card.data-v-780bd2ec {
+  width: 100%;
   padding: 48rpx 32rpx 32rpx;
   background: #fff;
 }
@@ -34,9 +35,6 @@
 }
 .item__imagebox.data-v-780bd2ec {
   margin-bottom: 16rpx;
-}
-.item__image.data-v-780bd2ec {
-  background: #ddd;
 }
 .item__status.data-v-780bd2ec {
   width: 28rpx;

@@ -5,21 +5,43 @@
 			"style": {}
 		},
 		{
-			"path": "pages/bind/index",
+			"path": "pages/report/index",
 			"style": {}
 		},
 		{
-			"path": "pages/auth/index",
+			"path": "pages/user/index",
+			"style": {}
+		},
+		{
+			"path": "pages/micha/index",
+			"style": {}
+		},
+		{
+			"path": "pages/record/diet/index",
+			"style": {}
+		},
+		{
+			"path": "pages/record/index",
+			"style": {}
+		},
+		{
+			"path": "pages/guide/index",
+			"style": {}
+		},
+		{
+			"path": "pages/record/sport/index",
 			"style": {}
 		},
 		{
 			"path": "pages/class/index",
 			"style": {}
-		},{
-			"path": "pages/micha/index",
+		},
+		{
+			"path": "pages/bind/index",
 			"style": {}
-		},{
-			"path": "pages/user/index",
+		},
+		{
+			"path": "pages/auth/index",
 			"style": {}
 		}
 	],

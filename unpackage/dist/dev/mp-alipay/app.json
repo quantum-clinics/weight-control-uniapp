@@ -1,11 +1,16 @@
 {
   "pages": [
     "pages/index/index",
-    "pages/bind/index",
-    "pages/auth/index",
-    "pages/class/index",
+    "pages/report/index",
+    "pages/user/index",
     "pages/micha/index",
-    "pages/user/index"
+    "pages/record/diet/index",
+    "pages/record/index",
+    "pages/guide/index",
+    "pages/record/sport/index",
+    "pages/class/index",
+    "pages/bind/index",
+    "pages/auth/index"
   ],
   "subPackages": [],
   "window": {

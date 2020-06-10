@@ -28,14 +28,11 @@ function request(params) {
 				const {
 					data: {
 						code,
-						data,
-						msg
 					}
 				} = response;
 
-				// console.log(code, data, msg)
 				if (code === 1) {
-					resolve(data);
+					resolve(response.data);
 					return
 				}
 

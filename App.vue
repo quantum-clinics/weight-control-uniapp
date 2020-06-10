@@ -63,10 +63,10 @@ export default {
         );
         console.log("6, 登陆米茶服务器", miChaServerRes);
 
-        this.globalData.openid = miChaServerRes.result.openid;
+        this.globalData.openid = miChaServerRes.data.result.openid;
 
         // 判断当前用户是否需要绑定手机号码
-        if (miChaServerRes.result.needBind) {
+        if (miChaServerRes.data.result.needBind) {
           this.loginResolve = resolve;
 
           uni.redirectTo({
@@ -76,7 +76,7 @@ export default {
           return;
         }
 
-        setRequestHeader("authorization", miChaServerRes.result.authorization);
+        setRequestHeader("authorization", miChaServerRes.data.result.authorization);
 
         resolve();
       } catch (err) {
@@ -93,14 +93,6 @@ export default {
 </script>
 
 <style>
-/* 解决头条小程序组件内引入字体不生效的问题 */
-/* #ifdef MP-TOUTIAO */
-@font-face {
-  font-family: uniicons;
-  src: url("/static/uni.ttf");
-}
-/* #endif */
-
 * {
   margin: 0;
   padding: 0;
@@ -145,18 +137,22 @@ export default {
 .ft-36 {font-size: 36rpx}
 .ft-38 {font-size: 38rpx}
 .ft-40 {font-size: 40rpx}
+.ft-44 {font-size: 44rpx}
 .ft-48 {font-size: 48rpx}
 
 /* fonr-color */
 .ft-fff {color: #fff }
 
 /* normal */
+.box { box-sizing: border-box }
 .height-fill { height: 100% }
 .line-fill {line-height: 1}
-.box { box-sizing: border-box }
 .relative { position: relative }
 .absolute { position: absolute }
 .fixed { position: fixed }
+
+/* icon */
+.icon {width: 32rpx; height: 32rpx}
 
 
 </style>
