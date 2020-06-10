@@ -1,7 +1,0 @@
-{
-  "usingComponents": {
-    "talk-micha": "/components/talk-micha/talk-micha",
-    "talk-user": "/components/talk-user/talk-user",
-    "micha-footer": "/components/micha-footer/micha-footer"
-  }
-}

@@ -1,8 +1,0 @@
-{
-  "usingComponents": {
-    "base-page": "/components/base-page/base-page",
-    "punch-sign": "/components/punch-sign/punch-sign",
-    "punch-card": "/components/punch-card/punch-card",
-    "class-list": "/components/class-list/class-list"
-  }
-}

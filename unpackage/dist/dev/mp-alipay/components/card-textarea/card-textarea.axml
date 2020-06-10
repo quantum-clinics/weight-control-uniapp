@@ -1,1 +1,0 @@
-<view class="{{((('_div data-v-4f1a6888')+' '+'textarea-box box')+' '+[(recordFinish)?'textarea-box--finish':''])}}"><textarea class="{{((('data-v-4f1a6888')+' '+'textarea ft-34')+' '+[(recordFinish)?'textarea--finish':''])}}" maxlength="{{-1}}" disabled="{{recordFinish}}" data-event-opts="{{[['input',[['handleUserInput',['$event']]]]]}}" onInput="__e"></textarea></view>
