@@ -287,8 +287,6 @@
           userFetchRecomProducts(),
           userFetchTasks(),
         ]);
-        console.log(recomProducts);
-        console.log(tasks);
         this.recomProducts = recomProducts.data.result.list;
         this.tasks = tasks.data.result.tasks;
       },

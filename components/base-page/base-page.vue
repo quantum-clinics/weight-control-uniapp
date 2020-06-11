@@ -27,12 +27,13 @@
 <template>
 	<div class="base-page">
 <!--		<div class="error" :class="{ 'error&#45;&#45;active': errorMessageDisplay }">{{errorMessages}}</div>-->
-		<div class="error" :class="{ 'error--active': !!errorMessage }">{{errorMessage}}</div>
+		<div class="error" :class="{ 'error--active': errorMessageDisplay }">{{errorMessage}}</div>
 		<slot></slot>
 	</div>
 </template>
 
 <script>
+	let errorMessageCountDown;
 	export default {
 		props: {
 			errorMessage: {
@@ -42,26 +43,27 @@
 		},
 		data() {
 			return {
-				// errorMessages: "",
 				errorMessageDisplay: false
 			};
 		},
-		methods: {
-			base() {
-				this.errorMessages = "some err be created! errorMessage => code 12";
-			}
-		},
 		watch: {
-			errorMessages(newValue, oldValue) {
-				console.log(newValue);
-				if (!newValue) return;
+			errorMessage(value) {
+				if (!value) {
+					return;
+				}
+
+				if (errorMessageCountDown) {
+					return;
+				}
+
 				this.errorMessageDisplay = true;
-				this.errorMessageCountDown = setTimeout(() => {
+
+				errorMessageCountDown = setTimeout(() => {
 					this.errorMessageDisplay = false;
-					clearTimeout(this.errorMessageCountDown);
-					this.errorMessageCountDown = null;
-				}, 3000);
-			}
+					clearTimeout(errorMessageCountDown);
+					errorMessageCountDown = null;
+				}, 2500)
+			},
 		}
 	};
 </script>
