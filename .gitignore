@@ -1,4 +1,6 @@
-.unpackage
+/unpackage/
+/.idea/
 .vscode
 .DS_Store
 package-lock.json
+

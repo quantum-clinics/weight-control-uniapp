@@ -9,6 +9,16 @@ function userFetchTasks() {
   })
 }
 
+// 用户打卡
+function userCheckIn(data) {
+  return request({
+    data: {
+      method: "system.checkin",
+      data,
+    }
+  })
+}
+
 // 用户饮食打卡
 function userCheckinDiet(data) {
   return request({
@@ -31,6 +41,7 @@ function userCheckinSport(data) {
 
 export {
   userFetchTasks,
+  userCheckIn,
   userCheckinDiet,
   userCheckinSport,
 }

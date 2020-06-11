@@ -9,6 +9,17 @@ function userFetchTasks() {
   })
 }
 
+// 用户打卡
+function userCheckInTask(data) {
+  return request({
+    data: {
+      method: "groupSchedule.checkin",
+      data,
+    }
+  })
+}
+
 export {
   userFetchTasks,
+  userCheckInTask,
 }

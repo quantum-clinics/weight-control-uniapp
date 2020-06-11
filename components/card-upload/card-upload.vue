@@ -33,20 +33,32 @@
 <script>
 export default {
   props: {
-    images: {
-      type: Array
+    id: {
+      type: String,
     },
     recordFinish: {
       type: Boolean,
       value: false,
     },
   },
+  data() {
+    return {
+      images: [],
+    }
+  },
   methods: {
     handleUserChooseImage() {
       uni.chooseImage({
         count: 4 - this.images.length,
         success: (chooseImageRes) => {
-          this.$emit("imagesUpLoad", chooseImageRes);
+          this.images.push(...chooseImageRes.tempFilePaths)
+          this.$emit("valueChange", {
+            questionId: this.id,
+            answer: {
+              text: '',
+              photos: [...this.images],
+            },
+          })
         }
       });
     }

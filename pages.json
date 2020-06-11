@@ -5,6 +5,10 @@
 			"style": {}
 		},
 		{
+			"path": "pages/test/index",
+			"style": {}
+		},
+		{
 			"path": "pages/report/index",
 			"style": {}
 		},
@@ -17,19 +21,11 @@
 			"style": {}
 		},
 		{
-			"path": "pages/record/diet/index",
-			"style": {}
-		},
-		{
 			"path": "pages/record/index",
 			"style": {}
 		},
 		{
 			"path": "pages/guide/index",
-			"style": {}
-		},
-		{
-			"path": "pages/record/sport/index",
 			"style": {}
 		},
 		{

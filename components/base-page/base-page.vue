@@ -14,6 +14,7 @@
 		left: 0;
 		transition: 0.36s linear;
 		transform: translateY(-100%);
+		z-index: 99;
 	}
 	.error--active {
 		transform: translateY(0);
@@ -25,7 +26,8 @@
 
 <template>
 	<div class="base-page">
-		<div class="error" :class="{ 'error--active': errorMessageDisplay }">{{errorMessages}}</div>
+<!--		<div class="error" :class="{ 'error&#45;&#45;active': errorMessageDisplay }">{{errorMessages}}</div>-->
+		<div class="error" :class="{ 'error--active': !!errorMessage }">{{errorMessage}}</div>
 		<slot></slot>
 	</div>
 </template>
@@ -40,7 +42,7 @@
 		},
 		data() {
 			return {
-				errorMessages: "",
+				// errorMessages: "",
 				errorMessageDisplay: false
 			};
 		},

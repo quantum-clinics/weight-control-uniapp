@@ -261,6 +261,7 @@
 </template>
 
 <script>
+  import inject from '@/static/js/inject';
   import {
     userFetchRecomProducts,
     userExchangeProduct,
@@ -269,15 +270,16 @@
 
   const app = getApp();
 
-  export default {
+  export default inject({
     data() {
       return {
         recomProducts: [],
         tasks: [],
       };
     },
-    onLoad() {
-      app.$vm.init().then(this.fetchIndexDate);
+    async onLoad() {
+      await app.$vm.init();
+      await this.callAPI(this.fetchIndexDate())
     },
     methods: {
       async fetchIndexDate() {
@@ -304,7 +306,7 @@
         target.hasExchanged = result.success;
       }
     }
-  };
+  });
 </script>
 
 <style>

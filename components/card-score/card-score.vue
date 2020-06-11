@@ -40,9 +40,8 @@ const ENDPOINT =
   "https://qtclinics-resource.oss-cn-shenzhen.aliyuncs.com/sleep/icons";
 export default {
   props: {
-    score: {
-      type: Number,
-      value: 0
+    id: {
+      type: String,
     },
     recordFinish: {
       type: Boolean,
@@ -53,7 +52,8 @@ export default {
     return {
       activeLink: `${ENDPOINT}/rate-star.png`,
       hideLink: `${ENDPOINT}/unrate-star.png`,
-      scoreList: [1, 2, 3, 4, 5]
+      scoreList: [1, 2, 3, 4, 5],
+      score: 0,
     };
   },
   methods: {
@@ -62,7 +62,15 @@ export default {
         return;
       }
 
-      this.$emit("userUpdateScore", score);
+      this.score = score;
+
+      this.$emit("valueChange", {
+        questionId: this.id,
+        answer: {
+          text: score * 2,
+          photos: [],
+        },
+      })
     }
   }
 };

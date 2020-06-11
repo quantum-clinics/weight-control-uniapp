@@ -146,6 +146,7 @@
 
 <template>
   <base-page ref="basePage">
+    <!--  finish  -->
     <div class="header relative box flex flex-jc-center">
       <div class="header__intro flex flex-ai-center flex-jc-center">
         <span class="ft-semi-bold ft-fff ft-40">已提交，继续记录</span>
@@ -155,6 +156,8 @@
         >
       </div>
     </div>
+
+    <!--  表单  -->
     <div :class="[{'page--finish': recordFinish}, 'page box absolute']">
       <navigator
           url="/pages/guide/index"
@@ -168,15 +171,15 @@
         />
       </navigator>
 
-      <!-- 打卡 -->
       <div
         v-for="(item, index) in task.questions"
         :key="index"
       >
+        <!-- title -->
         <card-header
             :title="item.title"
-            :icon="item.options[0].preTitleIcon"
             :tip="item.tip"
+            :icon="safeIconSource(item)"
             :recordFinish="recordFinish"
         />
 
@@ -186,9 +189,9 @@
           :class="['box', recordFinish ? 'component-padding--finish' : 'component-padding']"
         >
           <card-upload
-              :images="userUploadImages"
               :recordFinish="recordFinish"
-              @imagesUpLoad="handleUserUpLoadImage"
+              :id="item.id"
+              @valueChange="handleValueChange"
           />
         </div>
 
@@ -200,6 +203,8 @@
           <card-score
               :score="score"
               :recordFinish="recordFinish"
+              :id="item.id"
+              @valueChange="handleValueChange"
               @userUpdateScore="handleUserUpdateScore"
           />
           <div
@@ -217,23 +222,35 @@
             :class="['box flex flex-ai-center flex-jc-between',  recordFinish ? 'component-padding--finish' : 'component-padding']"
         >
           <card-sport
-            :sportClass="item.options[0].subQuestions[0].options"
-            :intensityClass="item.options[0].subQuestions[1].options"
-            :sportIndex="sportIndex"
-            :intensityIndex="intensityIndex"
-            :recordFinish="recordFinish"
-            @userSelect="handleUserSelect"
+              :id="item.id"
+              :subQuestions="safeQuestionSource(item)"
+              :recordFinish="recordFinish"
+              @valueChange="handleValueChange"
           />
         </div>
 
-        <!-- 体重打卡内容 -->
+        <!-- 单选打卡内容 -->
         <div
             :class="['box', recordFinish ? 'component-padding--finish' : 'component-padding']"
-            v-if="item.type === '体重打卡'"
+            v-if="item.type === '单选'"
         >
-          <input
-            type="text"
-            @handleUserInput="handleUserInput"
+          <card-radio
+              :id="item.id"
+              :options="item.options"
+              :recordFinish="recordFinish"
+              @valueChange="handleValueChange"
+          />
+        </div>
+
+        <!-- 填空打卡 -->
+        <div
+            :class="['box', recordFinish ? 'component-padding--finish' : 'component-padding']"
+            v-if="item.type === '单行填空'"
+        >
+          <card-input
+              :id="item.id"
+              :recordFinish="recordFinish"
+              @valueChange="handleValueChange"
           />
         </div>
 
@@ -243,9 +260,9 @@
             v-if="item.type === '填空'"
         >
           <card-textarea
-              :userInputValue="userInputValue"
+              :id="item.id"
               :recordFinish="recordFinish"
-              @handleUserInput="handleUserInput"
+              @valueChange="handleValueChange"
           />
         </div>
       </div>
@@ -256,75 +273,47 @@
           @click="handleUserSubmit"
       >打卡</div>
 
-<!--      <div-->
-<!--          v-if="recordFinish"-->
-<!--          class="canvas__button flex flex-jc-center flex-ai-center"-->
-<!--      >-->
-<!--        <img-->
-<!--            class="canvas__icon"-->
-<!--            src-->
-<!--            alt-->
-<!--        >-->
-<!--        <span class="ft-medium ft-32 ft-fff">生成海报分享</span>-->
-<!--      </div>-->
-
-<!--      <div-->
-<!--          v-if="recordFinish"-->
-<!--          class="share__button flex flex-jc-center flex-ai-center"-->
-<!--      >-->
-<!--        <span class="share__span ft-medium ft-32 ft-fff">发送给支付宝好友</span>-->
-<!--      </div>-->
     </div>
   </base-page>
 </template>
 
 <script>
   import { uploadImage } from '@/static/apis/upload';
-  import { userCheckinDiet, userCheckinSport } from '@/static/apis/system';
+  import { userCheckInTask } from '@/static/apis/groupSchedule';
 
   const app = getApp();
-  const userServerImages = []; // 用户上传成功的图片地址存放
-
 
   export default {
     data() {
       return {
         id: '', // 页面类型
         task: {}, // 当前打卡数据
+        answers: {}, // 用户所有回答
+
+        userCanSubmit: false, // 用户是否可以提交按钮
         recordFinish: false, // 打卡是否已经完成
-        userUploadImages: [], // 用户上传的图片数组
-        score: 0, // 用户打分
-        userInputValue: '', // 用户输入分享内容
-        sportIndex: 1, // 运动分类
-        intensityIndex: 1, // 强度分类
-        userWristInput: '', // 用户腰围记录
-        userWeightInput: '', // 用户体重记录
       };
     },
     onLoad(options) {
       this.id = options.id;
       this.renderQuestion(options.id);
     },
-    computed: {
-      userCanSubmit() {
-        if (this.id === 'micha-meal') {
-          return !!this.userUploadImages.length && !!this.score && !!this.userInputValue
-        }
-
-        if (this.id === 'micha-wrist') {
-          return !!this.userWristInput
-        }
-
-        if (this.id === 'micha-weight') {
-          return !!this.userWeightInput
-        }
-
-        if (this.id === 'micha-exercise') {
-          return !!this.userInputValue
-        }
-      },
-    },
     methods: {
+      safeIconSource(source) {
+        if (!source.options.length || !source.options[0].preTitleIcon) {
+          // TODO return safe image src
+          return '';
+        }
+
+        return source.options[0].preTitleIcon;
+      },
+      safeQuestionSource(source) {
+        if (!source.options.length || !source.options[0].subQuestions) {
+          return [];
+        }
+
+        return source.options[0].subQuestions
+      },
       // 获取上一页数据
       getPrevPage() {
         const pages = getCurrentPages();
@@ -337,119 +326,104 @@
         this.task = tasks.find((item) => item.id === id);
         console.log(this.task);
       },
-      // 用户选择运动分类与强度
-      handleUserSelect(key, index) {
-        this[key] = index;
-      },
-      // 用户上传图片
-      handleUserUpLoadImage(e) {
-        this.userUploadImages.push(...e.tempFilePaths);
-      },
-      // 用户评分
-      handleUserUpdateScore(value) {
-        this.score = value;
-      },
-      // 用户输入分享内容
-      handleUserInput(value) {
-        if (value === this.userInputValue) {
-          return;
+      // 用户回答某答案
+      handleValueChange({ questionId, answer }) {
+        const {
+          task: {
+            questions,
+          },
+          answers,
+        } = this;
+
+        console.log('answer change ===>', questionId, answer);
+
+        let userCanSubmit = true;
+
+        for (let item of questions) {
+          const { id, isOptional } = item;
+          console.log('id ===> ', id);
+          console.log('questionId ===> ', questionId);
+
+          if (id === questionId) {
+            answers[questionId] = answer;
+          }
+
+          if (isOptional) {
+            continue;
+          }
+
+          if (answers[id] && (answers[id].text || (answers[id].photos && !!answers[id].photos.length))) {
+            continue;
+          }
+
+          userCanSubmit = false;
         }
 
-        this.userInputValue = value;
+        this.answers = {...answers};
+        this.userCanSubmit = userCanSubmit;
       },
       // 上传图片
-      async uploadImages() {
-        uni.showLoading({ title: '上传ing...' });
+      async uploadImages(images) {
+        uni.showLoading({ title: '图片上传ing...' });
+        const userServerImages = [];
 
-        for (let i = 0; i < this.userUploadImages.length; i++) {
-          userServerImages.push(await uploadImage(this.userUploadImages[i]));
+        for (let i = 0; i < images.length; i++) {
+          userServerImages.push(await uploadImage(images[i]));
         }
 
         uni.hideLoading();
-        uni.showToast({ title: 'Finish!' });
+        uni.showToast({ title: '图片上传成功!' });
+
+        return userServerImages;
       },
-      // 提交三餐打卡数据
-      async submitMealData() {
-        const {
-          userInputValue,
-          score,
-        } = this;
+      // 提交相关图片
+      async submitCheckInImage() {
+        const { answers } = this;
 
-        const data = {
-          "sq-breakfast-meal": {
-            "photos": userServerImages
-          },
-          "sq-score": score * 2,
-          "sq-meal-share": userInputValue,
-        };
+        for (let itemKey of Object.keys(answers)) {
+          const target = answers[itemKey];
 
-        // TODO replace params value
-        return await userCheckinDiet({
-          id: 'micha-lunch',
-          // _id: '5ec24280d211422b3d36f3c1',
-          photo: [],
-          value: JSON.stringify(data),
-        });
-      },
-      // 提交运动打卡数据
-      async submitSportData() {
-        const { sportIndex, intensityIndex, userInputValue } = this;
-        const sportClass = this.task.questions[0].options[0].subQuestions[0].options;
-        const intensityClass = this.task.questions[0].options[0].subQuestions[1].options;
-        const data = {
-          "exercise-checkin": {
-            "text": {
-              "category": sportClass[sportIndex],
-              "strength": `${intensityClass[intensityIndex].count}${intensityClass[intensityIndex].unit}`,
-              "photo": [],
-            },
-            "food-share": {
-              "text": userInputValue,
-              "photo": []
-            },
-          },
-        };
-
-        // TODO replace params value
-        return await userCheckinSport({
-          id: "sleep-exercise",
-          _id: "5edf3eb39358d44d4ea6abcb",
-          photo: [],
-          value: JSON.stringify(data),
-        })
-      },
-      // 提交体重打卡数据
-      async submitWristData() {
-
+          if (target.photos && target.photos.length) {
+            try {
+              target.photos = await this.uploadImages(target.photos);
+            } catch (e) {
+              uni.showModal({
+                title: '图片上传出错',
+                content: '图片上传出错:' + ((e.errMsg || e.message) || err),
+              })
+            }
+          }
+        }
       },
       // 提交相关数据
       async submitCheckInData() {
-        if (this.id === 'micha-meal') {
-          await this.uploadImages();
-          await this.submitMealData();
-        }
+        const {
+          task: {
+            task,
+          },
+          answers,
+        } = this;
 
-        if (this.id === 'micha-exercise') {
-          await this.submitSportData();
-        }
-
-        if (this.id === 'micha-wrist') {
-          await this.submitWristData();
-        }
-
-        if (this.id === 'micha-weight') {
-          await this.submitWeightData();
-        }
+        return await userCheckInTask({
+          task,
+          photo: [],
+          value: JSON.stringify(answers),
+        });
       },
       async handleUserSubmit() {
         if (!this.userCanSubmit) {
           return;
         }
 
+        await this.submitCheckInImage();
         await this.submitCheckInData();
 
-        uni.pageScrollTo({ scrollTop: 0 });
-        this.recordFinish = true;
+        uni.showToast({ title: '打卡成功!' });
+
+        uni.reLaunch({ url: '/pages/index/index '});
+
+        // uni.pageScrollTo({ scrollTop: 0 });
+        // this.recordFinish = true;
       }
     }
   };

@@ -1,6 +1,5 @@
 <style scoped>
-  .textarea-box {
-    min-height: 224rpx;
+  .input-box {
     background: rgba(255, 255, 255, 1);
     border-radius: 24rpx;
     border: 1rpx solid rgba(208, 217, 222, 1);
@@ -8,34 +7,32 @@
     padding: 32rpx;
   }
 
-  .textarea-box--finish {
+  .input-box--finish {
     box-shadow: none;
     background: rgba(245, 245, 245, 1);
     border: 1rpx solid rgba(245, 245, 245, 1);
     border-radius: 8rpx;
   }
 
-  .textarea {
+  .input {
     width: 100%;
-    height: 150rpx;
     display: block;
     padding: 0;
     line-height: 48rpx;
     color: rgba(0, 0, 0, .65);
   }
 
-  .textarea--finish {
+  .input--finish {
     background: rgba(245, 245, 245, 1);
   }
 </style>
 
 <template>
-  <div :class="['textarea-box box', { 'textarea-box--finish': recordFinish }]">
-    <textarea
-      :class="['textarea ft-34', {'textarea--finish': recordFinish}]"
-      :maxlength="-1"
-      :disabled="recordFinish"
-      @input="handleUserInput"
+  <div :class="['input-box box', { 'input-box--finish': recordFinish }]">
+    <input
+        :class="['input ft-34', {'input--finish': recordFinish}]"
+        :disabled="recordFinish"
+        @input="handleUserInput"
     />
   </div>
 </template>
@@ -61,7 +58,6 @@
           detail: { value },
         } = e;
 
-        // this.$emit('handleUserInput', value);
         this.$emit("valueChange", {
           questionId: this.id,
           answer: {
