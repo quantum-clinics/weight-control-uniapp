@@ -61,7 +61,6 @@
           detail: { value },
         } = e;
 
-        // this.$emit('handleUserInput', value);
         this.$emit("valueChange", {
           questionId: this.id,
           answer: {
@@ -70,6 +69,6 @@
           },
         })
       }
-    }
-  }
+    },
+  };
 </script>

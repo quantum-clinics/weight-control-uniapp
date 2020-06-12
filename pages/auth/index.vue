@@ -24,8 +24,11 @@
   import {
     userLoginByUniApp,
     getUserInfoByUniApp,
-    userLoginByMiChaServer
+    userLoginByMiChaServer,
+    userSystemInfoByUniApp,
   } from "@/static/apis/login";
+  import { userFetchLabels } from "@/static/apis/system";
+  import { setRequestHeader } from "@/static/js/base";
 
   const app = getApp();
 
@@ -55,7 +58,7 @@
 
         this.userLoginAfter(res);
       },
-      userLoginAfter(res) {
+      async userLoginAfter(res) {
         app.globalData.profile = res.data.result.profile;
 
         if (res.data.result.needBind) {
@@ -68,6 +71,16 @@
 
         app.$vm.loginResolve();
         app.$vm.loginResolve = null;
+
+        // 获取设备信息
+        app.globalData.systemInfo = await userSystemInfoByUniApp();
+
+        // 获取label信息
+        const labelsInfo = await userFetchLabels();
+        app.globalData.labelInfo = labelsInfo.data.result;
+
+        // 设置请求头
+        setRequestHeader("authorization", res.data.result.authorization);
 
         uni.redirectTo({
           url: "/pages/index/index"

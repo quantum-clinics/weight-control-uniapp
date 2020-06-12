@@ -6,21 +6,23 @@ import {
   getUserSettingByUniApp,
   userLoginByUniApp,
   getUserInfoByUniApp,
-  userLoginByMiChaServer
+  userLoginByMiChaServer,
+  userSystemInfoByUniApp,
 } from "@/static/apis/login";
-import { setRequestHeader } from "@/static/js/base";
+import { userFetchLabels } from "@/static/apis/system";
 
-function init() {}
+import { setRequestHeader } from "@/static/js/base";
 
 export default {
   globalData: {
-    openid: "",
-    provider: ""
+    provider: '',
+    profile: '',
+    system: '',
   },
   onLaunch() {
     this.login = new Promise(async (resolve, reject) => {
       try {
-        // 1, 获取当前平台信息: [weixin, qq, ios..]
+        // 1, 获取当前平台信息
         const { provider } = await userGetProviderInfo();
         this.globalData.provider = provider[0];
         setRequestHeader("QTC-Platform", provider[0]);
@@ -54,6 +56,7 @@ export default {
         );
 
         this.globalData.profile = miChaServerRes.data.result.profile;
+        this.globalData.todayFirstLogin = miChaServerRes.data.result.todayFirstLogin;
 
         // 7，判断当前用户是否需要绑定手机号码
         if (miChaServerRes.data.result.needBind) {
@@ -67,6 +70,13 @@ export default {
         }
 
         setRequestHeader("authorization", miChaServerRes.data.result.authorization);
+
+        // 8, 获取设备信息
+        this.globalData.systemInfo = await userSystemInfoByUniApp();
+
+        // 9, 获取label信息
+        const labelsInfo = await userFetchLabels();
+        this.globalData.labelInfo = labelsInfo.data.result;
 
         resolve();
       } catch (err) {

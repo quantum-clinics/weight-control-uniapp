@@ -45,29 +45,27 @@
 </template>
 
 <script>
-const ENDPOINT =
-  "https://qtclinics-resource.oss-cn-shenzhen.aliyuncs.com/sleep/icons";
-export default {
-  props: {
-    type: {
-      type: String,
+  export default {
+    props: {
+      type: {
+        type: String,
+      },
+      icon: {
+        type: String
+      },
+      title: {
+        type: String
+      },
+      titleFinish: {
+        type: String
+      },
+      tip: {
+        type: String
+      },
+      recordFinish: {
+        type: Boolean,
+        value: false,
+      }
     },
-    icon: {
-      type: String
-    },
-    title: {
-      type: String
-    },
-    titleFinish: {
-      type: String
-    },
-    tip: {
-      type: String
-    },
-    recordFinish: {
-      type: Boolean,
-      value: false,
-    }
-  },
-};
+  };
 </script>

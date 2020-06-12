@@ -125,5 +125,5 @@
         type: Object,
       },
     },
-  }
+  };
 </script>

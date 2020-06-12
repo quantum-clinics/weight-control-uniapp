@@ -5,6 +5,10 @@
 			"style": {}
 		},
 		{
+			"path": "pages/assessment/index",
+			"style": {}
+		},
+		{
 			"path": "pages/test/index",
 			"style": {}
 		},

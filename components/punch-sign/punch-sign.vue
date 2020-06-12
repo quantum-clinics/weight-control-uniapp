@@ -90,7 +90,7 @@
       <span
         class="item__status ft-semi-bold ft-24"
         :style="item.titleStyle"
-      >{{item.title}}</span>
+      >{{item.title || '未签'}}</span>
 
       <div class="item__images flex flex-column flex-jc-center flex-ai-center">
         <img
@@ -119,100 +119,11 @@
 </template>
 
 <script>
-  // TODO DELETE
-  const ENDPOINT = 'https://qtclinics-resource.oss-cn-shenzhen.aliyuncs.com/micha/icon';
-  const signList = [
-    {
-      title: '已签',
-      titleStyle: {
-        color: 'rgba(195, 202, 202, 1)'
-      },
-      imageSrc: `${ENDPOINT}/icon-punch-finish.png`,
-      imageStyle: {
-        width: '48rpx',
-        height: '48rpx',
-      },
-      award: 0,
-      intro: '',
-    }, {
-      title: '已签',
-      titleStyle: {
-        color: 'rgba(195, 202, 202, 1)'
-      },
-      imageSrc: `${ENDPOINT}/icon-punch-finish.png`,
-      imageStyle: {
-        width: '48rpx',
-        height: '48rpx',
-      },
-      award: 0,
-      intro: '',
-    }, {
-      title: '已签',
-      titleStyle: {
-        color: 'rgba(195, 202, 202, 1)'
-      },
-      imageSrc: `${ENDPOINT}/icon-punch-day-3.png`,
-      imageStyle: {
-        width: '76rpx',
-        height: '76rpx',
-      },
-      award: 50,
-      intro: '',
-    }, {
-      title: '已签',
-      titleStyle: {
-        color: 'rgba(195, 202, 202, 1)'
-      },
-      imageSrc: `${ENDPOINT}/icon-punch-finish.png`,
-      imageStyle: {
-        width: '48rpx',
-        height: '48rpx',
-      },
-      award: 0,
-      intro: '',
-    }, {
-      title: '已签',
-      titleStyle: {
-        color: 'rgba(195, 202, 202, 1)'
-      },
-      imageSrc: `${ENDPOINT}/icon-punch-day-5.png`,
-      imageStyle: {
-        width: '76rpx',
-        height: '76rpx',
-      },
-      award: 100,
-      intro: '',
-    }, {
-      title: '今日',
-      titleStyle: {
-        color: 'rgba(43, 48, 73, 1)'
-      },
-      imageSrc: `${ENDPOINT}/icon-punch-finish.png`,
-      imageStyle: {
-        width: '48rpx',
-        height: '48rpx',
-      },
-      award: 0,
-      intro: '',
-    }, {
-      title: '7',
-      titleStyle: {
-        color: 'rgba(43, 48, 73, 1)'
-      },
-      imageSrc: `${ENDPOINT}/icon-punch-day-7.png`,
-      imageStyle: {
-        width: '76rpx',
-        height: '76rpx',
-      },
-      award: 0,
-      intro: '连击翻倍',
-    },
-  ];
   export default {
-    data() {
-      return {
-        signList,
-      }
-    }
-  }
+    props: {
+      signList: {
+        type: Array
+      },
+    },
+  };
 </script>

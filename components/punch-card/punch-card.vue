@@ -133,5 +133,5 @@
         type: Array,
       },
     }
-  }
+  };
 </script>

@@ -103,83 +103,83 @@
 </template>
 
 <script>
-export default {
-  props: {
-    id: {
-      type: String,
+  export default {
+    props: {
+      id: {
+        type: String,
+      },
+      subQuestions: {
+        type: Array,
+      },
     },
-    subQuestions: {
-      type: Array,
-    },
-  },
-  data() {
-    return {
-      sportIndex: -1,
-      intensityIndex: -1,
-    }
-  },
-  computed: {
-    isSelected() {
-      return (this.sportIndex > 0) && (this.intensityIndex > 0)
-    },
-    sportClass() {
-      if (!this.subQuestions.length || !this.subQuestions[0].options.length) {
-        return [];
+    data() {
+      return {
+        sportIndex: -1,
+        intensityIndex: -1,
       }
-
-      return this.subQuestions[0].options;
     },
-    intensityClass() {
-      if (!this.subQuestions.length || !this.subQuestions[1].options.length) {
-        return [];
-      }
+    computed: {
+      isSelected() {
+        return (this.sportIndex > 0) && (this.intensityIndex > 0)
+      },
+      sportClass() {
+        if (!this.subQuestions.length || !this.subQuestions[0].options.length) {
+          return [];
+        }
 
-      return this.subQuestions[1].options;
+        return this.subQuestions[0].options;
+      },
+      intensityClass() {
+        if (!this.subQuestions.length || !this.subQuestions[1].options.length) {
+          return [];
+        }
+
+        return this.subQuestions[1].options;
+      },
+      category() {
+        if (!this.subQuestions.length) {
+          return 'category';
+        }
+
+        return this.subQuestions[0].id;
+      },
+      strength() {
+        if (!this.subQuestions.length || !this.subQuestions[1]) {
+          return 'category';
+        }
+
+        return this.subQuestions[1].id
+      }
     },
-    category() {
-      if (!this.subQuestions.length) {
-        return 'category';
-      }
+    watch: {
+      isSelected(value) {
+        if (!value) {
+          return;
+        }
 
-      return this.subQuestions[0].id;
-    },
-    strength() {
-      if (!this.subQuestions.length || !this.subQuestions[1]) {
-        return 'category';
-      }
+        const {
+          sportIndex,
+          sportClass,
+          intensityIndex,
+          intensityClass,
+        } = this;
 
-      return this.subQuestions[1].id
-    }
-  },
-  watch: {
-    isSelected(value) {
-      if (!value) {
-        return;
-      }
-
-      const {
-        sportIndex,
-        sportClass,
-        intensityIndex,
-        intensityClass,
-      } = this;
-
-      this.$emit("valueChange", {
-        questionId: this.id,
-        answer: {
-          text: {
-            [this.category]: sportClass[sportIndex].value,
-            [this.strength]: intensityClass[intensityIndex].value,
+        this.$emit("valueChange", {
+          questionId: this.id,
+          answer: {
+            text: {
+              [this.category]: sportClass[sportIndex].value,
+              [this.strength]: intensityClass[intensityIndex].value,
+            },
+            photos: [],
           },
-          photos: [],
-        },
-      })
+        })
+      }
+    },
+    methods: {
+      handleUserSelect(key, index) {
+        this[key] = index;
+      }
     }
-  },
-  methods: {
-    handleUserSelect(key, index) {
-      this[key] = index;
-    }
-  }
-};
+  };
 </script>

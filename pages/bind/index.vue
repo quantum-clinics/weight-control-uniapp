@@ -62,7 +62,12 @@
 </template>
 
 <script>
-import { userLoginByUniApp, userLoginByMiChaServer } from "@/static/apis/login";
+import {
+  userLoginByUniApp,
+  userLoginByMiChaServer,
+  userSystemInfoByUniApp,
+} from "@/static/apis/login";
+import { userFetchLabels } from "@/static/apis/system";
 import { userFetchCheckCode, userBindAccount } from "@/static/apis/user";
 import { setRequestHeader } from "@/static/js/base";
 import inject from '@/static/js/inject';
@@ -132,6 +137,14 @@ export default inject({
           )
       )
 
+      // 获取设备信息
+      app.globalData.systemInfo = await userSystemInfoByUniApp();
+
+      // 获取label信息
+      const labelsInfo = await userFetchLabels();
+      app.globalData.labelInfo = labelsInfo.data.result;
+
+      // 设置请求头
       setRequestHeader("authorization", miChaServerRes.result.authorization);
 
       app.$vm.loginResolve();

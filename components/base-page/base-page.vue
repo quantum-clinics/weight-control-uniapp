@@ -6,7 +6,7 @@
 
 	.error {
 		position: fixed;
-		width: 750rpx;
+		width: 100vw;
 		background: #e4393c;
 		color: #fff;
 		padding: 10rpx 20rpx;
@@ -16,17 +16,14 @@
 		transform: translateY(-100%);
 		z-index: 99;
 	}
+
 	.error--active {
 		transform: translateY(0);
-	}
-
-	.error--hide {
 	}
 </style>
 
 <template>
 	<div class="base-page">
-<!--		<div class="error" :class="{ 'error&#45;&#45;active': errorMessageDisplay }">{{errorMessages}}</div>-->
 		<div class="error" :class="{ 'error--active': errorMessageDisplay }">{{errorMessage}}</div>
 		<slot></slot>
 	</div>
@@ -64,6 +61,6 @@
 					errorMessageCountDown = null;
 				}, 2500)
 			},
-		}
+		},
 	};
 </script>

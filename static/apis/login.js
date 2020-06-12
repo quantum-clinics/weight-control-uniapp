@@ -69,8 +69,20 @@ function userInfoAuthSetting(authSetting, power) {
   return !!authSetting[config[provider][power]];
 }
 
+// 获取设备信息
+function userSystemInfoByUniApp() {
+  return new Promise((resolve, reject) => {
+    uni.getSystemInfo({
+      success: resolve,
+      fail: reject
+    })
+  })
+}
+
+
 export {
   userGetProviderInfo,
+  userSystemInfoByUniApp,
   setProvider,
   userLoginByUniApp,
   userInfoAuthSetting,

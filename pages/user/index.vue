@@ -150,10 +150,10 @@
     <div class="user__wrap box relative">
       <div class="user__container relative box">
         <div class="user__header flex flex-ai-center">
-          <img class="user__avatar" src/>
+          <img class="user__avatar" :src="avatarUrl"/>
           <div class="flex-fill">
-            <div class="ft-40 ft-semi-bold line-fill ft-title">何子木</div>
-            <div class="user__create ft-28 line-fill ft-semi-bold ft-desc">2020-03-01 加入</div>
+            <div class="ft-40 ft-semi-bold line-fill ft-title">{{nickName}}</div>
+            <div class="user__create ft-28 line-fill ft-semi-bold ft-desc">{{joinTime(createDate)}} 加入</div>
             <div class="user__target flex-ai-center box">
               <img class="target__icon" src/>
               <span class="ft-24 ft-semi-bold flex-fill target__span">减重目标</span>
@@ -186,6 +186,7 @@
           <div
               v-for="(item, index) in menus"
               :key="index"
+              v-if="item.url || index === 4"
               class="menu__item flex flex-ai-center"
               @click="handleItemClick(index)"
           >
@@ -200,7 +201,9 @@
 </template>
 
 <script>
+  import { formatTime } from '@/static/js/utils';
   import inject from '@/static/js/inject';
+  const app = getApp();
   const menus = [
     {
       icon: '',
@@ -227,17 +230,26 @@
     data() {
       return {
         menus,
+        nickName: '',
+        avatarUrl: '',
+        createDate: '',
       }
     },
     async onLoad() {
       await app.$vm.init();
-      // TODO 获取在globalData中存储的用户信息
+      const { nickName, avatarUrl, createDate } = app.globalData.profile;
+      this.nickName = nickName;
+      this.avatarUrl = avatarUrl;
+      this.createDate = createDate;
     },
     methods: {
+      joinTime(date) {
+        return formatTime(date);
+      },
       handleItemClick(index) {
         const target = this.menus[index];
 
-        if (!target.url) {
+        if (!target.url || !target.handle) {
           return;
         }
 

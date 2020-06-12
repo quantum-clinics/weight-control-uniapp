@@ -36,42 +36,41 @@
 </template>
 
 <script>
-const ENDPOINT =
-  "https://qtclinics-resource.oss-cn-shenzhen.aliyuncs.com/sleep/icons";
-export default {
-  props: {
-    id: {
-      type: String,
+  import { OSS } from '@/static/js/base';
+  export default {
+    props: {
+      id: {
+        type: String,
+      },
+      recordFinish: {
+        type: Boolean,
+        value: false,
+      },
     },
-    recordFinish: {
-      type: Boolean,
-      value: false,
+    data() {
+      return {
+        activeLink: `${OSS}/rate-star.png`,
+        hideLink: `${OSS}/unrate-star.png`,
+        scoreList: [1, 2, 3, 4, 5],
+        score: 0,
+      };
     },
-  },
-  data() {
-    return {
-      activeLink: `${ENDPOINT}/rate-star.png`,
-      hideLink: `${ENDPOINT}/unrate-star.png`,
-      scoreList: [1, 2, 3, 4, 5],
-      score: 0,
-    };
-  },
-  methods: {
-    handleUserUpdateScore(score) {
-      if (this.recordFinish) {
-        return;
+    methods: {
+      handleUserUpdateScore(score) {
+        if (this.recordFinish) {
+          return;
+        }
+
+        this.score = score;
+
+        this.$emit("valueChange", {
+          questionId: this.id,
+          answer: {
+            text: score * 2,
+            photos: [],
+          },
+        })
       }
-
-      this.score = score;
-
-      this.$emit("valueChange", {
-        questionId: this.id,
-        answer: {
-          text: score * 2,
-          photos: [],
-        },
-      })
     }
-  }
-};
+  };
 </script>
