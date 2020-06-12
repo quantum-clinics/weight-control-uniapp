@@ -19,29 +19,19 @@ function userCheckIn(data) {
   })
 }
 
-// 用户饮食打卡
-function userCheckinDiet(data) {
+// 获取展示文本
+function userFetchLabels(data) {
   return request({
     data: {
-      method: "system.checkin",
+      method: "system.getAppLabels",
       data,
     }
   })
 }
 
-// 用户运动打卡
-function userCheckinSport(data) {
-  return request({
-    data: {
-      method: "system.checkin",
-      data,
-    }
-  })
-}
 
 export {
   userFetchTasks,
   userCheckIn,
-  userCheckinDiet,
-  userCheckinSport,
+  userFetchLabels,
 }

@@ -145,7 +145,7 @@
 </style>
 
 <template>
-  <base-page ref="basePage">
+  <base-page :errorMessage="errorMessage">
     <!--  finish  -->
     <div class="header relative box flex flex-jc-center">
       <div class="header__intro flex flex-ai-center flex-jc-center">
@@ -159,17 +159,17 @@
 
     <!--  表单  -->
     <div :class="[{'page--finish': recordFinish}, 'page box absolute']">
-      <navigator
-          url="/pages/guide/index"
-          v-if="!recordFinish"
-          class="guide__box box absolute flex flex-ai-center"
-      >
-        <span class="guide__span ft-26 ft-medium">任务指南</span>
-        <img
-            class="guide__icon"
-            src="https://qtclinics-resource.oss-cn-shenzhen.aliyuncs.com/sleep/icons/left-one.png"
-        />
-      </navigator>
+<!--      <navigator-->
+<!--          url="/pages/guide/index"-->
+<!--          v-if="!recordFinish"-->
+<!--          class="guide__box box absolute flex flex-ai-center"-->
+<!--      >-->
+<!--        <span class="guide__span ft-26 ft-medium">任务指南</span>-->
+<!--        <img-->
+<!--            class="guide__icon"-->
+<!--            src="https://qtclinics-resource.oss-cn-shenzhen.aliyuncs.com/sleep/icons/left-one.png"-->
+<!--        />-->
+<!--      </navigator>-->
 
       <div
         v-for="(item, index) in task.questions"
@@ -280,10 +280,11 @@
 <script>
   import { uploadImage } from '@/static/apis/upload';
   import { userCheckInTask } from '@/static/apis/groupSchedule';
+  import inject from "@/static/js/inject";
 
   const app = getApp();
 
-  export default {
+  export default inject({
     data() {
       return {
         id: '', // 页面类型
@@ -324,6 +325,7 @@
       renderQuestion(id) {
         const { tasks } = this.getPrevPage();
         this.task = tasks.find((item) => item.id === id);
+        this.answers = {};
         console.log(this.task);
       },
       // 用户回答某答案
@@ -341,8 +343,6 @@
 
         for (let item of questions) {
           const { id, isOptional } = item;
-          console.log('id ===> ', id);
-          console.log('questionId ===> ', questionId);
 
           if (id === questionId) {
             answers[questionId] = answer;
@@ -404,11 +404,13 @@
           answers,
         } = this;
 
-        return await userCheckInTask({
-          task,
-          photo: [],
-          value: JSON.stringify(answers),
-        });
+        return await this.callAPI(
+          userCheckInTask({
+            task,
+            photo: [],
+            value: JSON.stringify(answers),
+          })
+        );
       },
       async handleUserSubmit() {
         if (!this.userCanSubmit) {
@@ -426,7 +428,7 @@
         // this.recordFinish = true;
       }
     }
-  };
+  });
 </script>
 
 <style>

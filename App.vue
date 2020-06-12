@@ -20,24 +20,17 @@ export default {
   onLaunch() {
     this.login = new Promise(async (resolve, reject) => {
       try {
-        // 获取当前服务端: [weixin, qq, ios..]
+        // 1, 获取当前平台信息: [weixin, qq, ios..]
         const { provider } = await userGetProviderInfo();
         this.globalData.provider = provider[0];
         setRequestHeader("QTC-Platform", provider[0]);
         setProvider(provider[0]);
-        console.log("1, 获取当前平台信息", provider[0]);
 
-        // 获取授权设置
+        // 2, 获取当前平台授权设置
         const { authSetting } = await getUserSettingByUniApp();
-        console.log("2, 获取当前平台授权设置", authSetting);
 
-        // 当前用户是否授权
-        const userInfoAuth = userInfoAuthSetting(authSetting, "userInfo");
-
-        console.log("3, 当前用户是否授权", userInfoAuth);
-
-        // 当前用户未授权
-        if (!userInfoAuth) {
+        // 3, 当前用户未授权
+        if (!userInfoAuthSetting(authSetting, "userInfo")) {
           this.loginResolve = resolve;
 
           uni.redirectTo({
@@ -47,25 +40,22 @@ export default {
           return;
         }
 
-        // 获取用户平台code
+        // 4, 当前用户已授权, 获取当前平台授权code
         const { code } = await userLoginByUniApp();
-        console.log("4, 获取当前授权code", code);
 
-        // 获取用户平台数据
+        // 5, 获取当前平台的用户信息
         const platformInfo = await getUserInfoByUniApp();
         this.globalData.userInfo = platformInfo.userInfo;
-        console.log("5, 获取当前平台用户信息", platformInfo);
 
-        // 获取用户米茶数据
+        // 6, 登陆米茶服务器, 获取用户米茶数据
         const miChaServerRes = await userLoginByMiChaServer(
           code,
           platformInfo.userInfo
         );
-        console.log("6, 登陆米茶服务器", miChaServerRes);
 
-        this.globalData.openid = miChaServerRes.data.result.openid;
+        this.globalData.profile = miChaServerRes.data.result.profile;
 
-        // 判断当前用户是否需要绑定手机号码
+        // 7，判断当前用户是否需要绑定手机号码
         if (miChaServerRes.data.result.needBind) {
           this.loginResolve = resolve;
 

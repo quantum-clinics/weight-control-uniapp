@@ -1,19 +1,18 @@
 export default function (origin) {
+  const originData = origin.data ? { ...origin.data() } : null;
+  const originMethods = origin.methods ? { ...origin.methods } : null;
   return {
     ...origin,
     data() {
       return {
-        ...origin.data(),
+        ...originData,
         errorMessage: '',
       }
     },
     methods: {
-      ...origin.methods,
+      ...originMethods,
       callAPI(promise) {
-        promise
-            .then((response) => {
-              return response;
-            })
+        return promise
             .catch((err) => {
               this.errorMessage = err.message || '请稍后再试';
             })

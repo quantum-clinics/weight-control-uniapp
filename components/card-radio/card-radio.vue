@@ -63,30 +63,22 @@
         optionsIndex: -1,
       }
     },
-    mounted() {
-      console.log(this.options);
-    },
     methods: {
       handleUserSelect(index) {
         const {
-          optionsIndex,
           options,
           id,
         } = this;
 
-        this.optionsIndex = index;
-
-        if (optionsIndex < 0) {
-          return;
-        }
-
         this.$emit("valueChange", {
           questionId: id,
           answer: {
-            text: options[optionsIndex].value,
+            text: options[index].value,
             photos: [],
           },
-        })
+        });
+
+        this.optionsIndex = index;
       }
     }
   };

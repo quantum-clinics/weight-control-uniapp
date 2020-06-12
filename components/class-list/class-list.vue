@@ -121,7 +121,7 @@
     <div class="class__list box">
       <div
         class="class__item"
-        v-for="(item, index) in data"
+        v-for="(item, index) in list"
         :key="index"
         @click="handleUserCheckProduct(item, index)"
       >
@@ -172,9 +172,12 @@ export default {
       type: Boolean,
       value: false
     },
-    data: {
+    list: {
       type: Array,
     }
+  },
+  mounted() {
+    console.log(this.list);
   },
   methods: {
     lastedUpdateTime(value) {
@@ -188,9 +191,6 @@ export default {
 
       this.$emit('userExchangeProduct', index);
     },
-  },
-  computed: {
-
   },
 };
 </script>

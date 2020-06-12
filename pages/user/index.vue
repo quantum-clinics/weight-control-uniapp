@@ -146,58 +146,61 @@
 </style>
 
 <template>
-  <div class="user__wrap box relative">
-    <div class="user__container relative box">
-      <div class="user__header flex flex-ai-center">
-        <img class="user__avatar" src/>
-        <div class="flex-fill">
-          <div class="ft-40 ft-semi-bold line-fill ft-title">何子木</div>
-          <div class="user__create ft-28 line-fill ft-semi-bold ft-desc">2020-03-01 加入</div>
-          <div class="user__target flex-ai-center box">
-            <img class="target__icon" src/>
-            <span class="ft-24 ft-semi-bold flex-fill target__span">减重目标</span>
-            <span class="ft-24 ft-semi-bold ft-fff">4公斤</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="user__plays">
-        <div class="play__picc flex flex-ai-center">
-          <img class="play__image" src />
+  <base-page :errorMessage="errorMessage">
+    <div class="user__wrap box relative">
+      <div class="user__container relative box">
+        <div class="user__header flex flex-ai-center">
+          <img class="user__avatar" src/>
           <div class="flex-fill">
-            <div class="span__picc ft-30 ft-medium">现在加入好医保2020新生计划</div>
-            <div class="span__picc ft-30 ft-medium">获7天免费体验机会</div>
+            <div class="ft-40 ft-semi-bold line-fill ft-title">何子木</div>
+            <div class="user__create ft-28 line-fill ft-semi-bold ft-desc">2020-03-01 加入</div>
+            <div class="user__target flex-ai-center box">
+              <img class="target__icon" src/>
+              <span class="ft-24 ft-semi-bold flex-fill target__span">减重目标</span>
+              <span class="ft-24 ft-semi-bold ft-fff">4公斤</span>
+            </div>
           </div>
-          <img class="play__icon" src />
         </div>
 
-        <div class="play__alipay flex flex-ai-center">
-          <img class="play__image" src />
-          <div class="flex-fill">
-            <div class="span__alipay ft-30 ft-medium ft-fff">升级成为正式会员</div>
-            <div class="span__alipay ft-30 ft-medium ft-fff">获21天完整计划+3次专业咨询</div>
+        <div class="user__plays">
+          <div class="play__picc flex flex-ai-center">
+            <img class="play__image" src />
+            <div class="flex-fill">
+              <div class="span__picc ft-30 ft-medium">现在加入好医保2020新生计划</div>
+              <div class="span__picc ft-30 ft-medium">获7天免费体验机会</div>
+            </div>
+            <img class="play__icon" src />
           </div>
-          <img class="play__icon" src />
-        </div>
-      </div>
 
-      <div class="user__menus">
-        <div
-          v-for="(item, index) in menus"
-          :key="index"
-          class="menu__item flex flex-ai-center"
-          @click="handleItemClick(index)"
-        >
-          <img class="menu__icon" :src="item.icon" />
-          <span class="menu__span flex-fill ft-32">{{item.span}}</span>
-          <img class="icon" src />
+          <div class="play__alipay flex flex-ai-center">
+            <img class="play__image" src />
+            <div class="flex-fill">
+              <div class="span__alipay ft-30 ft-medium ft-fff">升级成为正式会员</div>
+              <div class="span__alipay ft-30 ft-medium ft-fff">获21天完整计划+3次专业咨询</div>
+            </div>
+            <img class="play__icon" src />
+          </div>
+        </div>
+
+        <div class="user__menus">
+          <div
+              v-for="(item, index) in menus"
+              :key="index"
+              class="menu__item flex flex-ai-center"
+              @click="handleItemClick(index)"
+          >
+            <img class="menu__icon" :src="item.icon" />
+            <span class="menu__span flex-fill ft-32">{{item.span}}</span>
+            <img class="icon" src />
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </base-page>
 </template>
 
 <script>
+  import inject from '@/static/js/inject';
   const menus = [
     {
       icon: '',
@@ -220,11 +223,15 @@
       span: '关于米茶',
     },
   ];
-  export default {
+  export default inject({
     data() {
       return {
         menus,
       }
+    },
+    async onLoad() {
+      await app.$vm.init();
+      // TODO 获取在globalData中存储的用户信息
     },
     methods: {
       handleItemClick(index) {
@@ -237,5 +244,5 @@
         uni.navigateTo({ url: target.url });
       }
     },
-  }
+  });
 </script>

@@ -35,7 +35,7 @@
 </style>
 
 <template>
-  <div>
+  <base-page :errorMessage="errorMessage">
     <div class="input__box border box flex flex-ai-center">
       <input
         class="input flex-1 height-fill"
@@ -58,17 +58,18 @@
       >{{fetchQrCodeButtonDisable ? countDown : '获取验证码'}}</div>
     </div>
     <div class="bind border" @click="handleUserBindAccount">绑定账户</div>
-  </div>
+  </base-page>
 </template>
 
 <script>
 import { userLoginByUniApp, userLoginByMiChaServer } from "@/static/apis/login";
 import { userFetchCheckCode, userBindAccount } from "@/static/apis/user";
 import { setRequestHeader } from "@/static/js/base";
+import inject from '@/static/js/inject';
 
 const app = getApp();
 
-export default {
+export default inject({
   data() {
     return {
       fetchQrCodeButtonDisable: false,
@@ -77,9 +78,13 @@ export default {
       userVerCode: ""
     };
   },
+  onLoad() {
+    // TODO 平台差异化兼容
+    this.id = app.globalData.profile.aliUserId;
+  },
   methods: {
     // 用户获取验证码
-    handleUserFetchCheckCode() {
+    async handleUserFetchCheckCode() {
       if (this.fetchQrCodeButtonDisable) return;
 
       if (!this.userPhoneNumber) {
@@ -90,38 +95,42 @@ export default {
         return;
       }
 
-      userFetchCheckCode(app.globalData.openid, this.userPhoneNumber).then(
-        res => {
-          this.fetchQrCodeButtonDisable = true;
-          this.countDownInt = setInterval(() => {
-            if (!this.countDown) {
-              this.countDown = 60;
-              this.fetchQrCodeButtonDisable = false;
-              clearInterval(this.countDownInt);
-              return;
-            }
-            this.countDown -= 1;
-          }, 1000);
+      await this.callAPI(userFetchCheckCode(this.id, this.userPhoneNumber));
+
+      this.fetchQrCodeButtonDisable = true;
+      this.countDownInt = setInterval(() => {
+        if (!this.countDown) {
+          this.countDown = 60;
+          this.fetchQrCodeButtonDisable = false;
+          clearInterval(this.countDownInt);
+          return;
         }
-      );
+        this.countDown -= 1;
+      }, 1000);
     },
     // 用户绑定账号
-    handleUserBindAccount() {
-      userBindAccount(
-        app.globalData.openid,
-        this.userPhoneNumber,
-        this.userVerCode
-      ).then(this.userAgainLogin);
+    async handleUserBindAccount() {
+      await this.callAPI(
+        userBindAccount(
+          this.id,
+          this.userPhoneNumber,
+          this.userVerCode
+        )
+      );
+
+      this.userAgainLogin();
     },
     // 用户再次发起登陆
     async userAgainLogin() {
       // 获取当前用户登陆code
       const { code } = await userLoginByUniApp();
 
-      const miChaServerRes = await userLoginByMiChaServer(
-        code,
-        app.globalData.userInfo
-      );
+      const miChaServerRes = await this.callAPI(
+          userLoginByMiChaServer(
+              code,
+              app.globalData.userInfo
+          )
+      )
 
       setRequestHeader("authorization", miChaServerRes.result.authorization);
 
@@ -131,5 +140,5 @@ export default {
       uni.redirectTo({ url: "/pages/index/index" });
     }
   }
-};
+});
 </script>

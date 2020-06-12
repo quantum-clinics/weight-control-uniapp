@@ -1,83 +1,78 @@
 <template>
-  <div>
+  <base-page :errorMessage="errorMessage">
     <!-- 微信登陆 -->
     <button
-      class="testbutton"
-      hover-class="none"
-      open-type="getUserInfo"
-      @getuserinfo="handleGetUserInfoByWx"
-      withCredentials="true"
+        hover-class="none"
+        open-type="getUserInfo"
+        @getuserinfo="handleGetUserInfoByWx"
+        withCredentials="true"
     >授权</button>
 
     <!-- 支付宝登陆 -->
     <button
-      type="primary"
-      open-type="getAuthorize"
-      scope="userInfo"
-      @getAuthorize="handleGetUserInfoByAliPay"
+        type="primary"
+        open-type="getAuthorize"
+        scope="userInfo"
+        @getAuthorize="handleGetUserInfoByAliPay"
     >授权</button>
-  </div>
+  </base-page>
 </template>
 
 <script>
-import {
-  userLoginByUniApp,
-  getUserInfoByUniApp,
-  userLoginByMiChaServer
-} from "@/static/apis/login";
+  import inject from '@/static/js/inject';
 
-const app = getApp();
+  import {
+    userLoginByUniApp,
+    getUserInfoByUniApp,
+    userLoginByMiChaServer
+  } from "@/static/apis/login";
 
-export default {
-  data() {
-    return {};
-  },
-  methods: {
-    async handleGetUserInfoByWx(e) {
-      if (!e.detail.userInfo) return;
+  const app = getApp();
 
-      app.globalData.userInfo = e.detail.userInfo;
+  export default inject({
+    methods: {
+      async handleGetUserInfoByWx(e) {
+        if (!e.detail.userInfo) return;
 
-      // 获取当前用户登陆code
-      const { code } = await userLoginByUniApp();
+        app.globalData.userInfo = e.detail.userInfo;
 
-      this.userLoginAfter(
-        await userLoginByMiChaServer(code, e.detail.userInfo)
-      );
-    },
-    async handleGetUserInfoByAliPay() {
-      // 获取当前用户登陆code
-      const { code } = await userLoginByUniApp();
+        // 获取当前用户登陆code
+        const { code } = await userLoginByUniApp();
 
-      const { userInfo } = await getUserInfoByUniApp();
+        const res = await userLoginByMiChaServer(code, e.detail.userInfo);
 
-      app.globalData.userInfo = userInfo;
+        this.userLoginAfter(res);
+      },
+      async handleGetUserInfoByAliPay() {
+        // 获取当前用户登陆code
+        const { code } = await userLoginByUniApp();
 
-      this.userLoginAfter(await userLoginByMiChaServer(code, userInfo));
-    },
-    userLoginAfter(res) {
-      console.log(1, res);
+        const { userInfo } = await getUserInfoByUniApp();
 
-      app.globalData.openid = res.result.openid;
+        app.globalData.userInfo = userInfo;
 
-      if (res.result.needBind) {
+        const res = await this.callAPI(userLoginByMiChaServer(code, userInfo));
+
+        this.userLoginAfter(res);
+      },
+      userLoginAfter(res) {
+        app.globalData.profile = res.data.result.profile;
+
+        if (res.data.result.needBind) {
+          uni.redirectTo({
+            url: '/pages/bind/index'
+          });
+
+          return;
+        }
+
+        app.$vm.loginResolve();
+        app.$vm.loginResolve = null;
+
         uni.redirectTo({
-          url: "/pages/bind/index"
+          url: "/pages/index/index"
         });
-
-        return;
       }
-
-      app.$vm.loginResolve();
-      app.$vm.loginResolve = null;
-
-      uni.redirectTo({
-        url: "/pages/index/index"
-      });
     }
-  }
-};
+  });
 </script>
-
-<style>
-</style>

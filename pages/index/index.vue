@@ -182,7 +182,7 @@
 </style>
 
 <template>
-  <base-page :errorMessage="errorMessage" ref="basePage" class="page">
+  <base-page :errorMessage="errorMessage">
     <div class="header box relative">
       <div class="header__currency flex flex-ai-center">
         <img
@@ -198,10 +198,10 @@
           <span class="hint__title ft-semi-bold ft-20 line-fill">昨日奖励</span>
           <span class="ft-fff ft-medium ft-24 line-fill">630</span>
         </div>
-        <div class="info__hint flex flex-ai-center flex-jc-center">
-          <span class="hint__title ft-semi-bold ft-20 line-fill">领先同龄</span>
-          <span class="ft-fff ft-medium ft-24 line-fill">92%</span>
-        </div>
+<!--        <div class="info__hint flex flex-ai-center flex-jc-center">-->
+<!--          <span class="hint__title ft-semi-bold ft-20 line-fill">领先同龄</span>-->
+<!--          <span class="ft-fff ft-medium ft-24 line-fill">92%</span>-->
+<!--        </div>-->
       </div>
 
       <div class="header__card flex flex-column flex-ai-center">
@@ -237,24 +237,24 @@
         src="https://qtclinics-resource.oss-cn-shenzhen.aliyuncs.com/micha/icon/image-call.png"
       />
 
-      <div class="banner__intro flex-fill">
-        <div class="banner__title ft-fff ft-40 ft-bold line-fill">我要呼叫玄米老师</div>
-        <div class="banner__info flex flex-ai-center">
-          <span class="info__spc ft-medium ft-32 line-fill">专家陪你一起瘦</span>
-          <div class="info__price box flex flex-ai-center">
-            <span class="price__span ft-semi-bold ft-24 line-fill">需120</span>
-            <img
-              class="price__icon"
-              src="https://qtclinics-resource.oss-cn-shenzhen.aliyuncs.com/micha/healthmarket/icon-currency.png"
-            />
-          </div>
-        </div>
-      </div>
+<!--      <div class="banner__intro flex-fill">-->
+<!--        <div class="banner__title ft-fff ft-40 ft-bold line-fill">我要呼叫玄米老师</div>-->
+<!--        <div class="banner__info flex flex-ai-center">-->
+<!--          <span class="info__spc ft-medium ft-32 line-fill">专家陪你一起瘦</span>-->
+<!--          <div class="info__price box flex flex-ai-center">-->
+<!--            <span class="price__span ft-semi-bold ft-24 line-fill">需120</span>-->
+<!--            <img-->
+<!--              class="price__icon"-->
+<!--              src="https://qtclinics-resource.oss-cn-shenzhen.aliyuncs.com/micha/healthmarket/icon-currency.png"-->
+<!--            />-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
     </div>
 
     <class-list
       header
-      :data="recomProducts"
+      :list="recomProducts"
       @userExchangeProduct="handleUserExchangeProduct"
     />
   </base-page>
@@ -279,13 +279,13 @@
     },
     async onLoad() {
       await app.$vm.init();
-      await this.callAPI(this.fetchIndexDate())
+      await this.fetchIndexDate();
     },
     methods: {
       async fetchIndexDate() {
         const [recomProducts, tasks] = await Promise.all([
-          userFetchRecomProducts(),
-          userFetchTasks(),
+          this.callAPI(userFetchRecomProducts()),
+          this.callAPI(userFetchTasks()),
         ]);
         this.recomProducts = recomProducts.data.result.list;
         this.tasks = tasks.data.result.tasks;
@@ -297,9 +297,8 @@
         uni.showLoading({ title: '加载中..' });
 
         const target = this.recomProducts[index];
-        const result = await userExchangeProduct(target._id);
+        const result = await this.callAPI(userExchangeProduct(target._id));
 
-        // TODO code !== 1??
         uni.hideLoading();
         target.hasExchanged = result.success;
       }

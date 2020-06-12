@@ -1,9 +1,8 @@
 <template>
-  <base-page
-    :errorMessage="errorMessage"
-  >
-    hello, Test
-  </base-page>
+  <button
+      type="default"
+      open-type="getPhoneNumber"
+      @getphonenumber="decryptPhoneNumber">获取手机号</button>
 </template>
 <script>
   import inject from '@/static/js/inject';
@@ -17,9 +16,10 @@
         name: 'test',
       }
     },
-    async onLoad() {
-      await app.$vm.init();
-      await this.callAPI(userCheckInTask({ data: {}}));
+    methods: {
+      decryptPhoneNumber(e) {
+        console.log('e ===>', JSON.stringify(e));
+      },
     },
   })
 </script>

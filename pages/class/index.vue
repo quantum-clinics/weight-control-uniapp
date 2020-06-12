@@ -48,26 +48,28 @@
 </style>
 
 <template>
-  <div
-    class="class-page box"
-    v-if="pageDisplay"
-  >
-    <div class="class box relative">
-      <div class="class__header relative">
-        <div class="header__title ft-40 ft-semi-bold ft-fff">100天，让您成为“自来瘦”专家</div>
-        <div class="header__spc ft-26">本课程由已经为20000亚洲人成功减脂20吨的国内先进科学减脂团队米茶计划，以梅奥中心基本营养方案</div>
-        <div class="line-fill ft-semi-bold ft-fff">共 80 课</div>
-      </div>
+  <base-page :errorMessage="errorMessage">
+    <div
+      class="class-page box"
+      v-if="pageDisplay"
+    >
+      <div class="class box relative">
+        <div class="class__header relative">
+          <div class="header__title ft-40 ft-semi-bold ft-fff">100天，让您成为“自来瘦”专家</div>
+          <div class="header__spc ft-26">本课程由已经为20000亚洲人成功减脂20吨的国内先进科学减脂团队米茶计划，以梅奥中心基本营养方案</div>
+          <div class="line-fill ft-semi-bold ft-fff">共 80 课</div>
+        </div>
 
-      <div class="class__body relative">
-        <class-list
-          statusLock
-          :data="allProduct"
-          @userExchangeProduct="handleUserExchangeProduct"
-        />
+        <div class="class__body relative">
+          <class-list
+            statusLock
+            :list="allProduct"
+            @userExchangeProduct="handleUserExchangeProduct"
+          />
+        </div>
       </div>
     </div>
-  </div>
+  </base-page>
 </template>
 
 <script>
@@ -75,6 +77,7 @@
     userFetchAllProduct,
     userExchangeProduct,
   } from '@/static/apis/bonusProduct';
+  import inject from '@/static/js/inject';
 
   const pages = {
     page: 0,
@@ -85,27 +88,33 @@
 
   const app = getApp();
 
-  export default {
+  export default inject({
     data() {
       return {
         allProduct: [],
         pageDisplay: false,
       }
     },
-    onLoad() {
-      app.$vm.init().then(this.fetchClassDate);
+    async onLoad() {
+      await app.$vm.init();
+      await this.fetchClassDate()
     },
     methods: {
       async fetchClassDate() {
         uni.showLoading();
         pages.loading = true;
         const { page, pageSize } = pages;
-        const allProduct = await userFetchAllProduct(page, pageSize);
+        const allProduct = await this.callAPI(userFetchAllProduct(page, pageSize));
 
         if (!this.pageDisplay) {
           this.pageDisplay = true;
         }
-        this.allProduct.push(...allProduct.data.result.list);
+
+        if (!this.allProduct.length) {
+          this.allProduct = [...allProduct.data.result.list];
+        } else {
+          this.allProduct.push(...allProduct.data.result.list)
+        }
 
         pages.loading = false;
         pages.page += 1;
@@ -117,7 +126,7 @@
         uni.showLoading({ title: '加载中..' });
 
         const target = this.allProduct[index];
-        const result = await userExchangeProduct(target._id);
+        const result = await this.callAPI(userExchangeProduct(target._id));
         target.hasExchanged = result.data.result.success;
 
         uni.hideLoading();
@@ -131,5 +140,5 @@
 
       this.fetchClassDate();
     },
-  }
+  });
 </script>

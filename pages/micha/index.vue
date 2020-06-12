@@ -16,32 +16,35 @@
 </style>
 
 <template>
-  <div :class="['micha', pageDisplay ? 'micha--active' : 'micha--hide']">
-    <div class="talks" ref="talks">
-      <div
-        class="talk__item"
-        v-for="(item, index) in talksData"
-        :key="index"
-      >
-        <talk-micha
-          v-if="item.type === 1"
-          :talker="item"
-        />
+  <base-page :errorMessage="errorMessage">
+    <div :class="['micha', pageDisplay ? 'micha--active' : 'micha--hide']">
+      <div class="talks" ref="talks">
+        <div
+            class="talk__item"
+            v-for="(item, index) in talksData"
+            :key="index"
+        >
+          <talk-micha
+              v-if="item.type === 1"
+              :talker="item"
+          />
 
-        <talk-user
-            v-if="item.type === 2"
-            :talker="item"
-        />
+          <talk-user
+              v-if="item.type === 2"
+              :talker="item"
+          />
+        </div>
       </div>
+      <micha-footer
+          :userInputValue="userInputValue"
+          @userInput="handleUserInput"
+      />
     </div>
-    <micha-footer
-      :userInputValue="userInputValue"
-      @userInput="handleUserInput"
-    />
-  </div>
+  </base-page>
 </template>
 
 <script>
+  import inject from '@/static/js/inject';
   const list = [
     {
       type: 1,
@@ -82,16 +85,17 @@
   ];
   const app = getApp();
 
-  export default {
+  export default inject({
     data() {
       return {
         talksData: [],
-        userInputValue: 'hello kko', // ? 可以删除
+        userInputValue: 'hello micha',
         pageDisplay: false,
       }
     },
-    onLoad() {
-      app.$vm.init().then(this.fetchTalkDate);
+    async onLoad() {
+      await app.$vm.init();
+      this.fetchTalkDate()
     },
     watch: {
       talksData() {
@@ -124,5 +128,5 @@
 
       },
     }
-  }
+  });
 </script>
