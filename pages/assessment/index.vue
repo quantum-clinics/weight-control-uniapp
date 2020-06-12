@@ -117,11 +117,12 @@
               </div>
             </div>
             <div class="item__body flex flex-ai-center">
-              <div class="item__choose">1</div>
-              <div class="item__choose">2</div>
-              <div class="item__choose">3</div>
-              <div class="item__choose">4</div>
-              <div class="item__choose">5</div>
+              <div
+                v-for="(subItem, subIndex) in chooseList"
+                :key="subIndex"
+                :class="['item__choose', { 'item__choose--active': subItem === item.score }]"
+                @click="handleUserSelect(subItem, index)"
+              >{{subItem}}</div>
             </div>
           </div>
 
@@ -140,8 +141,26 @@
   export default inject({
     data() {
       return {
-        questions: [1, 2, 3, 4, 5]
+        chooseList: [1, 2, 3, 4, 5],
+        questions: [],
       }
     },
+    onLoad() {
+      this.questions = [
+        {
+          title: '元气满满',
+          score: -1,
+        },
+        {
+          title: '饱腹畅快',
+          score: -1,
+        },
+      ];
+    },
+    methods: {
+      handleUserSelect(value, index) {
+        this.questions[index].score = value;
+      }
+    }
   });
 </script>

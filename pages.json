@@ -55,7 +55,7 @@
 		"color": "#606876",
 		"selectedColor": "#188CFC",
 		"borderStyle": "black",
-		"backgroundColor": "rgba(249,249,249,0.94)",
+		"backgroundColor": "#f8f8f8",
 		"list": [
 			{
 				"pagePath": "pages/index/index",
