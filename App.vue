@@ -7,7 +7,7 @@ import {
   userLoginByUniApp,
   getUserInfoByUniApp,
   userLoginByMiChaServer,
-  userSystemInfoByUniApp,
+  userSystemInfoByUniApp
 } from "@/static/apis/login";
 import { userFetchLabels } from "@/static/apis/system";
 
@@ -15,79 +15,24 @@ import { setRequestHeader } from "@/static/js/base";
 
 export default {
   globalData: {
-    provider: '',
-    profile: '',
-    system: '',
+    title: "米茶计划",
+    SERVER_DOMAIN: "http://localhost:9900/",
+    API_GATEWAY: "http://localhost:9900/api",
+    // SERVER_DOMAIN: 'https://stg-weight-control.qtclinics.com/api',
+    authorization: "",
+    platform: "",
+    OSS: "https://qtclinics-resource.oss-cn-shenzhen.aliyuncs.com/",
+    profile: "",
+    userInfo: {},
+    systemInfo: {},
+    requestRetryWaitTime: 5
   },
-  onLaunch() {
-    this.login = new Promise(async (resolve, reject) => {
-      try {
-        // 1, 获取当前平台信息
-        const { provider } = await userGetProviderInfo();
-        this.globalData.provider = provider[0];
-        setRequestHeader("QTC-Platform", provider[0]);
-        setProvider(provider[0]);
-
-        // 2, 获取当前平台授权设置
-        const { authSetting } = await getUserSettingByUniApp();
-
-        // 3, 当前用户未授权
-        if (!userInfoAuthSetting(authSetting, "userInfo")) {
-          this.loginResolve = resolve;
-
-          uni.redirectTo({
-            url: "/pages/auth/index"
-          });
-
-          return;
-        }
-
-        // 4, 当前用户已授权, 获取当前平台授权code
-        const { code } = await userLoginByUniApp();
-
-        // 5, 获取当前平台的用户信息
-        const platformInfo = await getUserInfoByUniApp();
-        this.globalData.userInfo = platformInfo.userInfo;
-
-        // 6, 登陆米茶服务器, 获取用户米茶数据
-        const miChaServerRes = await userLoginByMiChaServer(
-          code,
-          platformInfo.userInfo
-        );
-
-        this.globalData.profile = miChaServerRes.data.result.profile;
-        this.globalData.todayFirstLogin = miChaServerRes.data.result.todayFirstLogin;
-
-        // 7，判断当前用户是否需要绑定手机号码
-        if (miChaServerRes.data.result.needBind) {
-          this.loginResolve = resolve;
-
-          uni.redirectTo({
-            url: "/pages/bind/index"
-          });
-
-          return;
-        }
-
-        setRequestHeader("authorization", miChaServerRes.data.result.authorization);
-
-        // 8, 获取设备信息
-        this.globalData.systemInfo = await userSystemInfoByUniApp();
-
-        // 9, 获取label信息
-        const labelsInfo = await userFetchLabels();
-        this.globalData.labelInfo = labelsInfo.data.result;
-
-        resolve();
-      } catch (err) {
-        console.error(err);
-        reject(err);
-      }
-    });
-
-    this.init = function() {
-      return this.login;
-    };
+  async onLaunch() {
+    // 获取当前平台信息
+    const { provider } = await userGetProviderInfo();
+    this.globalData.platform = provider[0];
+    // 获取设备信息
+    this.globalData.systemInfo = await userSystemInfoByUniApp();
   }
 };
 </script>
@@ -100,59 +45,144 @@ export default {
 }
 
 /* flex */
-.flex { display: flex }
-.flex-wrap { flex-wrap: wrap }
-.flex-column { flex-direction: column }
-.flex-ai-start { align-items: flex-start }
-.flex-ai-center { align-items: center }
-.flex-ai-end { align-items: flex-end }
-.flex-jc-start { justify-content: flex-start }
-.flex-jc-center { justify-content: center }
-.flex-jc-end { justify-content: flex-end }
-.flex-jc-between { justify-content: space-between }
-.flex-fill { flex: 1 }
+.flex {
+  display: flex;
+}
+.flex-wrap {
+  flex-wrap: wrap;
+}
+.flex-column {
+  flex-direction: column;
+}
+.flex-ai-start {
+  align-items: flex-start;
+}
+.flex-ai-center {
+  align-items: center;
+}
+.flex-ai-end {
+  align-items: flex-end;
+}
+.flex-jc-start {
+  justify-content: flex-start;
+}
+.flex-jc-center {
+  justify-content: center;
+}
+.flex-jc-end {
+  justify-content: flex-end;
+}
+.flex-jc-between {
+  justify-content: space-between;
+}
+.flex-fill {
+  flex: 1;
+}
 
 /* font-weight */
-.ft-lighter {font-weight: lighter}
-.ft-bolder {font-weight: bolder}
-.ft-thin {font-weight: 100}
-.ft-extra-light {font-weight: 200}
-.ft-light {font-weight: 300}
-.ft-normal {font-weight: 400}
-.ft-medium {font-weight: 500}
-.ft-semi-bold {font-weight: 600}
-.ft-bold {font-weight: 700}
-.ft-extra-bold {font-weight: 800}
-.ft-heavy {font-weight: 900}
+.ft-lighter {
+  font-weight: lighter;
+}
+.ft-bolder {
+  font-weight: bolder;
+}
+.ft-thin {
+  font-weight: 100;
+}
+.ft-extra-light {
+  font-weight: 200;
+}
+.ft-light {
+  font-weight: 300;
+}
+.ft-normal {
+  font-weight: 400;
+}
+.ft-medium {
+  font-weight: 500;
+}
+.ft-semi-bold {
+  font-weight: 600;
+}
+.ft-bold {
+  font-weight: 700;
+}
+.ft-extra-bold {
+  font-weight: 800;
+}
+.ft-heavy {
+  font-weight: 900;
+}
 
 /* font-size */
-.ft-20 {font-size: 20rpx}
-.ft-22 {font-size: 22rpx}
-.ft-24 {font-size: 24rpx}
-.ft-26 {font-size: 26rpx}
-.ft-28 {font-size: 28rpx}
-.ft-30 {font-size: 30rpx}
-.ft-32 {font-size: 32rpx}
-.ft-34 {font-size: 34rpx}
-.ft-36 {font-size: 36rpx}
-.ft-38 {font-size: 38rpx}
-.ft-40 {font-size: 40rpx}
-.ft-44 {font-size: 44rpx}
-.ft-48 {font-size: 48rpx}
+.ft-20 {
+  font-size: 20rpx;
+}
+.ft-22 {
+  font-size: 22rpx;
+}
+.ft-24 {
+  font-size: 24rpx;
+}
+.ft-26 {
+  font-size: 26rpx;
+}
+.ft-28 {
+  font-size: 28rpx;
+}
+.ft-30 {
+  font-size: 30rpx;
+}
+.ft-32 {
+  font-size: 32rpx;
+}
+.ft-34 {
+  font-size: 34rpx;
+}
+.ft-36 {
+  font-size: 36rpx;
+}
+.ft-38 {
+  font-size: 38rpx;
+}
+.ft-40 {
+  font-size: 40rpx;
+}
+.ft-44 {
+  font-size: 44rpx;
+}
+.ft-48 {
+  font-size: 48rpx;
+}
 
 /* fonr-color */
-.ft-fff {color: #fff }
+.ft-fff {
+  color: #fff;
+}
 
 /* normal */
-.box { box-sizing: border-box }
-.height-fill { height: 100% }
-.line-fill {line-height: 1}
-.relative { position: relative }
-.absolute { position: absolute }
-.fixed { position: fixed }
+.box {
+  box-sizing: border-box;
+}
+.height-fill {
+  height: 100%;
+}
+.line-fill {
+  line-height: 1;
+}
+.relative {
+  position: relative;
+}
+.absolute {
+  position: absolute;
+}
+.fixed {
+  position: fixed;
+}
 
 /* icon */
-.icon {width: 32rpx; height: 32rpx}
-
-
+.icon {
+  width: 32rpx;
+  height: 32rpx;
+}
 </style>

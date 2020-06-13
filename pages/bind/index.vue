@@ -1,4 +1,10 @@
 <style scoped>
+.welcome-title {
+  margin-top: 40rpx;
+  margin-left: 40rpx;
+  font-size: 48rpx;
+}
+
 .input__box {
   width: 680rpx;
   margin: 50rpx auto;
@@ -36,6 +42,7 @@
 
 <template>
   <base-page :errorMessage="errorMessage">
+    <h1 class="welcome-title">欢迎来到米茶计划</h1>
     <div class="input__box border box flex flex-ai-center">
       <input
         class="input flex-1 height-fill"
@@ -55,7 +62,7 @@
       <div
         class="input__btn border"
         @click="handleUserFetchCheckCode"
-      >{{fetchQrCodeButtonDisable ? countDown : '获取验证码'}}</div>
+      >{{fetchQrCodeButtonDisable ? countDown + 's后重发' : '获取验证码'}}</div>
     </div>
     <div class="bind border" @click="handleUserBindAccount">绑定账户</div>
   </base-page>
@@ -65,12 +72,12 @@
 import {
   userLoginByUniApp,
   userLoginByMiChaServer,
-  userSystemInfoByUniApp,
+  userSystemInfoByUniApp
 } from "@/static/apis/login";
 import { userFetchLabels } from "@/static/apis/system";
 import { userFetchCheckCode, userBindAccount } from "@/static/apis/user";
 import { setRequestHeader } from "@/static/js/base";
-import inject from '@/static/js/inject';
+import inject from "@/static/js/inject";
 
 const app = getApp();
 
@@ -83,10 +90,7 @@ export default inject({
       userVerCode: ""
     };
   },
-  onLoad() {
-    // TODO 平台差异化兼容
-    this.id = app.globalData.profile.aliUserId;
-  },
+  onLoad() {},
   methods: {
     // 用户获取验证码
     async handleUserFetchCheckCode() {
@@ -100,7 +104,10 @@ export default inject({
         return;
       }
 
-      await this.callAPI(userFetchCheckCode(this.id, this.userPhoneNumber));
+      await this.callAPI("user.sendCheckCode", {
+        openid: app.globalData.openid,
+        phone: this.userPhoneNumber
+      });
 
       this.fetchQrCodeButtonDisable = true;
       this.countDownInt = setInterval(() => {
@@ -115,42 +122,13 @@ export default inject({
     },
     // 用户绑定账号
     async handleUserBindAccount() {
-      await this.callAPI(
-        userBindAccount(
-          this.id,
-          this.userPhoneNumber,
-          this.userVerCode
-        )
-      );
+      await this.callAPI("user.bindAccount", {
+        openid: app.globalData.openid,
+        phone: this.userPhoneNumber,
+        code: this.userVerCode
+      });
 
-      this.userAgainLogin();
-    },
-    // 用户再次发起登陆
-    async userAgainLogin() {
-      // 获取当前用户登陆code
-      const { code } = await userLoginByUniApp();
-
-      const miChaServerRes = await this.callAPI(
-          userLoginByMiChaServer(
-              code,
-              app.globalData.userInfo
-          )
-      )
-
-      // 获取设备信息
-      app.globalData.systemInfo = await userSystemInfoByUniApp();
-
-      // 获取label信息
-      const labelsInfo = await userFetchLabels();
-      app.globalData.labelInfo = labelsInfo.data.result;
-
-      // 设置请求头
-      setRequestHeader("authorization", miChaServerRes.result.authorization);
-
-      app.$vm.loginResolve();
-      app.$vm.loginResolve = null;
-
-      uni.redirectTo({ url: "/pages/index/index" });
+      uni.redirectTo({ url: "/pages/launch/index" });
     }
   }
 });

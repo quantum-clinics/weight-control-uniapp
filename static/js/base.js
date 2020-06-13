@@ -1,80 +1,86 @@
-const ENDPOINT = 'https://stg-weight-control.qtclinics.com/api';
-// const ENDPOINT = 'https://weight-control.qtclinics.com/api'
-// const ENDPOINT = 'http://localhost:9900/api';
-const OSS = 'https://qtclinics-resource.oss-cn-shenzhen.aliyuncs.com/';
+const app = getApp();
 
-const header = {
-	'Timezone-Offset': (new Date()).getTimezoneOffset(),
-};
-
-function setRequestHeader(key, value) {
-	header[key] = value;
-}
-
-function request(params, retryOption = {
-	resolve: null,
-	reject: null,
-	count: 5,
-}) {
-	const {
-		data: _data,
-		method = 'POST',
-	} = params;
-
+const callAPI = (method, params, callBack, retryOption) => {
 	return new Promise((resolve, reject) => {
-		uni.request({
-			url: ENDPOINT,
-			data: _data,
+		const header = {};
+		const {
+			authorization
+		} = app.globalData;
+		const server = app.server;
+
+		if (authorization) {
+			header['Authorization'] = `Bearer ${authorization}`;
+		}
+
+		if (server) {
+			header['X-Server-Select'] = server;
+		}
+
+		header['Timezone-Offset'] = (new Date()).getTimezoneOffset();
+
+		wx.request({
+			url: app.globalData.API_GATEWAY,
+			method: "POST",
+			data: {
+				method,
+				data: params,
+			},
 			header: {
 				'Content-Type': 'application/json;charset=utf-8',
 				...header,
 			},
-			method,
-			success: (response) => {
-				const {
-					data: {
-						code,
-						msg,
-					}
-				} = response;
-
+			success: (res) => {
+				let {
+					code,
+					data,
+					msg
+				} = res.data;
 				if (code === 1) {
-					retryOption.resolve
-							? retryOption.resolve(response.data)
-							: resolve(response.data);
-					return
+					data = data || {};
+					if (callBack) callBack(null, data, {
+						trophy: data.trophy,
+						task: data.task,
+					});
+					resolve(data);
+				} else {
+					const err = new Error(`${msg}`);
+					err.code = code;
+					if (callBack) callBack(err);
+					reject(err);
 				}
-
-				const err = new Error(`调用失败, 技术参数${msg}`);
+			},
+			fail: (res) => {
+				const err = new Error(`接口[${method}]调用失败, ${res.errMsg}`);
 				err.code = -1;
-				reject(err);
-			},
-			fail: (err) => {
-				console.log('__request请求失败')
-				const error = new Error(`接口[${method}]调用失败, ${err.errMsg}`);
-				error.code = -1;
+				console.error(err.message);
+				/*
+				if (retryOption) {
+				  let retryCount = retryOption.retryCount || 0;
+				  retryCount++;
 
-				retryOption.resolve = retryOption.resolve || resolve;
-				retryOption.reject = retryOption.reject || reject;
-
-				// 重新发起请求
-				if (retryOption.count > 0) {
-					console.log('正在尝试重新请求', retryOption.count);
-					retryOption.count -= 1;
-					request(params, retryOption);
-					return;
+				  console.warn(`等待${retryOption.waitTime}秒后再次尝试 (${retryCount}次)...`);
+				  return setTimeout(() => {
+					callAPI(method, params, (err, data) => {
+					  if (err) {
+						if (callBack) callBack(err);
+						reject(err);
+					  } else {
+						if (callBack) callBack(null, data, data.trophy);
+						resolve(data);
+					  }
+					}, { ...retryOption,
+					  retryCount: retryCount
+					});
+				  }, retryOption.waitTime * 1000);
 				}
-
-				retryOption.reject
-						? retryOption.reject(err)
-						: reject(err);
-			},
-		})
-	})
+				*/
+				if (callBack) callBack(err);
+				reject(err);
+			}
+		});
+	});
 }
 
-export default request;
-export {
-	setRequestHeader,
-	OSS,
+module.exports = {
+	callAPI
 }

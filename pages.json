@@ -1,6 +1,14 @@
 {
 	"pages": [
 		{
+			"path": "pages/launch/index",
+			"style": {
+				"app-plus": {
+					"titleNView": false
+				}
+			}
+		},
+		{
 			"path": "pages/index/index",
 			"style": {}
 		},
@@ -47,7 +55,7 @@
 	],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",
-		"navigationBarTitleText": "micha",
+		"navigationBarTitleText": "米茶计划",
 		"navigationBarBackgroundColor": "#007AFF",
 		"backgroundColor": "#FFFFFF"
 	},
