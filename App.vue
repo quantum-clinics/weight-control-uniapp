@@ -18,14 +18,16 @@ export default {
     title: "米茶计划",
     SERVER_DOMAIN: "http://localhost:9900/",
     API_GATEWAY: "http://localhost:9900/api",
-    // SERVER_DOMAIN: 'https://stg-weight-control.qtclinics.com/api',
+    // SERVER_DOMAIN: "https://stg-weight-control.qtclinics.com",
+    // API_GATEWAY: "https://stg-weight-control.qtclinics.com/api",
     authorization: "",
     platform: "",
     OSS: "https://qtclinics-resource.oss-cn-shenzhen.aliyuncs.com/",
     profile: "",
     userInfo: {},
     systemInfo: {},
-    requestRetryWaitTime: 5
+    requestRetryWaitTime: 5,
+    todayFirstLogin: false
   },
   async onLaunch() {
     // 获取当前平台信息

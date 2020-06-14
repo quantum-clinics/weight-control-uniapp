@@ -374,19 +374,18 @@ export default inject({
     };
   },
   async onLoad() {
-    await app.$vm.init();
     await this.fetchIndexDate();
   },
   methods: {
     async fetchIndexDate() {
-      const [recomProducts, tasks, signCondition] = await Promise.all([
-        this.callAPI(userFetchRecomProducts()),
-        this.callAPI(userFetchTasks()),
-        this.callAPI(userFetchSignCondition())
+      const [signCondition, tasks, recomProducts] = await Promise.all([
+        this.callAPI("groupSchedule.getSignCondition"),
+        this.callAPI("groupSchedule.getTasks"),
+        this.callAPI("bonusProduct.getLastestBonusCourseProducts")
       ]);
-      this.recomProducts = recomProducts.data.result.list;
-      this.tasks = tasks.data.result.tasks;
-      this.signList = signCondition.data.result.signList;
+      this.recomProducts = recomProducts.list;
+      this.tasks = tasks.tasks;
+      this.signList = signCondition.signList;
 
       this.shadowDisplay = app.globalData.todayFirstLogin;
     },
