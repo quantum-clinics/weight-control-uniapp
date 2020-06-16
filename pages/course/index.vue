@@ -1,31 +1,11 @@
 <style scoped>
-  .class-page {
-    min-height: 100vh;
-    background: rgba(245, 245, 245, 1);
-    padding-bottom: 100rpx;
-  }
-
-  .class {
+  .course {
     width: 100vw;
     padding: 0 24rpx;
+    margin-bottom: 60rpx;
   }
 
-  .class::after {
-    content: "";
-    display: block;
-    position: absolute;
-    width: 150vw;
-    height: 994rpx;
-    background: #188cfc;
-    border-radius: 0 0 200px 200px;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 0;
-  }
-
-  .class__header {
-    z-index: 1;
+  .course__header {
     padding: 48rpx 0 80rpx;
   }
 
@@ -39,44 +19,35 @@
     margin: 16rpx 0 32rpx;
   }
 
-  .class__body {
+  .course__body {
     background: rgba(255, 255, 255, 1);
-    border-radius: 30px;
-    overflow: hidden;
-    z-index: 1;
+    border-radius: 30rpx;
   }
 </style>
 
 <template>
-  <base-page :errorMessage="errorMessage">
-    <div
-      class="class-page box"
-      v-if="pageDisplay"
-    >
-      <div class="class box relative">
-        <div class="class__header relative">
+  <base-page :errorMessage="errorMessage" v-if="pageDisplay">
+    <radian-box>
+      <div class="course box">
+        <div class="course__header relative">
           <div class="header__title ft-40 ft-semi-bold ft-fff">100天，让您成为“自来瘦”专家</div>
           <div class="header__spc ft-26">本课程由已经为20000亚洲人成功减脂20吨的国内先进科学减脂团队米茶计划，以梅奥中心基本营养方案</div>
-          <div class="line-fill ft-semi-bold ft-fff">共 80 课</div>
+          <div class="line-fill ft-semi-bold ft-fff">共 {{total}} 课</div>
         </div>
 
-        <div class="class__body relative">
-          <class-list
+        <div class="course__body relative">
+          <course-list
             statusLock
             :list="allProduct"
             @userExchangeProduct="handleUserExchangeProduct"
           />
         </div>
       </div>
-    </div>
+    </radian-box>
   </base-page>
 </template>
 
 <script>
-  import {
-    userFetchAllProduct,
-    userExchangeProduct,
-  } from '@/static/apis/bonusProduct';
   import inject from '@/static/js/inject';
 
   const pages = {
@@ -93,44 +64,51 @@
       return {
         allProduct: [],
         pageDisplay: false,
+        total: 0,
       }
     },
-    async onLoad() {
-      await app.$vm.init();
-      await this.fetchClassDate()
+    onLoad() {
+      this.fetchClassDate()
     },
     methods: {
       async fetchClassDate() {
         uni.showLoading();
         pages.loading = true;
         const { page, pageSize } = pages;
-        const allProduct = await this.callAPI(userFetchAllProduct(page, pageSize));
+        const { list, total } = await this.callAPI('bonusProduct.getBonusCourseProducts', {
+          page,
+          pageSize,
+        });
 
         if (!this.pageDisplay) {
           this.pageDisplay = true;
         }
 
         if (!this.allProduct.length) {
-          this.allProduct = [...allProduct.data.result.list];
+          this.allProduct = [...list];
         } else {
-          this.allProduct.push(...allProduct.data.result.list)
+          this.allProduct.push(...list)
         }
 
         pages.loading = false;
         pages.page += 1;
-        pages.finish = this.allProduct.length === allProduct.data.result.total;
+        pages.finish = this.allProduct.length === total;
+
+        this.total = total;
 
         uni.hideLoading();
       },
       async handleUserExchangeProduct(index) {
-        uni.showLoading({ title: '加载中..' });
+        uni.showLoading({ title: "加载中.." });
 
-        const target = this.allProduct[index];
-        const result = await this.callAPI(userExchangeProduct(target._id));
-        target.hasExchanged = result.data.result.success;
+        const target = this.recomProducts[index];
+        const { success } = await this.callAPI('bonusProduct.exchangeProduct', {
+          id: target._id
+        });
 
+        target.hasExchanged = success;
         uni.hideLoading();
-      }
+      },
     },
     onReachBottom() {
       const { loading, finish } = pages;

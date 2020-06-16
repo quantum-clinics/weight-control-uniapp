@@ -24,43 +24,18 @@
 
 <template>
   <div class="base-page">
-    <div class="error" :class="{ 'error--active': errorMessageDisplay }">{{errorMessage}}</div>
-    <slot></slot>
+    <div class="error" :class="{ 'error--active': errorMessage }">{{errorMessage}}</div>
+    <slot />
   </div>
 </template>
 
 <script>
-  let errorMessageCountDown;
   export default {
     props: {
       errorMessage: {
         type: String,
         value: ""
-      }
+      },
     },
-    data() {
-      return {
-        errorMessageDisplay: false
-      };
-    },
-    watch: {
-      errorMessage(value) {
-        if (!value) {
-          return;
-        }
-
-        if (errorMessageCountDown) {
-          return;
-        }
-
-        this.errorMessageDisplay = true;
-
-        errorMessageCountDown = setTimeout(() => {
-          this.errorMessageDisplay = false;
-          clearTimeout(errorMessageCountDown);
-          errorMessageCountDown = null;
-        }, 2500);
-      }
-    }
   };
 </script>

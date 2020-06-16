@@ -116,16 +116,8 @@
     top: 0;
     left: 0;
     transition: background-color .16s linear;
-  }
-
-  .shadow--active {
     background: rgba(0, 0, 0, .7);
     z-index: 9;
-  }
-
-  .shadow--hide {
-    z-index: -1;
-    background: rgba(0, 0, 0, 0);
   }
 
   .dialog {
@@ -139,16 +131,7 @@
     transform-origin: center center;
     transform: translate(-50%, -50%);
     transition: .16s linear;
-  }
-
-  .dialog--active {
-    transform: translate(-50%, -50%) scale(1);
     z-index: 10;
-  }
-
-  .dialog--hide {
-    transform: translate(-50%, -50%) scale(0);
-    z-index: -1;
   }
 
   .dialog__image {
@@ -234,11 +217,12 @@
       </div>
     </div>
     <div
-      :class="['shadow fixed', shadowDisplay ? 'shadow--active' : 'shadow--hide']"
+      class="shadow fixed"
+      v-if="shadowDisplay"
       @click="handleToggleShadow"
     >
       <div
-        :class="['dialog box absolute flex flex-column flex-ai-center flex-jc-center', shadowDisplay ? 'dialog--active' : 'dialog--hide']"
+        class="dialog box absolute flex flex-column flex-ai-center flex-jc-center"
         @click.stop
       >
         <img src class="dialog__image" />
@@ -281,20 +265,19 @@
         return formatTime(value)
       },
       handleToggleShadow() {
-        console.log('handleToggleShadow!!!')
         this.shadowDisplay = !this.shadowDisplay;
       },
       handleUserExchange() {
-        this.$emit('userExchangeProduct', index);
+        this.$emit('userExchangeProduct', this.activeIndex);
       },
       handleUserCheckProduct(item, index) {
 
-        if (item.hasExchanged) {
-          // TODO Navigator URL
-          return
-        }
+        // if (item.hasExchanged) {
+        //   return
+        // }
 
         this.shadowDisplay = true;
+        this.activeIndex = index;
       },
     },
   };

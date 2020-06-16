@@ -36,13 +36,13 @@
 </style>
 
 <template>
-  <div class="radio">
+  <div class="radio" v-if="!recordFinish">
     <div class="box__class flex flex-wrap">
       <div
-          v-for="(item, index) in options"
-          :class="['class__item ft-semi-bold', {'class__item--active': optionsIndex === index}]"
-          :key="index"
-          @click="handleUserSelect(index)"
+        v-for="(item, index) in source.options"
+        :class="['class__item ft-semi-bold', {'class__item--active': optionsIndex === index}]"
+        :key="index"
+        @click="handleUserSelect(index)"
       >{{item.answer}}</div>
     </div>
   </div>
@@ -51,11 +51,11 @@
 <script>
   export default {
     props: {
-      id: {
-        type: String,
+      source: {
+        type: Object
       },
-      options: {
-        type: Array,
+      recordFinish: {
+        type: Boolean,
       },
     },
     data() {
@@ -66,8 +66,10 @@
     methods: {
       handleUserSelect(index) {
         const {
-          options,
-          id,
+          source: {
+            options,
+            id,
+          },
         } = this;
 
         this.$emit("valueChange", {

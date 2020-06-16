@@ -30,9 +30,10 @@
 <template>
   <div :class="['input-box box', { 'input-box--finish': recordFinish }]">
     <input
-        :class="['input ft-34', {'input--finish': recordFinish}]"
-        :disabled="recordFinish"
-        @input="handleUserInput"
+      :class="['input ft-34', {'input--finish': recordFinish}]"
+      :value="safeSourceValue(source)"
+      :disabled="recordFinish"
+      @input="handleUserInput"
     />
   </div>
 </template>
@@ -40,8 +41,8 @@
 <script>
   export default {
     props: {
-      id: {
-        type: String,
+      source: {
+        type: Object,
       },
       userInputValue: {
         type: String,
@@ -53,19 +54,42 @@
       },
     },
     methods: {
+      safeSourceValue(source) {
+        if (source && source.value) {
+          return source.value
+        }
+
+        return ''
+      },
+      checkValue(value) {
+        const reg = /^(\d+|\d+\.\d*)$/;
+        return reg.test(value);
+      },
       handleUserInput(e) {
         const {
           detail: { value },
         } = e;
 
+        if (!this.checkValue(value)) {
+          this.$emit("valueChangeError", '请输入正确的数值范围!');
+          this.$emit("valueChange", {
+            questionId: this.source.id,
+            answer: {
+              text: '',
+              photos: [],
+            },
+          });
+          return;
+        }
+
         this.$emit("valueChange", {
-          questionId: this.id,
+          questionId: this.source.id,
           answer: {
             text: value,
             photos: [],
           },
         })
-      }
+      },
     },
   };
 </script>

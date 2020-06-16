@@ -42,7 +42,7 @@ async function uploadImage(file) {
     await uploadImage2ServerByUniApp(file, ossParams.data.result);
     return `${ossParams.data.result.serverUrl}${ossParams.data.result.fileKey}`
   } catch (e) {
-    console.err('error ===>', e);
+    console.log('error ===>', e);
   }
 }
 

@@ -3,6 +3,10 @@
     padding-bottom: 32rpx;
   }
 
+  .finish__box {
+    padding: 12rpx 0 30rpx;
+  }
+
   .title {
     font-size: 34rpx;
     font-weight: 600;
@@ -12,10 +16,10 @@
   }
 
   .class__item {
-    width: 148rpx;
+    width: 130rpx;
     height: 80rpx;
     line-height: 80rpx;
-    margin-right: 20rpx;
+    margin-right: 24rpx;
     margin-bottom: 24rpx;
     text-align: center;
     background: rgba(255, 255, 255, 1);
@@ -36,10 +40,6 @@
         rgba(255, 193, 33, 1) 100%
     );
     box-shadow: 0 16rpx 20rpx 0 rgba(255, 219, 81, .25);
-  }
-
-  .box__class .class__item:nth-child(4n) {
-    margin-right: 0;
   }
 
   .intensity__item {
@@ -74,29 +74,59 @@
     );
     box-shadow: 0 16rpx 20rpx 0 rgba(255, 219, 81, .25);
   }
+
+  .sport__item {
+    min-width: 194rpx;
+    height: 144rpx;
+    margin-right: 16rpx;
+    border-radius: 24rpx;
+    border: 2rpx solid rgba(73, 82, 125, .2);
+  }
+
+  .sport__title {
+    margin-top: 24rpx;
+    color: rgba(43, 48, 73, 1);
+    line-height: 56rpx;
+  }
+
+  .sport__desc {
+    color: rgba(43, 48, 73, 1);
+    line-height: 40rpx;
+  }
 </style>
 
 <template>
-  <div class="sport">
-    <div class="title">分类</div>
-    <div class="box__class flex flex-wrap">
-      <div
-        v-for="(item, index) in sportClass"
-        :class="['class__item ft-semi-bold', {'class__item--active': sportIndex === index}]"
-        :key="index"
-        @click="handleUserSelect('sportIndex', index)"
-      >{{item.value}}</div>
+  <div>
+    <div
+      v-if="recordFinish"
+      class="box flex flex-ai-center finish__box"
+    >
+      <div class="sport__item flex flex-column flex-ai-center">
+        <span class="sport__title ft-40 ft-semi-bold">{{sportCheckinData('value')}}</span>
+        <span class="sport__desc ft-28 ft-semi-bold">{{sportCheckinData('tip')}}</span>
+      </div>
     </div>
-    <div class="title">强度</div>
-    <div class="box__intensity flex flex-ai-center">
-      <div
-        :class="['intensity__item flex flex-column flex-jc-center flex-ai-center', {'intensity__item--active': intensityIndex === index}]"
-        v-for="(item, index) in intensityClass"
-        :key="index"
-        @click="handleUserSelect('intensityIndex', index)"
-      >
-        <span :class="['intensity__span ft-semi-bold ft-44 line-fill']">{{item.answer}}</span>
-        <span :class="['intensity__span ft-semi-bold ft-26 line-fill', {'ft-fff': intensityIndex === index}]">{{item.answerTip}}</span>
+    <div class="sport" v-else>
+      <div class="title">分类</div>
+      <div class="box__class flex flex-wrap">
+        <div
+            v-for="(item, index) in safeSportClass"
+            :class="['class__item ft-semi-bold', {'class__item--active': sportIndex === index}]"
+            :key="index"
+            @click="handleUserSelect('sportIndex', index)"
+        >{{item.value}}</div>
+      </div>
+      <div class="title">强度</div>
+      <div class="box__intensity flex flex-ai-center">
+        <div
+            :class="['intensity__item flex flex-column flex-jc-center flex-ai-center', {'intensity__item--active': intensityIndex === index}]"
+            v-for="(item, index) in safeIntensityClass"
+            :key="index"
+            @click="handleUserSelect('intensityIndex', index)"
+        >
+          <span :class="['intensity__span ft-semi-bold ft-44 line-fill']">{{item.answer}}</span>
+          <span :class="['intensity__span ft-semi-bold ft-26 line-fill', {'ft-fff': intensityIndex === index}]">{{item.answerTip}}</span>
+        </div>
       </div>
     </div>
   </div>
@@ -105,11 +135,12 @@
 <script>
   export default {
     props: {
-      id: {
-        type: String,
+      recordFinish: {
+        type: Boolean,
+        value: false,
       },
-      subQuestions: {
-        type: Array,
+      source: {
+        type: Object,
       },
     },
     data() {
@@ -118,67 +149,81 @@
         intensityIndex: -1,
       }
     },
-    computed: {
-      isSelected() {
-        return (this.sportIndex > 0) && (this.intensityIndex > 0)
-      },
-      sportClass() {
-        if (!this.subQuestions.length || !this.subQuestions[0].options.length) {
-          return [];
-        }
-
-        return this.subQuestions[0].options;
-      },
-      intensityClass() {
-        if (!this.subQuestions.length || !this.subQuestions[1].options.length) {
-          return [];
-        }
-
-        return this.subQuestions[1].options;
-      },
-      category() {
-        if (!this.subQuestions.length) {
-          return 'category';
-        }
-
-        return this.subQuestions[0].id;
-      },
-      strength() {
-        if (!this.subQuestions.length || !this.subQuestions[1]) {
-          return 'category';
-        }
-
-        return this.subQuestions[1].id
-      }
-    },
     watch: {
-      isSelected(value) {
+      recordFinish(value) {
         if (!value) {
-          return;
+          this.sportIndex = -1;
+          this.intensityIndex = -1;
+        }
+      },
+    },
+    computed: {
+      safeQuestionSource() {
+        if (this.source.options && this.source.options.length && this.source.options[0].subQuestions) {
+          return this.source.options[0].subQuestions
         }
 
-        const {
-          sportIndex,
-          sportClass,
-          intensityIndex,
-          intensityClass,
-        } = this;
+        return []
+      },
+      safeSportClass() {
+        if (this.safeQuestionSource.length && this.safeQuestionSource[0].options.length) {
+          return this.safeQuestionSource[0].options;
+        }
 
-        this.$emit("valueChange", {
-          questionId: this.id,
-          answer: {
-            text: {
-              [this.category]: sportClass[sportIndex].value,
-              [this.strength]: intensityClass[intensityIndex].value,
-            },
-            photos: [],
-          },
-        })
+        return [];
+      },
+      safeIntensityClass() {
+        if (this.safeQuestionSource.length && this.safeQuestionSource[1].options.length) {
+          return this.safeQuestionSource[1].options;
+        }
+
+        return [];
+      },
+      safeCategory() {
+        if (!this.safeQuestionSource.length) {
+          return 'category';
+        }
+
+        return this.safeQuestionSource[0].id;
+      },
+      safeStrength() {
+        if (!this.safeQuestionSource.length || !this.safeQuestionSource[1]) {
+          return 'category';
+        }
+
+        return this.safeQuestionSource[1].id
       }
     },
     methods: {
+      sportCheckinData(type) {
+        if (this.source && this.source.answers && this.source.answers.length) {
+          return this.source.answers[0][type]
+        }
+
+        return '';
+      },
       handleUserSelect(key, index) {
         this[key] = index;
+
+        if (this.intensityIndex > 0 && this.sportIndex > 0) {
+          const {
+            sportIndex,
+            safeSportClass,
+            intensityIndex,
+            safeIntensityClass,
+          } = this;
+
+          this.$emit("valueChange", {
+            questionId: this.source.id,
+            answer: {
+              text: JSON.stringify({
+                [this.safeCategory]: safeSportClass[sportIndex].value,
+                [this.safeStrength]: safeIntensityClass[intensityIndex].value,
+              }),
+              photos: [],
+            },
+          })
+        }
       }
     }
   };

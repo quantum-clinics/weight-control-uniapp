@@ -33,8 +33,8 @@
 <script>
   export default {
     props: {
-      id: {
-        type: String,
+      source: {
+        type: Object,
       },
       recordFinish: {
         type: Boolean,
@@ -46,6 +46,9 @@
         images: [],
       }
     },
+    mounted() {
+      this.images = this.source.photos ? [...this.source.photos] : [];
+    },
     methods: {
       handleUserChooseImage() {
         uni.chooseImage({
@@ -53,7 +56,7 @@
           success: (chooseImageRes) => {
             this.images.push(...chooseImageRes.tempFilePaths)
             this.$emit("valueChange", {
-              questionId: this.id,
+              questionId: this.source.id,
               answer: {
                 text: '',
                 photos: [...this.images],

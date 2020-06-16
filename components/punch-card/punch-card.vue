@@ -88,14 +88,14 @@
 
 <template>
   <div class="card box relative">
-    <div class="card__title ft-semi-bold ft-40">打卡签到(4/8)</div>
+    <div class="card__title ft-semi-bold ft-40">打卡签到({{completeCount}}/{{totalCount}})</div>
     <div class="card__spc ft-28">每天完成所有打卡自动签到</div>
     <div class="card__list flex flex-ai-center">
       <navigator
         class="list__item flex flex-ai-center flex-jc-center flex-column"
         v-for="(item, index) in tasks"
         :key="index"
-        :url="`/pages/record/index?id=${item.id}`"
+        :url="`/pages/checkin/index?id=${item.id}`"
       >
         <div class="item__imagebox relative">
           <img
@@ -129,6 +129,14 @@
 <script>
   export default {
     props: {
+      completeCount: {
+        type: Number,
+        value: 0,
+      },
+      totalCount: {
+        type: Number,
+        value: 0,
+      },
       tasks: {
         type: Array,
       },

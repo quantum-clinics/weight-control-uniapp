@@ -25,16 +25,20 @@
 </style>
 
 <template>
-  <div>
+  <div v-if="title">
     <div class="flex flex-ai-center header">
-      <img class="icon" :src="icon" alt />
+      <img
+        v-if="icon"
+        class="icon"
+        :src="icon"
+      />
       <span
         class="title"
         v-if="!recordFinish"
       >{{title}}</span>
       <span
-          class="title"
-          v-if="recordFinish"
+        class="title"
+        v-if="recordFinish"
       >{{titleFinish || title}}</span>
     </div>
     <div

@@ -90,6 +90,7 @@
       class="sign__item relative flex-fill box flex flex-column flex-ai-center"
       v-for="(item, index) in signList"
       :key="index"
+      @click="handleToggleShadow"
     >
       <span
         class="item__status ft-semi-bold ft-24"
@@ -122,6 +123,11 @@ export default {
     signList: {
       type: Array
     }
-  }
+  },
+  methods: {
+    handleToggleShadow() {
+      this.$emit('toggleShadow')
+    }
+  },
 };
 </script>

@@ -29,6 +29,7 @@ export default function (origin) {
                 });
               }
               if (!(callBack && callBack(err))) {
+                uni.hideLoading();
                 this.message(`[网络错误-代码:${err.code}] ${err.message}`);
               }
               return reject(err);
@@ -60,11 +61,11 @@ export default function (origin) {
       message(text, type) {
         clearTimeout(this.msgTimer);
 
-        this.msg = text || '';
+        this.errorMessage = text || '';
         this.msgType = type || 'warn';
 
         this.msgTimer = setTimeout(() => {
-          this.msg = '';
+          this.errorMessage = '';
           this.msgType = type || 'warn';
         }, 3500);
       }

@@ -13,6 +13,10 @@
 			"style": {}
 		},
 		{
+			"path": "pages/meals/index",
+			"style": {}
+		},
+		{
 			"path": "pages/assessment/index",
 			"style": {}
 		},
@@ -29,11 +33,7 @@
 			"style": {}
 		},
 		{
-			"path": "pages/micha/index",
-			"style": {}
-		},
-		{
-			"path": "pages/record/index",
+			"path": "pages/checkin/index",
 			"style": {}
 		},
 		{
@@ -41,7 +41,7 @@
 			"style": {}
 		},
 		{
-			"path": "pages/class/index",
+			"path": "pages/course/index",
 			"style": {}
 		},
 		{
@@ -72,16 +72,10 @@
 				"selectedIconPath": "static/images/icon-home-active.png"
 			},
 			{
-				"pagePath": "pages/class/index",
+				"pagePath": "pages/course/index",
 				"text": "课程",
 				"iconPath": "static/images/icon-class.png",
 				"selectedIconPath": "static/images/icon-class-active.png"
-			},
-			{
-				"pagePath": "pages/micha/index",
-				"text": "Hi,米茶",
-				"iconPath": "static/images/icon-micha.png",
-				"selectedIconPath": "static/images/icon-micha-active.png"
 			},
 			{
 				"pagePath": "pages/user/index",

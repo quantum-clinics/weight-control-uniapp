@@ -39,10 +39,10 @@ import {
 const app = getApp();
 
 export default inject({
+  onLoad() {
+    this.handleGetUserInfoByAliPay();
+  },
   methods: {
-    onLoad(options) {
-      this.handleGetUserInfoByAliPay();
-    },
     async handleGetUserInfoByAliPay() {
       // 获取当前用户登陆code
       const { code } = await userLoginByUniApp();
@@ -52,8 +52,17 @@ export default inject({
       }
       this.loadUserData(code, userInfo);
     },
+    async loadUserData(code, userInfo) {
+      app.globalData.userInfo = userInfo;
+      const result = await this.callAPI("user.login", {
+        code,
+        profile: userInfo
+      });
+      this.userLoginAfter(result);
+    },
     async userLoginAfter(result) {
       app.globalData.profile = result.profile || {};
+      app.globalData.authorization = result.authorization;
 
       if (result.needBind) {
         app.globalData.openid = result.openid;
@@ -65,18 +74,13 @@ export default inject({
 
       app.globalData.todayFirstLogin = !!result.todayFirstLogin;
 
+      const { supervise } = await this.callAPI("system.getAppLabels");
+      app.globalData.labels = supervise;
+
       uni.switchTab({
         url: "/pages/index/index"
       });
     },
-    async loadUserData(code, userInfo) {
-      app.globalData.userInfo = userInfo;
-      const result = await this.callAPI("user.login", {
-        code,
-        profile: userInfo
-      });
-      this.userLoginAfter(result);
-    }
   }
 });
 </script>

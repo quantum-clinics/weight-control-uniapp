@@ -1,37 +1,17 @@
 <style scoped>
-  .user__wrap {
-    width: 100vw;
-    min-height: 100vh;
-    padding: 46rpx 24rpx;
-    overflow-x: hidden;
-    background: rgba(245, 245, 245, 1);
-  }
-
-  .user__wrap::after {
-    content: "";
-    display: block;
-    position: absolute;
-    width: 150vw;
-    height: 818rpx;
-    background: #188cfc;
-    border-radius: 0 0 200px 200px;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 0;
-  }
-
-  .user__container {
+  .user {
     background: rgba(255, 255, 255, 1);
+    width: calc(100vw - 64rpx);
+    margin: 46rpx auto 60rpx;
+    min-height: 1228rpx;
     box-shadow: 0 12rpx 32rpx 0 rgba(143, 181, 198, .3);
     border-radius: 30rpx;
-    z-index: 1;
     padding: 48rpx 32rpx 0;
   }
 
   .user__header {
     padding-bottom: 32rpx;
-    border-bottom: 1rpx solid rgba(224, 228, 232, 1);
+    /*border-bottom: 1rpx solid rgba(224, 228, 232, 1);*/
   }
 
   .user__avatar {
@@ -146,9 +126,9 @@
 </style>
 
 <template>
-  <base-page :errorMessage="errorMessage">
-    <div class="user__wrap box relative">
-      <div class="user__container relative box">
+  <base-page :errorMessage="errorMessage" v-if="pageDisplay">
+    <radian-box>
+      <div class="user box">
         <div class="user__header flex flex-ai-center">
           <img class="user__avatar" :src="avatarUrl"/>
           <div class="flex-fill">
@@ -162,6 +142,7 @@
           </div>
         </div>
 
+        <!--
         <div class="user__plays">
           <div class="play__picc flex flex-ai-center">
             <img class="play__image" src />
@@ -181,6 +162,7 @@
             <img class="play__icon" src />
           </div>
         </div>
+        -->
 
         <div class="user__menus">
           <div
@@ -196,7 +178,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </radian-box>
   </base-page>
 </template>
 
@@ -233,14 +215,15 @@
         nickName: '',
         avatarUrl: '',
         createDate: '',
+        pageDisplay: false,
       }
     },
     async onLoad() {
-      await app.$vm.init();
       const { nickName, avatarUrl, createDate } = app.globalData.profile;
       this.nickName = nickName;
       this.avatarUrl = avatarUrl;
       this.createDate = createDate;
+      this.pageDisplay = true;
     },
     methods: {
       joinTime(date) {

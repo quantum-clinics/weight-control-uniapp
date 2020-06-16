@@ -4,20 +4,6 @@
   padding: 50rpx 24rpx 0;
 }
 
-.header::after {
-  content: "";
-  display: block;
-  position: absolute;
-  width: 150vw;
-  height: 100%;
-  background: #188cfc;
-  border-radius: 0 0 200px 200px;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: -1;
-}
-
 .header__currency {
   margin-bottom: 8rpx;
 }
@@ -189,17 +175,8 @@
   height: 100vh;
   top: 0;
   left: 0;
-  transition: background-color 0.16s linear;
-}
-
-.shadow--active {
   background: rgba(0, 0, 0, 0.7);
   z-index: 9;
-}
-
-.shadow--hide {
-  z-index: -1;
-  background: rgba(0, 0, 0, 0);
 }
 
 .dialog {
@@ -213,16 +190,7 @@
   transform-origin: center center;
   transform: translate(-50%, -50%);
   transition: 0.16s linear;
-}
-
-.dialog--active {
-  transform: translate(-50%, -50%) scale(1);
   z-index: 10;
-}
-
-.dialog--hide {
-  transform: translate(-50%, -50%) scale(0);
-  z-index: -1;
 }
 
 .dialog__image {
@@ -231,6 +199,7 @@
 }
 
 .dialog__title {
+  width: 100%;
   color: rgba(43, 48, 73, 1);
 }
 
@@ -261,116 +230,146 @@
 </style>
 
 <template>
-  <base-page :errorMessage="errorMessage">
-    <div class="header box relative">
-      <div class="header__currency flex flex-ai-center">
-        <img
-          class="currency__icon"
-          src="https://qtclinics-resource.oss-cn-shenzhen.aliyuncs.com/micha/healthmarket/icon-currency.png"
-        />
-        <span class="currency__span ft-semi-bold font-28">米茶币</span>
-      </div>
+  <base-page :errorMessage="errorMessage" v-if="pageDisplay">
+    <radian-box :style="radianStyle">
+      <div class="header box relative">
 
-      <div class="header__info flex">
-        <span class="info__count ft-medium ft-fff">3600</span>
-        <div class="info__hint flex flex-ai-center flex-jc-center">
-          <span class="hint__title ft-semi-bold ft-20 line-fill">昨日奖励</span>
-          <span class="ft-fff ft-medium ft-24 line-fill">630</span>
-        </div>
-        <!--        <div class="info__hint flex flex-ai-center flex-jc-center">-->
-        <!--          <span class="hint__title ft-semi-bold ft-20 line-fill">领先同龄</span>-->
-        <!--          <span class="ft-fff ft-medium ft-24 line-fill">92%</span>-->
-        <!--        </div>-->
-      </div>
-
-      <div class="header__card flex flex-column flex-ai-center">
-        <punch-sign :signList="signList" />
-        <punch-card :tasks="tasks" />
-        <div class="card__mission relative box flex flex-jc-center">
+        <div class="header__currency flex flex-ai-center">
           <img
-            class="mission__image"
-            src="https://qtclinics-resource.oss-cn-shenzhen.aliyuncs.com/micha/icon/icon-medal.png"
-          />
-          <span class="mission__span flex-1 ft-bold ft-fff ft-32">今日有新的挑战</span>
-          <img
-            class="mission__icon"
-            src="https://qtclinics-resource.oss-cn-shenzhen.aliyuncs.com/micha/healthmarket/icon-arrow.png"
-          />
-
-          <div class="mission__float absolute flex flex-ai-center flex-jc-center">
-            <span class="float__span ft-fff ft-24">幸运日 3倍</span>
-            <img
-              class="float__icon"
+              class="currency__icon"
               src="https://qtclinics-resource.oss-cn-shenzhen.aliyuncs.com/micha/healthmarket/icon-currency.png"
+          />
+          <span class="currency__span ft-semi-bold font-28">米茶币</span>
+        </div>
+
+        <div class="header__info flex">
+          <span class="info__count ft-medium ft-fff">3600</span>
+          <div class="info__hint flex flex-ai-center flex-jc-center">
+            <span class="hint__title ft-semi-bold ft-20 line-fill">昨日奖励</span>
+            <span class="ft-fff ft-medium ft-24 line-fill">630</span>
+          </div>
+          <!--
+          <div class="info__hint flex flex-ai-center flex-jc-center">
+            <span class="hint__title ft-semi-bold ft-20 line-fill">领先同龄</span>
+            <span class="ft-fff ft-medium ft-24 line-fill">92%</span>
+          </div>
+          -->
+        </div>
+
+        <div class="header__card flex flex-column flex-ai-center">
+          <punch-sign
+            :signList="signList"
+            @toggleShadow="handleToggleShadow"
+          />
+          <punch-card
+            :tasks="tasks"
+            :completeCount="completeCount"
+            :totalCount="totalCount"
+          />
+
+          <!--
+          <div class="card__mission relative box flex flex-jc-center">
+            <img
+              class="mission__image"
+              src="https://qtclinics-resource.oss-cn-shenzhen.aliyuncs.com/micha/icon/icon-medal.png"
             />
+            <span class="mission__span flex-1 ft-bold ft-fff ft-32">今日有新的挑战</span>
+            <img
+              class="mission__icon"
+              src="https://qtclinics-resource.oss-cn-shenzhen.aliyuncs.com/micha/healthmarket/icon-arrow.png"
+            />
+
+            <div class="mission__float absolute flex flex-ai-center flex-jc-center">
+              <span class="float__span ft-fff ft-24">幸运日 3倍</span>
+              <img
+                class="float__icon"
+                src="https://qtclinics-resource.oss-cn-shenzhen.aliyuncs.com/micha/healthmarket/icon-currency.png"
+              />
+            </div>
+          </div>
+          -->
+        </div>
+
+      </div>
+
+      <!--
+      <div class="banner flex box relative">
+        <img
+          class="banner__image"
+          src="https://qtclinics-resource.oss-cn-shenzhen.aliyuncs.com/micha/icon/image-call.png"
+        />
+
+        <div class="banner__intro flex-fill">
+          <div class="banner__title ft-fff ft-40 ft-bold line-fill">我要呼叫玄米老师</div>
+          <div class="banner__info flex flex-ai-center">
+            <span class="info__spc ft-medium ft-32 line-fill">专家陪你一起瘦</span>
+            <div class="info__price box flex flex-ai-center">
+              <span class="price__span ft-semi-bold ft-24 line-fill">需120</span>
+              <img
+                class="price__icon"
+                src="https://qtclinics-resource.oss-cn-shenzhen.aliyuncs.com/micha/healthmarket/icon-currency.png"
+              />
+            </div>
           </div>
         </div>
       </div>
-    </div>
+      -->
 
-    <!--    <div class="banner flex box relative">-->
-    <!--      <img-->
-    <!--        class="banner__image"-->
-    <!--        src="https://qtclinics-resource.oss-cn-shenzhen.aliyuncs.com/micha/icon/image-call.png"-->
-    <!--      />-->
-
-    <!--      <div class="banner__intro flex-fill">-->
-    <!--        <div class="banner__title ft-fff ft-40 ft-bold line-fill">我要呼叫玄米老师</div>-->
-    <!--        <div class="banner__info flex flex-ai-center">-->
-    <!--          <span class="info__spc ft-medium ft-32 line-fill">专家陪你一起瘦</span>-->
-    <!--          <div class="info__price box flex flex-ai-center">-->
-    <!--            <span class="price__span ft-semi-bold ft-24 line-fill">需120</span>-->
-    <!--            <img-->
-    <!--              class="price__icon"-->
-    <!--              src="https://qtclinics-resource.oss-cn-shenzhen.aliyuncs.com/micha/healthmarket/icon-currency.png"-->
-    <!--            />-->
-    <!--          </div>-->
-    <!--        </div>-->
-    <!--      </div>-->
-    <!--    </div>-->
-
-    <div class="recom__list">
-      <class-list header :list="recomProducts" @userExchangeProduct="handleUserExchangeProduct" />
-    </div>
-
-    <div
-      :class="['shadow fixed', shadowDisplay ? 'shadow--active' : 'shadow--hide']"
-      @click="handleToggleShadow"
-    >
-      <div
-        :class="['dialog box absolute flex flex-column flex-ai-center flex-jc-center', shadowDisplay ? 'dialog--active' : 'dialog--hide']"
-        @click.stop
-      >
-        <img src class="dialog__image" />
-        <span class="dialog__title ft-semi-bold ft-40 line-fill">解锁本试听课程</span>
-        <span class="dialog__spc ft-32">需要兑换250积分，积分一单兑换后无法撤回。</span>
-        <div class="dialog__button ft-semi-bold ft-34 ft-fff" @click="handleUserExchange">确认解锁</div>
-        <img src class="dialog__close absolute" />
+      <div class="recom__list">
+        <course-list
+          header
+          :list="recomProducts"
+          @userExchangeProduct="handleUserExchangeProduct"
+        />
       </div>
-    </div>
+
+      <div
+        class="shadow fixed"
+        v-if="shadowDisplay"
+        @click="handleToggleShadow"
+      >
+        <div
+          class="dialog box absolute flex flex-column flex-ai-center flex-jc-center"
+          @click.stop
+        >
+          <img src class="dialog__image" />
+          <span class="dialog__title ft-semi-bold ft-40 line-fill">Hi，{{nickName}}</span>
+          <span class="dialog__spc ft-32">又是新的米茶一天，给自己今天的状态做一个预估吧！</span>
+          <navigator
+            url="/pages/assessment/index"
+            class="dialog__button ft-semi-bold ft-34 ft-fff"
+          >现在开始</navigator>
+          <img
+            src
+            class="dialog__close absolute"
+            @click="handleToggleShadow"
+          />
+        </div>
+      </div>
+    </radian-box>
   </base-page>
 </template>
 
 <script>
 import inject from "@/static/js/inject";
-import {
-  userFetchRecomProducts,
-  userExchangeProduct
-} from "@/static/apis/bonusProduct";
-import {
-  userFetchTasks,
-  userFetchSignCondition
-} from "@/static/apis/groupSchedule";
 
 const app = getApp();
 
 export default inject({
   data() {
     return {
-      recomProducts: [],
-      tasks: [],
-      signList: [],
-      shadowDisplay: false
+      signList: [], // 签到列表
+      assessmentTask: [], // 每日评估任务
+      tasks: [], // 每日打卡任务
+      recomProducts: [], // 推荐的课程列表
+      completeCount: 0, // 每日完成的任务数
+      totalCount: 0, // 每日总任务数
+      shadowDisplay: false,
+      pageDisplay: false,
+      nickName: '',
+      radianStyle: {
+        background: '#fff',
+      },
     };
   },
   async onLoad() {
@@ -383,20 +382,24 @@ export default inject({
         this.callAPI("groupSchedule.getTasks"),
         this.callAPI("bonusProduct.getLastestBonusCourseProducts")
       ]);
-      this.recomProducts = recomProducts.list;
-      this.tasks = tasks.tasks;
       this.signList = signCondition.signList;
+      this.assessmentTask = signCondition.task;
+      this.tasks = tasks.tasks;
+      this.completeCount = tasks.completeCount;
+      this.totalCount = tasks.totalCount;
+      this.recomProducts = recomProducts.list;
+      this.nickName = app.globalData.profile.nickName;
 
+      this.pageDisplay = true;
       this.shadowDisplay = app.globalData.todayFirstLogin;
-    },
-    async getTasks() {
-      return await userFetchTasks();
     },
     async handleUserExchangeProduct(index) {
       uni.showLoading({ title: "加载中.." });
 
       const target = this.recomProducts[index];
-      const result = await this.callAPI(userExchangeProduct(target._id));
+      const result = await this.callAPI('bonusProduct.exchangeProduct', {
+        id: target._id
+      });
 
       uni.hideLoading();
       target.hasExchanged = result.success;
@@ -405,7 +408,7 @@ export default inject({
       this.shadowDisplay = !this.shadowDisplay;
     },
     handleUserCheckIn() {
-      uni.navigateTo({ url: "/pages/assessment/index " });
+      uni.navigateTo({ url: "/pages/assessment/index" });
     }
   }
 });

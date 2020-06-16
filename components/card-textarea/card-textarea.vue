@@ -33,6 +33,7 @@
   <div :class="['textarea-box box', { 'textarea-box--finish': recordFinish }]">
     <textarea
       :class="['textarea ft-34', {'textarea--finish': recordFinish}]"
+      :value="safeSourceValue(source)"
       :maxlength="-1"
       :disabled="recordFinish"
       @input="handleUserInput"
@@ -43,12 +44,8 @@
 <script>
   export default {
     props: {
-      id: {
-        type: String,
-      },
-      userInputValue: {
-        type: String,
-        value: '',
+      source: {
+        type: Object,
       },
       recordFinish: {
         type: Boolean,
@@ -56,13 +53,20 @@
       },
     },
     methods: {
+      safeSourceValue(source) {
+        if (source && source.value) {
+          return source.value
+        }
+
+        return ''
+      },
       handleUserInput(e) {
         const {
           detail: { value },
         } = e;
 
         this.$emit("valueChange", {
-          questionId: this.id,
+          questionId: this.source.id,
           answer: {
             text: value,
             photos: [],
