@@ -74,8 +74,13 @@ export default inject({
 
       app.globalData.todayFirstLogin = !!result.todayFirstLogin;
 
-      const { supervise } = await this.callAPI("system.getAppLabels");
-      app.globalData.labels = supervise;
+      const { coursePage } = await this.callAPI("system.getAppLabels");
+      app.globalData.coursePage = coursePage
+        ? coursePage
+        : {
+            title: "100天，让您成为“自来瘦”专家",
+            desc: "本课程由已经为20000亚洲人成功减脂20吨的国内先进科学减脂团队米茶计划，以梅奥中心基本营养方案",
+          };
 
       uni.switchTab({
         url: "/pages/index/index"

@@ -272,9 +272,9 @@
       },
       handleUserCheckProduct(item, index) {
 
-        // if (item.hasExchanged) {
-        //   return
-        // }
+        if (item.hasExchanged) {
+          return
+        }
 
         this.shadowDisplay = true;
         this.activeIndex = index;

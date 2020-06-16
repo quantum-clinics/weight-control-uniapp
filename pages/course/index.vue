@@ -30,8 +30,8 @@
     <radian-box>
       <div class="course box">
         <div class="course__header relative">
-          <div class="header__title ft-40 ft-semi-bold ft-fff">100天，让您成为“自来瘦”专家</div>
-          <div class="header__spc ft-26">本课程由已经为20000亚洲人成功减脂20吨的国内先进科学减脂团队米茶计划，以梅奥中心基本营养方案</div>
+          <div class="header__title ft-40 ft-semi-bold ft-fff">{{coursePage.title}}</div>
+          <div class="header__spc ft-26">{{coursePage.desc}}</div>
           <div class="line-fill ft-semi-bold ft-fff">共 {{total}} 课</div>
         </div>
 
@@ -65,6 +65,7 @@
         allProduct: [],
         pageDisplay: false,
         total: 0,
+        coursePage: {},
       }
     },
     onLoad() {
@@ -95,6 +96,7 @@
         pages.finish = this.allProduct.length === total;
 
         this.total = total;
+        this.coursePage = app.globalData.coursePage;
 
         uni.hideLoading();
       },
