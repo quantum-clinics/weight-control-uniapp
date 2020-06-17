@@ -9,6 +9,14 @@
 			}
 		},
 		{
+			"path": "pages/refill/index",
+			"style": {}
+		},
+		{
+			"path": "pages/micha/index",
+			"style": {}
+		},
+		{
 			"path": "pages/index/index",
 			"style": {}
 		},

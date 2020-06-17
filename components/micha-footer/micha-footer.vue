@@ -107,7 +107,10 @@
 <template>
   <div :class="[{ 'footer--active': footerActive }, 'footer fixed']">
     <div class="footer__header box flex">
-      <div class="header__mission ft-medium ft-fff">4/8</div>
+      <div
+        class="header__mission ft-medium ft-fff"
+        @click="handleBackQuestion"
+      >4/8</div>
       <input
         class="header__input box flex-fill ft-28"
         placeholder="在此输入..."
@@ -168,21 +171,12 @@
   ];
 
   export default {
-    props: {
-      userInputValue: {
-        type: String,
-        value: '',
-      }
-    },
     data() {
       return {
         list,
         footerActive: false,
         cloneUserInputValue: '',
       }
-    },
-    mounted() {
-      this.cloneUserInputValue = this.userInputValue;
     },
     methods: {
       handleToggleMenus() {
@@ -208,6 +202,9 @@
           }
         });
       },
+      handleBackQuestion() {
+        this.$emit('backQuestion');
+      }
     },
   };
 </script>

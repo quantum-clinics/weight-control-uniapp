@@ -199,18 +199,18 @@
             <div v-if="item.isLastest" class="info__mark ft-20">最近更新</div>
             <span class="info__time flex-fill ft-26 line-fill">{{lastedUpdateTime(item.updateDate)}} 更新</span>
             <div
-                class="info__status info__status--unread flex flex-ai-center"
-                v-if="!item.hasExchanged"
+              class="info__status info__status--unread flex flex-ai-center"
+              v-if="!item.hasExchanged"
             >
               <span class="unread__span ft-24 ft-semi-bold">阅读需 {{item.bonus}}</span>
               <img
-                  src="https://qtclinics-resource.oss-cn-shenzhen.aliyuncs.com/micha/healthmarket/icon-currency.png"
-                  class="unread__icon"
+                :src="`${OSS}/micha/icon/icon-currency.png`"
+                class="unread__icon"
               />
             </div>
             <div
-                class="info__status info__status--read ft-24 ft-semi-bold"
-                v-if="item.hasExchanged && item.hasRead"
+              class="info__status info__status--read ft-24 ft-semi-bold"
+              v-if="item.hasExchanged && item.hasRead"
             >已阅读</div>
           </div>
         </div>
@@ -225,14 +225,25 @@
         class="dialog box absolute flex flex-column flex-ai-center flex-jc-center"
         @click.stop
       >
-        <img src class="dialog__image" />
+        <img
+          :src="`${OSS}/micha/icon/icon-course-lock.png`"
+          class="dialog__image"
+        />
         <span class="dialog__title ft-semi-bold ft-40 line-fill">解锁本试听课程</span>
         <span class="dialog__spc ft-32">需要兑换250积分，积分一单兑换后无法撤回。</span>
         <div
           class="dialog__button ft-semi-bold ft-34 ft-fff"
           @click="handleUserExchange"
         >确认解锁</div>
-        <img src class="dialog__close absolute">
+        <div
+          class="dialog__close absolute flex flex-ai-center flex-jc-center"
+          @click="handleToggleShadow"
+        >
+          <img
+            :src="`${OSS}/micha/icon/icon-shadow-close.png`"
+            class="close__image "
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -240,6 +251,7 @@
 
 <script>
   import { formatTime } from '@/static/js/utils';
+  const app = getApp();
 
   export default {
     props: {
@@ -251,13 +263,12 @@
         type: Boolean,
         value: false
       },
-      list: {
-        type: Array,
-      },
+      list: Array,
     },
     data() {
       return {
         shadowDisplay: false,
+        OSS: app.globalData.OSS,
       }
     },
     methods: {

@@ -93,8 +93,8 @@
 
       <!-- 数据展示 -->
       <div
-          class="flex flex-column"
-          v-if="talker.data"
+        class="flex flex-column"
+        v-if="talker.data"
       >
         <div class="info__content ft-32">{{talker.data}}</div>
         <div class="data__intro flex flex-column flex-ai-center">
@@ -114,6 +114,34 @@
           :src="talker.image"
         />
       </div>
+
+      <!-- 单项选择问题 -->
+      <micha-question-radio
+        v-if="componentRender('单选')"
+        :question="talker.question"
+        @valueChange="handleValueChange"
+      />
+
+      <!-- 多项选择问题 -->
+      <micha-question-multiple
+        v-if="componentRender('多选')"
+        :question="talker.question"
+        @valueChange="handleValueChange"
+      />
+
+      <!-- 填空回答问题 -->
+      <micha-question-input
+        v-if="componentRender('填空')"
+        :question="talker.question"
+      />
+
+      <!-- 评分回答问题 -->
+      <micha-question-score
+        v-if="componentRender('评分')"
+        :question="talker.question"
+        @valueChange="handleValueChange"
+      />
+
     </div>
   </div>
 </template>
@@ -121,9 +149,15 @@
 <script>
   export default {
     props: {
-      talker: {
-        type: Object,
+      talker: Object,
+    },
+    methods: {
+      componentRender(type) {
+        return !!(this.talker.question && this.talker.question.type && this.talker.question.type === type);
       },
+      handleValueChange(value) {
+        this.$emit('valueChange', value)
+      }
     },
   };
 </script>

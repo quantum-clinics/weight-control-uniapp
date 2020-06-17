@@ -14,6 +14,7 @@ export default function (origin) {
       return {
         ...originData,
         errorMessage: '',
+        OSS: app.globalData.OSS,
       }
     },
     methods: {

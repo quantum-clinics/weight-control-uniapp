@@ -227,6 +227,11 @@
   left: 50%;
   transform: translateX(-50%);
 }
+
+.close__image {
+  width: 60rpx;
+  height: 60rpx;
+}
 </style>
 
 <template>
@@ -237,7 +242,7 @@
         <div class="header__currency flex flex-ai-center">
           <img
               class="currency__icon"
-              src="https://qtclinics-resource.oss-cn-shenzhen.aliyuncs.com/micha/healthmarket/icon-currency.png"
+              :src="`${OSS}/micha/icon/icon-currency.png`"
           />
           <span class="currency__span ft-semi-bold font-28">米茶币</span>
         </div>
@@ -271,21 +276,22 @@
           <div class="card__mission relative box flex flex-jc-center">
             <img
               class="mission__image"
-              src="https://qtclinics-resource.oss-cn-shenzhen.aliyuncs.com/micha/icon/icon-medal.png"
+              :src="`${OSS}/micha/icon/icon-medal.png`"
             />
             <span class="mission__span flex-1 ft-bold ft-fff ft-32">今日有新的挑战</span>
             <img
               class="mission__icon"
-              src="https://qtclinics-resource.oss-cn-shenzhen.aliyuncs.com/micha/healthmarket/icon-arrow.png"
+              :src="`${OSS}/micha/icon/icon-arrow-right.png`"
             />
 
             <div class="mission__float absolute flex flex-ai-center flex-jc-center">
               <span class="float__span ft-fff ft-24">幸运日 3倍</span>
               <img
                 class="float__icon"
-                src="https://qtclinics-resource.oss-cn-shenzhen.aliyuncs.com/micha/healthmarket/icon-currency.png"
+                :src="`${OSS}/micha/icon/icon-currency.png`"
               />
             </div>
+
           </div>
           -->
         </div>
@@ -296,7 +302,7 @@
       <div class="banner flex box relative">
         <img
           class="banner__image"
-          src="https://qtclinics-resource.oss-cn-shenzhen.aliyuncs.com/micha/icon/image-call.png"
+          :src="`${OSS}/micha/icon/image-call.png`"
         />
 
         <div class="banner__intro flex-fill">
@@ -307,7 +313,7 @@
               <span class="price__span ft-semi-bold ft-24 line-fill">需120</span>
               <img
                 class="price__icon"
-                src="https://qtclinics-resource.oss-cn-shenzhen.aliyuncs.com/micha/healthmarket/icon-currency.png"
+                :src="`${OSS}/micha/icon/icon-currency.png`"
               />
             </div>
           </div>
@@ -332,18 +338,25 @@
           class="dialog box absolute flex flex-column flex-ai-center flex-jc-center"
           @click.stop
         >
-          <img src class="dialog__image" />
+          <img
+            :src="`${OSS}/micha/icon/icon-egg-light.png`"
+            class="dialog__image"
+          />
           <span class="dialog__title ft-semi-bold ft-40 line-fill">Hi，{{nickName}}</span>
           <span class="dialog__spc ft-32">又是新的米茶一天，给自己今天的状态做一个预估吧！</span>
           <navigator
             url="/pages/assessment/index"
             class="dialog__button ft-semi-bold ft-34 ft-fff"
           >现在开始</navigator>
-          <img
-            src
-            class="dialog__close absolute"
+          <div
+            class="dialog__close absolute flex flex-ai-center flex-jc-center"
             @click="handleToggleShadow"
-          />
+          >
+            <img
+              :src="`${OSS}/micha/icon/icon-shadow-close.png`"
+              class="close__image "
+            />
+          </div>
         </div>
       </div>
     </radian-box>
