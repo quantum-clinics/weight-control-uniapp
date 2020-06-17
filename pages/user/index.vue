@@ -135,7 +135,10 @@
             <div class="ft-40 ft-semi-bold line-fill ft-title">{{nickName}}</div>
             <div class="user__create ft-28 line-fill ft-semi-bold ft-desc">{{joinTime(createDate)}} 加入</div>
             <div class="user__target flex-ai-center box">
-              <img class="target__icon" src/>
+              <img
+                class="target__icon"
+                :src="`${OSS}/micha/icon/icon-weight-target.png`"
+              />
               <span class="ft-24 ft-semi-bold flex-fill target__span">减重目标</span>
               <span class="ft-24 ft-semi-bold ft-fff">4公斤</span>
             </div>
@@ -166,15 +169,18 @@
 
         <div class="user__menus">
           <div
-              v-for="(item, index) in menus"
-              :key="index"
-              v-if="item.url || index === 4"
-              class="menu__item flex flex-ai-center"
-              @click="handleItemClick(index)"
+            v-for="(item, index) in menus"
+            :key="index"
+            v-if="item.url"
+            class="menu__item flex flex-ai-center"
+            @click="handleItemClick(index)"
           >
             <img class="menu__icon" :src="item.icon" />
             <span class="menu__span flex-fill ft-32">{{item.span}}</span>
-            <img class="icon" src />
+            <img
+              class="icon"
+              :src="`${OSS}/micha/icon/icon-arrow-right.png`"
+            />
           </div>
         </div>
       </div>
@@ -188,23 +194,31 @@
   const app = getApp();
   const menus = [
     {
-      icon: '',
+      icon: `${app.globalData.OSS}/micha/icon/icon-my-consult.png`,
       span: '我的咨询',
     }, {
-      icon: '',
+      icon: `${app.globalData.OSS}/micha/icon/icon-my-report.png`,
+      type: 'navigateTo',
       url: '/pages/report/index',
       span: '我的报告',
     }, {
-      icon: '',
+      icon: `${app.globalData.OSS}/micha/icon/icon-my-function.png`,
       span: '我的方案',
     }, {
-      icon: '',
+      icon: `${app.globalData.OSS}/micha/icon/icon-my-checkin.png`,
       span: '我的打卡',
     }, {
-      icon: '',
+      icon: `${app.globalData.OSS}/micha/icon/icon-my-course.png`,
+      url: '/pages/course/index',
+      type: 'switchTab',
       span: '我的精品课',
     }, {
-      icon: '',
+      icon: `${app.globalData.OSS}/micha/icon/icon-micha-refill.png`,
+      type: 'navigateTo',
+      url: '/pages/refill/index',
+      span: '充值',
+    }, {
+      icon: `${app.globalData.OSS}/micha/icon/icon-micha-about.png`,
       span: '关于米茶',
     },
   ];
@@ -232,11 +246,17 @@
       handleItemClick(index) {
         const target = this.menus[index];
 
-        if (!target.url || !target.handle) {
+        if (!target.url) {
           return;
         }
 
-        uni.navigateTo({ url: target.url });
+        if (target.type === 'navigateTo') {
+          uni.navigateTo({ url: target.url });
+        }
+
+        if (target.type === 'switchTab') {
+          uni.switchTab({ url: target.url });
+        }
       }
     },
   });

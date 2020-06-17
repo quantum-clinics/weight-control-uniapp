@@ -97,7 +97,10 @@
     <div class="refill__header box flex flex-column flex-ai-center">
       <div class="header__count box ft-medium line-fill">4000</div>
       <div class="header__currency flex flex-ai-center">
-        <img src class="currency__icon" />
+        <img
+          :src="`${OSS}/micha/icon/icon-currency.png`"
+          class="currency__icon"
+        />
         <span class="currency__span ft-28 ft-medium">米茶币余额</span>
       </div>
     </div>

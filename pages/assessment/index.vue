@@ -148,11 +148,17 @@
     <radian-box>
       <div class="ass ass__finish box" v-if="recordFinish">
         <div class="finish__header flex flex-ai-center">
-          <img src class="header__image">
+          <img
+            :src="`${OSS}/micha/icon/icon-assessment.png`"
+            class="header__image"
+          >
           <span class="header__span ft-medium ft-28">真厉害！请带着这份饱满的状态来面对新的一天吧！</span>
         </div>
         <div class="finish__tips flex flex-ai-center">
-          <img src class="tips__icon">
+          <img
+            :src="`${OSS}/micha/icon/icon-word.png`"
+            class="tips__icon"
+          >
           <span class="tips__span ft-26 f5-medium">米茶真心话</span>
         </div>
         <div class="finish__title ft-48 ft-semi-bold">
