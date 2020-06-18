@@ -94,11 +94,13 @@
     height: 160rpx;
     background: rgba(245, 245, 245, 1);
     border-radius: 24rpx;
+    padding: 0 32rpx;
   }
 
   .header__image {
     width: 96rpx;
     height: 96rpx;
+    margin-right: 24rpx;
   }
 
   .header__span {
@@ -144,33 +146,37 @@
 </style>
 
 <template>
-  <base-page :errorMessage="errorMessage">
+  <base-page
+    :errorMessage="errorMessage"
+    v-if="pageDisplay"
+  >
     <radian-box>
       <div class="ass ass__finish box" v-if="recordFinish">
-        <div class="finish__header flex flex-ai-center">
+        <div class="finish__header box flex flex-ai-center">
           <img
-            :src="`${OSS}/micha/icon/icon-assessment.png`"
+            :src="assessmentFinish.tip.icon"
             class="header__image"
           >
-          <span class="header__span ft-medium ft-28">真厉害！请带着这份饱满的状态来面对新的一天吧！</span>
+          <span class="header__span flex-fill ft-medium ft-28">{{assessmentFinish.tip.content}}</span>
         </div>
         <div class="finish__tips flex flex-ai-center">
           <img
-            :src="`${OSS}/micha/icon/icon-word.png`"
+            :src="assessmentFinish.qaIcon"
             class="tips__icon"
           >
-          <span class="tips__span ft-26 f5-medium">米茶真心话</span>
+          <span class="tips__span ft-26 f5-medium">{{assessmentFinish.qaTitle}}</span>
         </div>
         <div class="finish__title ft-48 ft-semi-bold">
-          难以戒除含糖饮料的情况下如何选择？
+          {{assessmentFinish.qa.q}}
         </div>
         <div class="finish__spc ft-34">
-          用甜味剂替代蔗糖虽然能够降低能量摄入，但是也会有其他问题。研究显示，使用甜味剂并不能使人的体重变轻。实际上甜味剂是在愚弄人们的大脑。它的甜味让人体感觉到吃了含有糖的食物，刺激胰岛素的产生，从而阻碍了脂肪的分解，促进脂肪的合成。
+          {{assessmentFinish.qa.a}}
         </div>
 
-        <div class="finish__button ft-34 ft-fff">ok，米茶</div>
+        <div
+            class="finish__button ft-34 ft-fff">{{assessmentFinish.button}}</div>
       </div>
-      <div class="ass box" v-else>
+      <div class="ass box" v-if="!recordFinish">
         <div class="ass__header relative ft-semi-bold ft-40 ft-fff">
           {{assessmentTask.subTitle}}
         </div>
@@ -222,7 +228,9 @@
         chooseList: [1, 2, 3, 4, 5],
         answers: {},
         assessmentTask: {},
+        assessmentFinish: {},
         recordFinish: false,
+        pageDisplay: false,
       }
     },
     onLoad() {
@@ -249,11 +257,18 @@
       // 获取数据
       renderQuestion() {
         const { assessmentTask } = this.getPrevPage();
+
+        if (assessmentTask.done) {
+          this.recordFinish = true;
+          this.assessmentFinish = assessmentTask.shareValue;
+        }
+
         const answers = {};
-        assessmentTask.questions.forEach((item) => answers[item.id] = { text: 0, photos: []});
+        assessmentTask.questions.forEach((item) => answers[item.id] = { text: 0, photos: [] });
+        this.answers = answers;
 
         this.assessmentTask = assessmentTask;
-        this.answers = answers;
+        this.pageDisplay = true;
       },
       safeIconSource(source, value) {
         if (source && source.options && source.options.length && source.options[0].icons && source.options[0].icons.length) {
@@ -284,7 +299,19 @@
           return;
         }
 
+        uni.showLoading({ title: '打卡中...' });
+
         const res = await this.submitCheckInData();
+        this.assessmentFinish = res.shareValue;
+
+        const prePage = this.getPrevPage();
+        await prePage.fetchTasks();
+
+        uni.hideLoading();
+        uni.showToast({ title: '打卡成功!' });
+
+        uni.pageScrollTo({ scrollTop: 0 });
+        this.recordFinish = true;
       }
     }
   });

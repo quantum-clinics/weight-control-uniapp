@@ -284,6 +284,8 @@
       handleUserCheckProduct(item, index) {
 
         if (item.hasExchanged) {
+          console.log('????')
+          uni.navigateTo({ url: `/pages/webview/index?url=${item.url}` })
           return
         }
 

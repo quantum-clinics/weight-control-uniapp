@@ -110,7 +110,7 @@
       <div
         class="header__mission ft-medium ft-fff"
         @click="handleBackQuestion"
-      >4/8</div>
+      >{{taskSchedule.completeCount}}/{{taskSchedule.totalCount}}</div>
       <input
         class="header__input box flex-fill ft-28"
         placeholder="在此输入..."
@@ -171,6 +171,9 @@
   ];
 
   export default {
+    props: {
+      taskSchedule: Object,
+    },
     data() {
       return {
         list,

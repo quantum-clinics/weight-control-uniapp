@@ -36,9 +36,26 @@
     border-radius: 44rpx;
   }
 
+  .button__back {
+    color: rgba(0, 0, 0, .65);
+    margin: auto;
+    background: rgba(250, 250, 250, 1);
+    border: 1rpx solid rgba(202, 207, 216, 1);
+  }
+
+  .button__reagain {
+    margin: 80rpx auto 32rpx;
+  }
+
   .button--finish {
     background: rgba(24, 140, 252, 1);
     color: rgba(255, 255, 255, 1);
+  }
+
+  .button__icon {
+    width: 48rpx;
+    height: 48rpx;
+    margin-right: 16rpx;
   }
 
   .canvas__button,
@@ -84,8 +101,7 @@
   .header__icon {
     width: 32rpx;
     height: 32rpx;
-    margin-left: 16rpx;
-    background: #ddd;
+    margin-right: 16rpx;
   }
 
   .guide__box {
@@ -93,8 +109,8 @@
     top: 48rpx;
     padding: 0 8rpx 0 24rpx;
     height: 56rpx;
-    background: rgba(252,252,255,1);
-    box-shadow: 0 12rpx 32rpx -8rpx rgba(188,186,216,0.43);
+    background: rgba(252, 252, 255, 1);
+    box-shadow: 0 12rpx 32rpx -8rpx rgba(188, 186, 216, .43);
     border-radius: 200rpx 0 0 200rpx;
     border: 2rpx solid rgba(255, 255, 255, 1);
   }
@@ -116,11 +132,11 @@
       <div
         :class="['header__intro flex flex-ai-center flex-jc-center', { 'header__intro--active': recordFinish} ]"
       >
-        <span class="ft-semi-bold ft-fff ft-40">{{updateTitle}}</span>
         <img
           class="header__icon"
-          src
+          :src="titleIcon || `${OSS}/micha/icon/icon-checkin-finish.png`"
         >
+        <span class="ft-semi-bold ft-fff ft-40">{{title || '打卡成功'}}</span>
       </div>
 
       <div :class="[{'page--finish': recordFinish}, 'page box absolute']">
@@ -218,13 +234,27 @@
               :source="item"
               :recordFinish="recordFinish"
               @valueChange="handleValueChange"
+            />
+          </div>
+
+          <!-- 数值填空打卡 -->
+          <div
+            class="component-padding box"
+            v-if="item.type === '数值填空'"
+          >
+            <card-input-float
+              :source="item"
+              :recordFinish="recordFinish"
+              @valueChange="handleValueChange"
               @valueChangeError="handleValueChangeError"
             />
           </div>
 
           <!-- 数值 -->
           <div v-if="item.type === '数值'">
-            <card-input-finish />
+            <card-input-finish
+              :source="item"
+            />
           </div>
 
           <!-- 想法打卡 -->
@@ -239,11 +269,6 @@
             />
           </div>
 
-          <!-- weight/waist 打卡展示 -->
-          <div class="box">
-
-          </div>
-
         </div>
 
         <div
@@ -253,16 +278,23 @@
         >打卡</div>
 
         <div
-          class='button button--finish ft-medium ft-32'
+          class='button button--finish flex flex-jc-center flex-ai-center button__reagain'
           v-if="recordFinish && canUpdate"
           @click="handleReCheckin"
-        >继续打卡</div>
+        >
+          <img
+            :src='updateIcon || `${OSS}/micha/icon/icon-checkin-reagain.png`'
+            class="button__icon"
+          />
+          <span class="ft-medium ft-32">{{updateTitle || '继续打卡'}}</span>
+        </div>
 
-        <div
-          :class="[{'button--finish': userCanSubmit}, 'button ft-medium ft-32']"
+        <navigator
+          open-type="switchTab"
+          url="/pages/index/index"
+          class="button button__back ft-medium ft-32"
           v-if="recordFinish"
-          @click="handleUserSubmit"
-        >返回首页</div>
+        >返回首页</navigator>
 
       </div>
     </radian-box>
@@ -284,13 +316,15 @@
         taskMenus: [], // 所需回答问题列表
         task: {}, // 当前打卡数据
         answers: {}, // 用户所有回答
-        updateTitle: '',
-
-        canUpdate: false,
 
         userCanSubmit: false, // 用户是否可以提交按钮
         recordFinish: false, // 打卡是否已经完成
-        pageDisplay: false,
+        pageDisplay: false, // 页面渲染
+
+        title: '',
+        titleIcon: '',
+        updateTitle: '',
+        canUpdate: false,
       };
     },
     onLoad(options) {
@@ -429,11 +463,19 @@
           return;
         }
 
+        uni.showLoading({ title: '打卡中...' });
+
         const res = await this.submitCheckInData();
         this.taskMenus = res.shareValue.answers;
+        this.title = res.shareValue.title;
+        this.titleIcon = res.shareValue.titleIcon;
         this.updateTitle = res.shareValue.updateTitle;
         this.canUpdate = res.shareValue.canUpdate;
 
+        const prePage = this.getPrevPage();
+        await prePage.fetchTasks();
+
+        uni.hideLoading();
         uni.showToast({ title: '打卡成功!' });
 
         uni.pageScrollTo({ scrollTop: 0 });

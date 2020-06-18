@@ -59,6 +59,10 @@
 		{
 			"path": "pages/auth/index",
 			"style": {}
+		},
+		{
+			"path": "pages/webview/index",
+			"style": {}
 		}
 	],
 	"globalStyle": {
@@ -84,6 +88,12 @@
 				"text": "课程",
 				"iconPath": "static/images/icon-class.png",
 				"selectedIconPath": "static/images/icon-class-active.png"
+			},
+			{
+				"pagePath": "pages/micha/index",
+				"text": "Hi, 米茶",
+				"iconPath": "static/images/icon-micha.png",
+				"selectedIconPath": "static/images/icon-micha-active.png"
 			},
 			{
 				"pagePath": "pages/user/index",

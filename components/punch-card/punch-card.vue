@@ -88,8 +88,8 @@
 
 <template>
   <div class="card box relative">
-    <div class="card__title ft-semi-bold ft-40">打卡签到({{completeCount}}/{{totalCount}})</div>
-    <div class="card__spc ft-28">每天完成所有打卡自动签到</div>
+    <div class="card__title ft-semi-bold ft-40">{{indexPage.title}}({{completeCount}}/{{totalCount}})</div>
+    <div class="card__spc ft-28">{{indexPage.desc}}</div>
     <div class="card__list flex flex-ai-center">
       <navigator
         class="list__item flex flex-ai-center flex-jc-center flex-column"
@@ -116,7 +116,7 @@
             <img
               class="status__icon"
               v-if="item.done"
-              src
+              :src="`${OSS}/micha/icon/icon-punch-card-finish.png`"
             >
           </div>
         </div>
@@ -127,6 +127,8 @@
 </template>
 
 <script>
+  const app = getApp();
+
   export default {
     props: {
       completeCount: {
@@ -140,6 +142,12 @@
       tasks: {
         type: Array,
       },
-    }
+    },
+    data() {
+      return {
+        OSS: app.globalData.OSS,
+        indexPage: app.globalData.indexPage,
+      }
+    },
   };
 </script>

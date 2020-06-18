@@ -123,7 +123,10 @@
       </div>
     </div>
 
-    <div class="refill__button ft-medium ft-32 ft-fff">确认充值，去支付</div>
+    <div
+      class="refill__button ft-medium ft-32 ft-fff"
+      @click="handleRefillCurrency"
+    >确认充值，去支付</div>
   </div>
 </template>
 
@@ -147,7 +150,48 @@
       },
       handleSelectIndex(index) {
         this.currentIndex = index;
-      }
+      },
+      async getTrade() {
+        return await this.callAPI("cashProduct.order", {
+          id: this.refillList[this.currentIndex]._id,
+        });
+      },
+      async getOrderInfo(trade) {
+        return await this.callAPI("cashProduct.requestToPay", {
+          trade,
+          channel: "alipay",
+          endPoint: "mobile_inner_app"
+        });
+      },
+      async handleRefillCurrency() {
+        uni.showLoading({ title: '请稍后...' });
+
+        const { trade } = await this.getTrade();
+        const { chargeID, tradeID, statement } = await this.getOrderInfo(trade);
+
+        uni.requestPayment({
+          provider: "alipay",
+          orderInfo: statement.tradeNo,
+          success: (res) => {
+            uni.hideLoading();
+            uni.showToast({
+              title: "支付成功",
+              icon: "success",
+              duration: 2000,
+              complete: function() {}
+            });
+          },
+          fail: (err) => {
+            uni.hideLoading();
+            uni.showToast({
+              title: "支付失败，请到订单中心重新支付",
+              icon: "none",
+              duration: 2000,
+              complete: function() {}
+            });
+          }
+        });
+      },
     }
   })
 </script>

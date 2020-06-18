@@ -179,7 +179,7 @@
             <span class="menu__span flex-fill ft-32">{{item.span}}</span>
             <img
               class="icon"
-              :src="`${OSS}/micha/icon/icon-arrow-right.png`"
+              :src="`${OSS}/micha/icon/icon-arrow-right-gray.png`"
             />
           </div>
         </div>
@@ -191,6 +191,7 @@
 <script>
   import { formatTime } from '@/static/js/utils';
   import inject from '@/static/js/inject';
+
   const app = getApp();
   const menus = [
     {
@@ -222,6 +223,8 @@
       span: '关于米茶',
     },
   ];
+  let pageInit = false;
+
   export default inject({
     data() {
       return {
@@ -232,14 +235,29 @@
         pageDisplay: false,
       }
     },
-    async onLoad() {
-      const { nickName, avatarUrl, createDate } = app.globalData.profile;
-      this.nickName = nickName;
-      this.avatarUrl = avatarUrl;
-      this.createDate = createDate;
-      this.pageDisplay = true;
+    onShow() {
+      if (app.globalData.needRecord) {
+        uni.switchTab({
+          url: "/pages/micha/index"
+        });
+        return;
+      }
+
+      if (pageInit) {
+        return
+      }
+
+      this.fetchUserData();
     },
     methods: {
+      fetchUserData() {
+        const { nickName, avatarUrl, createDate } = app.globalData.profile;
+        pageInit = true;
+        this.nickName = nickName;
+        this.avatarUrl = avatarUrl;
+        this.createDate = createDate;
+        this.pageDisplay = true;
+      },
       joinTime(date) {
         return formatTime(date);
       },

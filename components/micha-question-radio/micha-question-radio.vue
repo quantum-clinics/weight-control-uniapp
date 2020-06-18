@@ -53,7 +53,7 @@
   <div class="question">
     <div class="content box">
       <div class="content__box flex flex-column flex-ai-start">
-        <div class="content__mark ft-20 ft-semi-bold ft-fff">{{question.mark}}</div>
+        <div class="content__mark ft-20 ft-semi-bold ft-fff">{{question.mark || '小课'}}</div>
         <div class="content__title ft-medium ft-32">{{question.title}}</div>
         <div class="content__radios">
           <div
@@ -62,7 +62,7 @@
             :class="['choose__item ft-32', { 'choose__item--active': currentRadioIndex === index }]"
             @click="handleSelectRadio(index)"
           >
-            {{item}}
+            {{item.answer}}
           </div>
         </div>
       </div>
@@ -70,7 +70,7 @@
       <div
         v-if="buttonDisplay"
         class="content__button ft-28 ft-fff ft-medium line-fill"
-        @click="handleSumbitRadio(question.options[currentRadioIndex])"
+        @click="handleSumbitRadio(question.options[currentRadioIndex].value)"
       >提交选择</div>
     </div>
   </div>
@@ -80,6 +80,9 @@
   export default {
     props: {
       question: Object,
+    },
+    mounted() {
+      console.log('this.question', this.question);
     },
     data() {
       return {

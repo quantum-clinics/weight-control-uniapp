@@ -38,6 +38,7 @@
       </div>
 
       <micha-footer
+        :taskSchedule="taskSchedule"
         @backQuestion="handleBackQuesitionRender"
         @userInput="handleUserInput"
       />
@@ -74,13 +75,9 @@
     },
   ];
 
-  const list = [
-    {
-      type: 1,
-      html: '米茶计划为您提供 5X8 小时，工作时间内的执业营养师一对一咨询服务。营养师会对您的打卡记录、体脂情况、个人报告进行讲解，也会解答您关于减重方面的疑问。这是一项付费服务',
-    },
-  ];
   const app = getApp();
+  let pageInit = false;
+  let checkListInit = false;
 
   export default inject({
     data() {
@@ -92,9 +89,26 @@
           model: false,
           id: '',
         },
+        taskSchedule: {},
       }
     },
-    async onLoad() {
+    onShow() {
+      if (checkListInit && !pageInit) {
+        return;
+      }
+
+      if (app.globalData.needRecord) {
+        this.talksData = [];
+        this.fetchCheckList();
+        return
+      }
+
+      this.taskSchedule = app.globalData.taskSchedule;
+
+      if (pageInit) {
+        return;
+      }
+
       this.fetchTalkDate();
     },
     watch: {
@@ -111,25 +125,45 @@
           }).exec()
         });
       },
-      // 获取数据
-      fetchTalkDate() {
-        this.talksData = [...list];
+      // 获取量表数据
+      async fetchCheckList() {
+        console.log('获取健康量表');
         this.talksDocument = uni.createSelectorQuery().select(".talks");
+        const res = await this.callAPI('system.getCheckList');
+        console.log(res);
 
-        if (questions.length) {
+        if (res.questions.length) {
           const answers = {};
-          questions.forEach((item) => (answers[item.id] = { text: '', photos: [] }));
+          res.questions.forEach((item) => (answers[item.id] = { text: '', photos: [] }));
           this.answers = answers;
+          this.questions = res.questions;
           this.nextQuesitionRender();
         }
+
+        checkListInit = true;
 
         this.$nextTick(() => {
           this.talksReachBottom();
           this.pageDisplay = true;
-        })
+        });
+      },
+      // 获取数据
+      async fetchTalkDate() {
+        console.log('获取页面数据')
+        if (!this.talksDocument) {
+          this.talksDocument = uni.createSelectorQuery().select(".talks");
+        }
+
+        pageInit = true;
+
+        this.$nextTick(() => {
+          this.talksReachBottom();
+          this.pageDisplay = true;
+        });
       },
       // 添加数据至聊天列表中
       pushTalk2List(talk) {
+        const { OSS } = app.globalData;
 
         if (talk.type === 1) {
           talk.avatar = `${OSS}/micha/icon/icon-himicha.png`;
@@ -168,7 +202,7 @@
       },
       // 渲染下一道问题
       nextQuesitionRender() {
-        const nextQuestion = questions.find((item) => !this.answers[item.id].text);
+        const nextQuestion = this.questions.find((item) => !this.answers[item.id].text);
         console.log('回答完毕, 下一道题: ', nextQuestion);
         if (!nextQuestion) {
           this.questionReply.id = '';
@@ -190,13 +224,13 @@
           return;
         }
 
-        const currentQuestionIndex = questions.findIndex((item) => !this.answers[item.id].text);
+        const currentQuestionIndex = this.questions.findIndex((item) => !this.answers[item.id].text);
 
         if (!currentQuestionIndex) {
           return
         }
 
-        this.answers[questions[currentQuestionIndex - 1].id].text = '';
+        this.answers[this.questions[currentQuestionIndex - 1].id].text = '';
         this.nextQuesitionRender();
       },
     }

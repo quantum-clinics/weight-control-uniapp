@@ -135,6 +135,12 @@
         :question="talker.question"
       />
 
+      <!-- 填空回答问题 -->
+      <micha-question-input
+          v-if="componentRender('数值填空')"
+          :question="talker.question"
+      />
+
       <!-- 评分回答问题 -->
       <micha-question-score
         v-if="componentRender('评分')"
@@ -150,6 +156,9 @@
   export default {
     props: {
       talker: Object,
+    },
+    mounted() {
+      console.log('this.talker', this.talker);
     },
     methods: {
       componentRender(type) {

@@ -367,6 +367,7 @@
 import inject from "@/static/js/inject";
 
 const app = getApp();
+let pageInit = false;
 
 export default inject({
   data() {
@@ -385,26 +386,51 @@ export default inject({
       },
     };
   },
-  async onLoad() {
-    await this.fetchIndexDate();
+  onShow() {
+    if (app.globalData.needRecord) {
+      uni.switchTab({
+        url: "/pages/micha/index"
+      });
+      return;
+    }
+
+    if (pageInit) {
+      return
+    }
+
+    this.fetchIndexDate();
   },
   methods: {
     async fetchIndexDate() {
-      const [signCondition, tasks, recomProducts] = await Promise.all([
-        this.callAPI("groupSchedule.getSignCondition"),
-        this.callAPI("groupSchedule.getTasks"),
-        this.callAPI("bonusProduct.getLastestBonusCourseProducts")
+      await Promise.all([
+        this.fetchSignCondition(),
+        this.fetchTasks(),
+        this.fetchRecomProducts(),
       ]);
+
+      pageInit = true;
+      this.nickName = app.globalData.profile.nickName;
+      this.pageDisplay = true;
+    },
+    async fetchSignCondition() {
+      const signCondition = await this.callAPI("groupSchedule.getSignCondition");
       this.signList = signCondition.signList;
       this.assessmentTask = signCondition.task;
+      this.shadowDisplay = app.globalData.todayFirstLogin && !signCondition.task.done;
+    },
+    async fetchTasks() {
+      const tasks = await this.callAPI("groupSchedule.getTasks");
       this.tasks = tasks.tasks;
       this.completeCount = tasks.completeCount;
       this.totalCount = tasks.totalCount;
+      app.globalData.taskSchedule = {
+        completeCount: tasks.completeCount,
+        totalCount: tasks.totalCount,
+      };
+    },
+    async fetchRecomProducts() {
+      const recomProducts = await this.callAPI("bonusProduct.getLastestBonusCourseProducts");
       this.recomProducts = recomProducts.list;
-      this.nickName = app.globalData.profile.nickName;
-
-      this.pageDisplay = true;
-      this.shadowDisplay = app.globalData.todayFirstLogin;
     },
     async handleUserExchangeProduct(index) {
       uni.showLoading({ title: "加载中.." });

@@ -27,7 +27,12 @@ export default {
     userInfo: {},
     systemInfo: {},
     requestRetryWaitTime: 5,
-    todayFirstLogin: false
+    todayFirstLogin: false,
+    taskSchedule: {
+      completeCount: 0,
+      totalCount: 4,
+    }, // 任务进度
+    needRecord: false, // 用户是否需要注册量表
   },
   async onLaunch() {
     // 获取当前平台信息

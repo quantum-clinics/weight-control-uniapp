@@ -57,7 +57,9 @@
     finish: false,
   };
 
+
   const app = getApp();
+  let pageInit = false;
 
   export default inject({
     data() {
@@ -68,8 +70,19 @@
         coursePage: {},
       }
     },
-    onLoad() {
-      this.fetchClassDate()
+    onShow() {
+      if (app.globalData.needRecord) {
+        uni.switchTab({
+          url: "/pages/micha/index"
+        });
+        return;
+      }
+
+      if (pageInit) {
+        return
+      }
+
+      this.fetchClassDate();
     },
     methods: {
       async fetchClassDate() {
@@ -94,6 +107,7 @@
         pages.loading = false;
         pages.page += 1;
         pages.finish = this.allProduct.length === total;
+        pageInit = true;
 
         this.total = total;
         this.coursePage = app.globalData.coursePage;

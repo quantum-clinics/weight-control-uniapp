@@ -90,7 +90,6 @@ export default inject({
       userVerCode: ""
     };
   },
-  onLoad() {},
   methods: {
     // 用户获取验证码
     async handleUserFetchCheckCode() {
