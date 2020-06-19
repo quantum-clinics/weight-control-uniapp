@@ -17,7 +17,7 @@
 
 <template>
   <base-page :errorMessage="errorMessage">
-    <div :class="['micha', pageDisplay ? 'micha--active' : 'micha--hide']">
+    <div :class="['micha box', pageDisplay ? 'micha--active' : 'micha--hide']">
       <div class="talks" ref="talks">
         <div
           class="talk__item"
@@ -27,6 +27,7 @@
           <talk-micha
             v-if="item.type === 1"
             :talker="item"
+            :answers="answers"
             @valueChange="handleValueChange"
           />
 
@@ -39,7 +40,9 @@
 
       <micha-footer
         :taskSchedule="taskSchedule"
+        :questionReply="questionReply"
         @backQuestion="handleBackQuesitionRender"
+        @valueChangeError="handleValueChangeError"
         @userInput="handleUserInput"
       />
     </div>
@@ -48,7 +51,7 @@
 
 <script>
   import inject from '@/static/js/inject';
-  const questions = [
+  const __questions = [
     {
       id: 'danxuan',
       type: '单选',
@@ -77,7 +80,8 @@
 
   const app = getApp();
   let pageInit = false;
-  let checkListInit = false;
+  let quesitionsTask = '';
+  let questions = [];
 
   export default inject({
     data() {
@@ -86,30 +90,15 @@
         answers: {},
         pageDisplay: false,
         questionReply: {
-          model: false,
           id: '',
+          type: '',
+          userInputModel: false,
         },
         taskSchedule: {},
       }
     },
     onShow() {
-      if (checkListInit && !pageInit) {
-        return;
-      }
-
-      if (app.globalData.needRecord) {
-        this.talksData = [];
-        this.fetchCheckList();
-        return
-      }
-
-      this.taskSchedule = app.globalData.taskSchedule;
-
-      if (pageInit) {
-        return;
-      }
-
-      this.fetchTalkDate();
+      this.renderPage();
     },
     watch: {
       talksData() {
@@ -117,6 +106,19 @@
       },
     },
     methods: {
+      renderPage() {
+        if (app.globalData.needRecord && !questions.length) {
+          this.talksData = [];
+          this.fetchCheckList();
+        }
+
+        if (!app.globalData.needRecord && !pageInit) {
+          this.talksData = [];
+          this.fetchTalkDate();
+        }
+
+        this.taskSchedule = app.globalData.taskSchedule;
+      },
       // 会话列表滚动至底部
       talksReachBottom() {
         this.$nextTick(() => {
@@ -127,20 +129,17 @@
       },
       // 获取量表数据
       async fetchCheckList() {
-        console.log('获取健康量表');
         this.talksDocument = uni.createSelectorQuery().select(".talks");
         const res = await this.callAPI('system.getCheckList');
-        console.log(res);
 
         if (res.questions.length) {
           const answers = {};
           res.questions.forEach((item) => (answers[item.id] = { text: '', photos: [] }));
           this.answers = answers;
-          this.questions = res.questions;
+          questions = res.questions;
+          quesitionsTask = res.task;
           this.nextQuesitionRender();
         }
-
-        checkListInit = true;
 
         this.$nextTick(() => {
           this.talksReachBottom();
@@ -149,7 +148,6 @@
       },
       // 获取数据
       async fetchTalkDate() {
-        console.log('获取页面数据')
         if (!this.talksDocument) {
           this.talksDocument = uni.createSelectorQuery().select(".talks");
         }
@@ -178,40 +176,51 @@
         this.talksData.push(talk);
       },
       // 用户输入
-      handleUserInput(value) {
-        // TODO replace (id === 'duoxuan') by (id = trueValue)
+      handleUserInput(answer) {
         this.pushTalk2List({
           type: 2,
-          content: this.questionReply.id === 'duoxuan' ? value.replace(/&&/g, ', ') : value,
+          content: answer,
         });
 
-        if (this.questionReply.model) {
-          this.answers[this.questionReply.id].text = value;
+        if (this.questionReply.userInputModel) {
+          this.answers[this.questionReply.id].text = answer;
+          this.questionReply.userInputModel = false;
           this.nextQuesitionRender();
           return;
         }
 
-        if (this.questionReply.id) {
+        if (this.questionReply.id && questions.length) {
           this.nextQuesitionRender()
         }
       },
       // 用户回答某问题
-      handleValueChange(value) {
-        this.answers[this.questionReply.id].text = value;
-        this.handleUserInput(value);
+      handleValueChange({ id, answer, value }) {
+        this.answers[id].text = value;
+        this.handleUserInput(answer);
+      },
+      handleValueChangeError(value) {
+        this.message(value);
       },
       // 渲染下一道问题
       nextQuesitionRender() {
-        const nextQuestion = this.questions.find((item) => !this.answers[item.id].text);
+        const nextQuestion = questions.find((item) => !this.answers[item.id].text);
         console.log('回答完毕, 下一道题: ', nextQuestion);
         if (!nextQuestion) {
-          this.questionReply.id = '';
-          this.questionReply.model = false;
+          this.questionReply = {
+            id: '',
+            type: '',
+            userInputModel: false,
+          };
+          // TODO finish
+          this.submitQuestionCheckList();
           return
         }
 
-        this.questionReply.id = nextQuestion.id;
-        this.questionReply.model = nextQuestion.type === '填空';
+        this.questionReply = {
+          id: nextQuestion.id,
+          userInputModel: nextQuestion.type === '填空' || nextQuestion.type === '数值填空',
+          type: nextQuestion.type,
+        }
 
         this.pushTalk2List({
           type: 1,
@@ -220,18 +229,45 @@
       },
       // 回退到上一道问题
       handleBackQuesitionRender() {
+        console.log('this.questionReply', this.questionReply);
         if (!this.questionReply.id) {
           return;
         }
 
-        const currentQuestionIndex = this.questions.findIndex((item) => !this.answers[item.id].text);
+        // const currentQuestionIndex = questions.findIndex((item) => !this.answers[item.id].text);
+        const currentQuestionIndex = questions.findIndex((item) => item.id === this.questionReply.id);
+        console.log('currentQuestionIndex', currentQuestionIndex);
+
 
         if (!currentQuestionIndex) {
           return
         }
 
-        this.answers[this.questions[currentQuestionIndex - 1].id].text = '';
+        const beforeQuestions = questions.filter((item, index) => {
+          if (index < currentQuestionIndex) return item
+        });
+        console.log('beforeQuestions', beforeQuestions)
+
+        const prevQuestion = beforeQuestions.reverse().find((item) => {
+          console.log('find', item);
+          console.log('find answer', !!this.answers[item.id].text)
+          return !!this.answers[item.id].text
+        })
+        console.log('prevQuestion', prevQuestion)
+
+        this.answers[prevQuestion.id].text = '';
         this.nextQuesitionRender();
+      },
+      // 提交健康量表
+      async submitQuestionCheckList() {
+        const res = await this.callAPI('groupSchedule.checkin', {
+          task: quesitionsTask,
+          photo: [],
+          value: JSON.stringify(this.answers),
+        });
+
+        console.log(res);
+        app.globalData.needRecord = false;
       },
     }
   });

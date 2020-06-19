@@ -54,7 +54,7 @@
   <div class="question">
     <div class="content box">
       <div class="content__box flex flex-column flex-ai-start">
-        <div class="content__mark ft-20 ft-semi-bold ft-fff">{{question.mark}}</div>
+        <!-- <div class="content__mark ft-20 ft-semi-bold ft-fff">{{question.mark}}</div> -->
         <div class="content__title ft-medium ft-32">{{question.title}}</div>
         <div class="content__score flex flex-ai-center flex-jc-between">
           <div

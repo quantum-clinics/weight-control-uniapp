@@ -113,7 +113,8 @@
       >{{taskSchedule.completeCount}}/{{taskSchedule.totalCount}}</div>
       <input
         class="header__input box flex-fill ft-28"
-        placeholder="在此输入..."
+        :disabled="disabled"
+        :placeholder="placeholder"
         v-model="cloneUserInputValue"
         @confirm="handleUserInput"
         type="text"
@@ -173,6 +174,7 @@
   export default {
     props: {
       taskSchedule: Object,
+      questionReply: Object,
     },
     data() {
       return {
@@ -181,7 +183,27 @@
         cloneUserInputValue: '',
       }
     },
+    computed: {
+      disabled() {
+        if (this.questionReply.id) {
+          return !questionReply.userInputModel
+        }
+
+        return false
+      },
+      placeholder() {
+        if (this.questionReply.id) {
+          return this.questionReply.userInputModel ? '在此输入...' : '请选择';
+        }
+
+        return '在此输入...';
+      },
+    },
     methods: {
+      checkValue(value) {
+        const reg = /^(\d+|\d+\.\d*)$/;
+        return reg.test(value);
+      },
       handleToggleMenus() {
         this.footerActive = !this.footerActive;
       },
@@ -192,6 +214,11 @@
 
         if (!value) {
           return
+        }
+
+        if (this.questionReply.type === '数值填空' && !this.checkValue(value)) {
+          this.$emit("valueChangeError", '请输入正确的数值范围!');
+          return;
         }
 
         this.$emit('userInput', value);

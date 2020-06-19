@@ -26,9 +26,7 @@
   }
 
   .choose__item {
-    height: 80rpx;
-    line-height: 80rpx;
-    padding: 0 32rpx;
+    padding: 24rpx 32rpx;
     background: linear-gradient(135deg, rgba(247, 250, 251, 1) 0%, rgba(243, 245, 247, 1) 100%);
     color: rgba(0, 0, 0, .45);
     border-radius: 8rpx;
@@ -53,13 +51,13 @@
   <div class="question">
     <div class="content box">
       <div class="content__box flex flex-column flex-ai-start">
-        <div class="content__mark ft-20 ft-semi-bold ft-fff">{{question.mark || '小课'}}</div>
+        <!-- <div class="content__mark ft-20 ft-semi-bold ft-fff">{{question.mark}}</div> -->
         <div class="content__title ft-medium ft-32">{{question.title}}</div>
         <div class="content__radios">
           <div
             v-for="(item, index) in question.options"
             :key="index"
-            :class="['choose__item ft-32', { 'choose__item--active': currentRadioIndex === index }]"
+            :class="['choose__item ft-32', { 'choose__item--active': answers[question.id].text ?  (item.value === answers[question.id].text) : (currentRadioIndex === index)}]"
             @click="handleSelectRadio(index)"
           >
             {{item.answer}}
@@ -68,9 +66,9 @@
       </div>
 
       <div
-        v-if="buttonDisplay"
+        v-if="!answers[question.id].text"
         class="content__button ft-28 ft-fff ft-medium line-fill"
-        @click="handleSumbitRadio(question.options[currentRadioIndex].value)"
+        @click="handleSumbitRadio()"
       >提交选择</div>
     </div>
   </div>
@@ -80,6 +78,7 @@
   export default {
     props: {
       question: Object,
+      answers: Object,
     },
     mounted() {
       console.log('this.question', this.question);
@@ -87,20 +86,21 @@
     data() {
       return {
         currentRadioIndex: -1,
-        buttonDisplay: true,
       }
     },
     methods: {
       handleSelectRadio(index) {
-        if (!this.buttonDisplay) {
+        if (this.answers[this.question.id].text) {
           return;
         }
 
         this.currentRadioIndex = index;
       },
-      handleSumbitRadio(value) {
-        this.$emit('valueChange', value);
-        this.buttonDisplay = false;
+      handleSumbitRadio() {
+        this.$emit('valueChange', {
+          ...this.question.options[this.currentRadioIndex],
+          id: this.question.id,
+        });
       }
     }
   }

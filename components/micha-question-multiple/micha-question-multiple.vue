@@ -26,9 +26,7 @@
   }
 
   .choose__item {
-    height: 80rpx;
-    line-height: 80rpx;
-    padding: 0 32rpx;
+    padding: 24rpx 32rpx;
     background: linear-gradient(135deg, rgba(247, 250, 251, 1) 0%, rgba(243, 245, 247, 1) 100%);
     color: rgba(0, 0, 0, .45);
     border-radius: 8rpx;
@@ -53,7 +51,7 @@
   <div class="question">
     <div class="content box">
       <div class="content__box flex flex-column flex-ai-start">
-        <div class="content__mark ft-20 ft-semi-bold ft-fff">{{question.mark}}</div>
+        <!-- <div class="content__mark ft-20 ft-semi-bold ft-fff">{{question.mark}}</div> -->
         <div class="content__title ft-medium ft-32">{{question.title}}</div>
         <div class="content__radios">
           <div
@@ -70,7 +68,7 @@
       <div
         class="content__button ft-28 ft-fff ft-medium line-fill"
         @click="handleSumbitMultiple"
-        v-if="buttonDisplay"
+        v-if="!answers[question.id].text"
       >提交选择</div>
     </div>
   </div>
@@ -80,6 +78,7 @@
   export default {
     props: {
       question: Object,
+      answers: Object,
     },
     mounted() {
       this.multipleOptions = this.question.options.map((item) => ({
@@ -95,7 +94,7 @@
     },
     methods: {
       handleSelectRadio(index) {
-        if (!this.buttonDisplay) {
+        if (this.answers[this.question.id].text) {
           return;
         }
 
@@ -108,10 +107,18 @@
           return;
         }
 
-        const value = scopeItems.map((item) => item.value).join('&&');
+        const values = scopeItems.map((item) => item.value);
+
+
+        const answer = values.join(', ');
+        const value = values.join('&&');
 
         this.$emit('valueChange', value);
-        this.buttonDisplay = false;
+        this.$emit('valueChange', {
+          answer,
+          value,
+          id: this.question.id,
+        });
       }
     }
   }

@@ -119,6 +119,7 @@
       <micha-question-radio
         v-if="componentRender('单选')"
         :question="talker.question"
+        :answers="answers"
         @valueChange="handleValueChange"
       />
 
@@ -126,6 +127,7 @@
       <micha-question-multiple
         v-if="componentRender('多选')"
         :question="talker.question"
+        :answers="answers"
         @valueChange="handleValueChange"
       />
 
@@ -137,8 +139,8 @@
 
       <!-- 填空回答问题 -->
       <micha-question-input
-          v-if="componentRender('数值填空')"
-          :question="talker.question"
+        v-if="componentRender('数值填空')"
+        :question="talker.question"
       />
 
       <!-- 评分回答问题 -->
@@ -156,9 +158,7 @@
   export default {
     props: {
       talker: Object,
-    },
-    mounted() {
-      console.log('this.talker', this.talker);
+      answers: Object,
     },
     methods: {
       componentRender(type) {

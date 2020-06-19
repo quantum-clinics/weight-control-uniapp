@@ -72,7 +72,7 @@ export default inject({
     async userLoginAfter(result) {
       app.globalData.profile = result.profile || {};
       app.globalData.authorization = result.authorization;
-      app.globalData.needRecord = true || !result.profile.record;
+      app.globalData.needRecord = !result.profile.record;
       app.globalData.todayFirstLogin = !!result.todayFirstLogin;
 
       const { coursePage, indexPage } = await this.callAPI("system.getAppLabels");
