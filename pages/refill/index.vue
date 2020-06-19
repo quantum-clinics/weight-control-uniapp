@@ -95,7 +95,7 @@
 <template>
   <div class="refill flex flex-column">
     <div class="refill__header box flex flex-column flex-ai-center">
-      <div class="header__count box ft-medium line-fill">4000</div>
+      <div class="header__count box ft-medium line-fill">{{bonus}}</div>
       <div class="header__currency flex flex-ai-center">
         <img
           :src="`${OSS}/micha/icon/icon-currency.png`"
@@ -132,16 +132,19 @@
 
 <script>
   import inject from "@/static/js/inject";
+  const app = getApp();
 
   export default inject({
     data() {
       return {
         currentIndex: 0,
         refillList: [],
+        bonus: 0,
       }
     },
     onLoad() {
       this.fetchData();
+      this.bonus = app.globalData.bonus;
     },
     methods: {
       async fetchData() {
@@ -172,8 +175,13 @@
         uni.requestPayment({
           provider: "alipay",
           orderInfo: statement.tradeNo,
-          success: (res) => {
+          success: async (res) => {
             uni.hideLoading();
+
+            const { bonus } = await this.callAPI('user.getUserBonus');
+            app.globalData.bonus = bonus;
+            this.bonus = bonus;
+
             uni.showToast({
               title: "支付成功",
               icon: "success",

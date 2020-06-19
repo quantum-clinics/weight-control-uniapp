@@ -248,12 +248,13 @@
         </div>
 
         <div class="header__info flex">
-          <span class="info__count ft-medium ft-fff">3600</span>
+          <span class="info__count ft-medium ft-fff">{{bonus}}</span>
+
+          <!--
           <div class="info__hint flex flex-ai-center flex-jc-center">
             <span class="hint__title ft-semi-bold ft-20 line-fill">昨日奖励</span>
             <span class="ft-fff ft-medium ft-24 line-fill">630</span>
           </div>
-          <!--
           <div class="info__hint flex flex-ai-center flex-jc-center">
             <span class="hint__title ft-semi-bold ft-20 line-fill">领先同龄</span>
             <span class="ft-fff ft-medium ft-24 line-fill">92%</span>
@@ -367,7 +368,6 @@
 import inject from "@/static/js/inject";
 
 const app = getApp();
-let pageInit = false;
 
 export default inject({
   data() {
@@ -384,6 +384,7 @@ export default inject({
       radianStyle: {
         background: '#fff',
       },
+      bonus: 0,
     };
   },
   onShow() {
@@ -394,7 +395,9 @@ export default inject({
       return;
     }
 
-    if (pageInit) {
+    this.bonus = app.globalData.bonus;
+
+    if (this.pageDisplay) {
       return
     }
 
@@ -408,7 +411,6 @@ export default inject({
         this.fetchRecomProducts(),
       ]);
 
-      pageInit = true;
       this.nickName = app.globalData.profile.nickName;
       this.pageDisplay = true;
     },

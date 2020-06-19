@@ -472,6 +472,9 @@
         this.updateTitle = res.shareValue.updateTitle;
         this.canUpdate = res.shareValue.canUpdate;
 
+        const { bonus } = await this.callAPI('user.getUserBonus');
+        app.globalData.bonus = bonus;
+
         const prePage = this.getPrevPage();
         await prePage.fetchTasks();
 

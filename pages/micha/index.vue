@@ -29,6 +29,7 @@
             :talker="item"
             :answers="answers"
             @valueChange="handleValueChange"
+            @shareValueChange="handleShareValueChange"
           />
 
           <talk-user
@@ -51,32 +52,6 @@
 
 <script>
   import inject from '@/static/js/inject';
-  const __questions = [
-    {
-      id: 'danxuan',
-      type: '单选',
-      title: 'hi, 小量又来啦。让小量来了解一下，以下四种水果，你最爱吃的是哪样呢?',
-      mark: '小课',
-      options: ['苹果', '香蕉', '菠萝', '西红柿'],
-    }, {
-      id: 'duoxuan',
-      type: '多选',
-      title: 'hi, 小量又来啦。让小量来了解一下，以下四种肉类，你爱吃的是哪些?',
-      mark: '小课',
-      options: ['鸡肉', '牛肉', '鱼肉', '猪肉', '羊肉'],
-    }, {
-      id: 'tiankong',
-      type: '填空',
-      title: 'hi, 小量又来啦。让小量来了解一下，你最近最喜欢吃的一道菜是？',
-      mark: '小课',
-    }, {
-      id: 'pingfen',
-      type: '评分',
-      title: 'hi, 小量又来啦。让小量来了解一下，你今天的信心是?',
-      options: ['苹果', '香蕉', '菠萝', '西红柿'],
-      mark: '小课',
-    },
-  ];
 
   const app = getApp();
   let pageInit = false;
@@ -132,10 +107,19 @@
         this.talksDocument = uni.createSelectorQuery().select(".talks");
         const res = await this.callAPI('system.getCheckList');
 
-        if (res.questions.length) {
+        if (res.shareValue) {
+          // 将量表添加至聊天列表中
+          this.pushTalk2List({
+            type: 1,
+            shareValue: res.shareValue,
+          })
+        }
+
+        if (!res.shareValue && res.questions.length) {
           const answers = {};
           res.questions.forEach((item) => (answers[item.id] = { text: '', photos: [] }));
           this.answers = answers;
+
           questions = res.questions;
           quesitionsTask = res.task;
           this.nextQuesitionRender();
@@ -198,6 +182,16 @@
         this.answers[id].text = value;
         this.handleUserInput(answer);
       },
+      // 用户选择量表
+      async handleShareValueChange({ type }) {
+        uni.showLoading({ title: '参与中..' });
+        const { success } = await this.callAPI('user.updateUser', {
+          type,
+        });
+        uni.hideLoading();
+        uni.showToast({ title: '恭喜您参与成功' })
+        app.globalData.needRecord = !success;
+      },
       handleValueChangeError(value) {
         this.message(value);
       },
@@ -229,15 +223,11 @@
       },
       // 回退到上一道问题
       handleBackQuesitionRender() {
-        console.log('this.questionReply', this.questionReply);
         if (!this.questionReply.id) {
           return;
         }
 
-        // const currentQuestionIndex = questions.findIndex((item) => !this.answers[item.id].text);
         const currentQuestionIndex = questions.findIndex((item) => item.id === this.questionReply.id);
-        console.log('currentQuestionIndex', currentQuestionIndex);
-
 
         if (!currentQuestionIndex) {
           return
@@ -246,28 +236,27 @@
         const beforeQuestions = questions.filter((item, index) => {
           if (index < currentQuestionIndex) return item
         });
-        console.log('beforeQuestions', beforeQuestions)
 
-        const prevQuestion = beforeQuestions.reverse().find((item) => {
-          console.log('find', item);
-          console.log('find answer', !!this.answers[item.id].text)
-          return !!this.answers[item.id].text
-        })
-        console.log('prevQuestion', prevQuestion)
+        const prevQuestion = beforeQuestions.reverse().find((item) => !!this.answers[item.id].text)
 
         this.answers[prevQuestion.id].text = '';
         this.nextQuesitionRender();
       },
       // 提交健康量表
       async submitQuestionCheckList() {
-        const res = await this.callAPI('groupSchedule.checkin', {
+        const { shareValue } = await this.callAPI('groupSchedule.checkin', {
           task: quesitionsTask,
           photo: [],
           value: JSON.stringify(this.answers),
         });
 
-        console.log(res);
         app.globalData.needRecord = false;
+
+        // 将量表添加至聊天列表中
+        this.pushTalk2List({
+          type: 1,
+          shareValue,
+        })
       },
     }
   });

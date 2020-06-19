@@ -107,10 +107,13 @@
 <template>
   <div :class="[{ 'footer--active': footerActive }, 'footer fixed']">
     <div class="footer__header box flex">
+      <!--
       <div
         class="header__mission ft-medium ft-fff"
         @click="handleBackQuestion"
       >{{taskSchedule.completeCount}}/{{taskSchedule.totalCount}}</div>
+      -->
+
       <input
         class="header__input box flex-fill ft-28"
         :disabled="disabled"
@@ -186,7 +189,7 @@
     computed: {
       disabled() {
         if (this.questionReply.id) {
-          return !questionReply.userInputModel
+          return !this.questionReply.userInputModel
         }
 
         return false

@@ -69,7 +69,7 @@
       </div>
 
       <div
-        v-if="buttonDisplay"
+        v-if="!answers[question.id].text"
         class="content__button ft-28 ft-fff ft-medium line-fill"
         @click="handleSumbitScore"
       >提交选择</div>
@@ -81,25 +81,28 @@
   export default {
     props: {
       question: Object,
+      answers: Object,
     },
     data() {
       return {
         scoreList: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
         currentScore: 0,
-        buttonDisplay: true,
       }
     },
     methods: {
       handleSelectScore(score) {
-        if (!this.buttonDisplay) {
+        if (this.answers[this.question.id].text) {
           return;
         }
 
         this.currentScore = score;
       },
       handleSumbitScore() {
-        this.$emit('valueChange', this.currentScore);
-        this.buttonDisplay = false;
+        this.$emit('valueChange', {
+          id: this.question.id,
+          value: this.currentScore,
+          answer: this.currentScore,
+        });
       }
     },
   }

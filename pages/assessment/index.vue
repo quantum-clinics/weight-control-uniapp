@@ -71,7 +71,7 @@
 
   .item__choose--active {
     background: rgba(236, 239, 241, 1);
-    color: rgba(190, 196, 206, 1);
+    color: rgba(43, 48, 73, 1);
   }
 
   .ass__button {
@@ -174,7 +174,9 @@
         </div>
 
         <div
-            class="finish__button ft-34 ft-fff">{{assessmentFinish.button}}</div>
+          @click="handleSwitchTab"
+          class="finish__button ft-34 ft-fff"
+        >{{assessmentFinish.button}}</div>
       </div>
       <div class="ass box" v-if="!recordFinish">
         <div class="ass__header relative ft-semi-bold ft-40 ft-fff">
@@ -243,8 +245,8 @@
         }
 
         return [].every.call(
-            this.assessmentTask.questions,
-            (item) => (item.isOptional || this.answers[item.id].text > 0))
+          this.assessmentTask.questions,
+          (item) => (item.isOptional || this.answers[item.id].text > 0))
       },
     },
     methods: {
@@ -305,13 +307,22 @@
         this.assessmentFinish = res.shareValue;
 
         const prePage = this.getPrevPage();
-        await prePage.fetchTasks();
+        await prePage.fetchSignCondition();
+
+        const { bonus } = await this.callAPI('user.getUserBonus');
+        app.globalData.bonus = bonus;
 
         uni.hideLoading();
         uni.showToast({ title: '打卡成功!' });
 
         uni.pageScrollTo({ scrollTop: 0 });
         this.recordFinish = true;
+      },
+      async handleSwitchTab() {
+        const prePage = this.getPrevPage();
+        await prePage.fetchSignCondition();
+
+        uni.navigateBack();
       }
     }
   });

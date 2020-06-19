@@ -1,6 +1,6 @@
 <style scoped>
   .talk {
-    padding: 32rpx 94rpx 0 16rpx;
+    padding: 32rpx 62rpx 0 16rpx;
     margin-bottom: 16rpx;
   }
 
@@ -56,7 +56,7 @@
   .info__image {
     margin-top: 16rpx;
     width: 100%;
-    /* TODO replact height by auto */
+    /* TODO replace height by auto */
     height: 480rpx;
     background: #000;
   }
@@ -147,9 +147,16 @@
       <micha-question-score
         v-if="componentRender('评分')"
         :question="talker.question"
+        :answers="answers"
         @valueChange="handleValueChange"
       />
 
+      <!-- 量表评估报告 -->
+      <micha-report
+        v-if="talker.shareValue"
+        :talker="talker.shareValue"
+        @shareValueChange="handleShareValueChange"
+      />
     </div>
   </div>
 </template>
@@ -166,7 +173,10 @@
       },
       handleValueChange(value) {
         this.$emit('valueChange', value)
-      }
+      },
+      handleShareValueChange(value) {
+        this.$emit('shareValueChange', value)
+      },
     },
   };
 </script>

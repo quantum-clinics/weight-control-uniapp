@@ -133,14 +133,14 @@
           <img class="user__avatar" :src="avatarUrl"/>
           <div class="flex-fill">
             <div class="ft-40 ft-semi-bold line-fill ft-title">{{nickName}}</div>
-            <div class="user__create ft-28 line-fill ft-semi-bold ft-desc">{{joinTime(createDate)}} 加入</div>
+            <div class="user__create ft-28 line-fill ft-semi-bold ft-desc">{{startDate}} 加入</div>
             <div class="user__target flex-ai-center box">
               <img
                 class="target__icon"
                 :src="`${OSS}/micha/icon/icon-weight-target.png`"
               />
               <span class="ft-24 ft-semi-bold flex-fill target__span">减重目标</span>
-              <span class="ft-24 ft-semi-bold ft-fff">4公斤</span>
+              <span class="ft-24 ft-semi-bold ft-fff">{{loseWeight}}公斤</span>
             </div>
           </div>
         </div>
@@ -200,7 +200,6 @@
     }, {
       icon: `${app.globalData.OSS}/micha/icon/icon-my-report.png`,
       type: 'navigateTo',
-      url: '/pages/report/index',
       span: '我的报告',
     }, {
       icon: `${app.globalData.OSS}/micha/icon/icon-my-function.png`,
@@ -232,6 +231,8 @@
         nickName: '',
         avatarUrl: '',
         createDate: '',
+        startDate: '',
+        loseWeight: '',
         pageDisplay: false,
       }
     },
@@ -251,11 +252,12 @@
     },
     methods: {
       fetchUserData() {
-        const { nickName, avatarUrl, createDate } = app.globalData.profile;
+        const { nickName, avatarUrl, startDate, loseWeight } = app.globalData.profile;
         pageInit = true;
         this.nickName = nickName;
         this.avatarUrl = avatarUrl;
-        this.createDate = createDate;
+        this.startDate = startDate;
+        this.loseWeight = loseWeight;
         this.pageDisplay = true;
       },
       joinTime(date) {

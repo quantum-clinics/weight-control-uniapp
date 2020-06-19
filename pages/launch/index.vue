@@ -72,8 +72,11 @@ export default inject({
     async userLoginAfter(result) {
       app.globalData.profile = result.profile || {};
       app.globalData.authorization = result.authorization;
-      app.globalData.needRecord = !result.profile.record;
+      app.globalData.needRecord = !app.globalData.profile.record || !app.globalData.profile.type;
       app.globalData.todayFirstLogin = !!result.todayFirstLogin;
+
+      const { bonus } = await this.callAPI('user.getUserBonus');
+      app.globalData.bonus = bonus;
 
       const { coursePage, indexPage } = await this.callAPI("system.getAppLabels");
       app.globalData.indexPage = indexPage
