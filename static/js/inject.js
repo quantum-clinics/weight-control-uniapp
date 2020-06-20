@@ -26,7 +26,7 @@ export default function (origin) {
               if (err.code === 100) {
                 // no permission error, redirect to launch page
                 return uni.reLaunch({
-                  url: '/pages/launch/launch',
+                  url: '/pages/launch/index',
                 });
               }
               if (!(callBack && callBack(err))) {

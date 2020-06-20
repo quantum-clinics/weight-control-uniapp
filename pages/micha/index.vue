@@ -54,7 +54,6 @@
   import inject from '@/static/js/inject';
 
   const app = getApp();
-  let pageInit = false;
   let quesitionsTask = '';
   let questions = [];
 
@@ -82,14 +81,9 @@
     },
     methods: {
       renderPage() {
-        if (app.globalData.needRecord && !questions.length) {
+        if (!questions.length) {
           this.talksData = [];
           this.fetchCheckList();
-        }
-
-        if (!app.globalData.needRecord && !pageInit) {
-          this.talksData = [];
-          this.fetchTalkDate();
         }
 
         this.taskSchedule = app.globalData.taskSchedule;
@@ -124,19 +118,6 @@
           quesitionsTask = res.task;
           this.nextQuesitionRender();
         }
-
-        this.$nextTick(() => {
-          this.talksReachBottom();
-          this.pageDisplay = true;
-        });
-      },
-      // 获取数据
-      async fetchTalkDate() {
-        if (!this.talksDocument) {
-          this.talksDocument = uni.createSelectorQuery().select(".talks");
-        }
-
-        pageInit = true;
 
         this.$nextTick(() => {
           this.talksReachBottom();
@@ -190,7 +171,10 @@
         });
         uni.hideLoading();
         uni.showToast({ title: '恭喜您参与成功' })
-        app.globalData.needRecord = !success;
+        app.globalData.needRecord = false;
+        uni.switchTab({
+          url: "/pages/index/index"
+        });
       },
       handleValueChangeError(value) {
         this.message(value);
@@ -198,14 +182,13 @@
       // 渲染下一道问题
       nextQuesitionRender() {
         const nextQuestion = questions.find((item) => !this.answers[item.id].text);
-        console.log('回答完毕, 下一道题: ', nextQuestion);
         if (!nextQuestion) {
           this.questionReply = {
             id: '',
             type: '',
             userInputModel: false,
           };
-          // TODO finish
+
           this.submitQuestionCheckList();
           return
         }
@@ -249,8 +232,6 @@
           photo: [],
           value: JSON.stringify(this.answers),
         });
-
-        app.globalData.needRecord = false;
 
         // 将量表添加至聊天列表中
         this.pushTalk2List({

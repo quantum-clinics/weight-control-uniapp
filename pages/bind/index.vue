@@ -127,6 +127,17 @@ export default inject({
         code: this.userVerCode
       });
 
+      
+      // if (app.globalData.needRecord) {
+      //   uni.switchTab({
+      //     url: "/pages/micha/index"
+      //   });
+      //   return;
+      // }
+
+      // const { bonus } = await this.callAPI('user.getUserBonus');
+      // app.globalData.bonus = bonus;
+
       uni.redirectTo({ url: "/pages/launch/index" });
     }
   }

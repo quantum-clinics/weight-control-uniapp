@@ -8,6 +8,10 @@
   width: 192rpx;
   height: 192rpx;
 }
+
+.upload__image {
+  margin-right: 8rpx;
+}
 </style>
 
 <template>

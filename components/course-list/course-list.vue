@@ -167,6 +167,11 @@
     left: 50%;
     transform: translateX(-50%);
   }
+
+  .close__image {
+    width: 60rpx;
+    height: 60rpx;
+  }
 </style>
 
 <template>
@@ -284,7 +289,6 @@
       handleUserCheckProduct(item, index) {
 
         if (item.hasExchanged) {
-          console.log('????')
           uni.navigateTo({ url: `/pages/webview/index?url=${item.url}` })
           return
         }

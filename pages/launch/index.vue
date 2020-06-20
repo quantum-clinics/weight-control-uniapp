@@ -52,6 +52,7 @@ export default inject({
   },
   methods: {
     async handleGetUserInfoByAliPay() {
+      console.log('onLoad ready')
       // 获取当前用户登陆code
       const { code } = await userLoginByUniApp();
       const { userInfo } = await getUserInfoByUniApp();
@@ -75,9 +76,6 @@ export default inject({
       app.globalData.needRecord = !app.globalData.profile.record || !app.globalData.profile.type;
       app.globalData.todayFirstLogin = !!result.todayFirstLogin;
 
-      const { bonus } = await this.callAPI('user.getUserBonus');
-      app.globalData.bonus = bonus;
-
       const { coursePage, indexPage } = await this.callAPI("system.getAppLabels");
       app.globalData.indexPage = indexPage
           ? indexPage
@@ -100,6 +98,9 @@ export default inject({
         });
         return;
       }
+
+      const { bonus } = await this.callAPI('user.getUserBonus');
+      app.globalData.bonus = bonus;
 
       if (app.globalData.needRecord) {
         uni.switchTab({

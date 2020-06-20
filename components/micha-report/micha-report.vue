@@ -123,7 +123,7 @@
   }
 
   .dangers__item {
-    height: 40rpx;
+    /* height: 40rpx; */
     line-height: 40rpx;
     padding: 0 12rpx;
     background: rgba(240,245,248,1);
@@ -209,6 +209,14 @@
 
       <div class="report__plans">
         <div
+          v-if="!!userChooseType"
+          class="report__plan flex flex-ai-center flex-jc-center report__plan--active"
+        >
+          <span class="plan__span ft-32 ft-semi-bold">{{userChooseType}}</span>
+        </div>
+
+        <div
+          v-else
           :class="['report__plan flex flex-ai-center flex-jc-center', { 'report__plan--active': currentIndex === index }]"
           v-for="(item, index) in talker.question.options"
           @click="handleSelectIndex(index)"
@@ -234,6 +242,7 @@
 
       <div
         class="content__button box flex flex-column flex-ai-center"
+        v-if="!userChooseType"
         @click="handleSubmit"
       >
         <span class="ft-36 ft-semi-bold ft-fff line-fill">{{talker.btnTitle}}</span>
@@ -263,7 +272,11 @@
     data() {
       return {
         currentIndex: -1,
+        userChooseType: '',
       }
+    },
+    mounted() {
+      this.userChooseType = app.globalData.profile.type;
     },
     methods: {
       handleSelectIndex(index) {

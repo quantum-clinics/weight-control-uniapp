@@ -122,10 +122,12 @@
         @confirm="handleUserInput"
         type="text"
       >
+      <!--
       <img
         @click="handleToggleMenus"
         class="header__button"
       >
+      -->
     </div>
 
     <div class="footer__funs box flex flex-column flex-ai-center">
@@ -160,6 +162,8 @@
 </template>
 
 <script>
+  const app = getApp();
+
   const list = [
     {
       imageSrc: '',
@@ -192,11 +196,19 @@
           return !this.questionReply.userInputModel
         }
 
+        if (app.globalData.profile.type) {
+          return true;
+        }
+
         return false
       },
       placeholder() {
         if (this.questionReply.id) {
           return this.questionReply.userInputModel ? '在此输入...' : '请选择';
+        }
+
+        if (app.globalData.profile.type) {
+          return app.globalData.profile.type;
         }
 
         return '在此输入...';

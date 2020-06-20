@@ -385,6 +385,7 @@ export default inject({
         background: '#fff',
       },
       bonus: 0,
+      signConditionDone: false,
     };
   },
   onShow() {
@@ -419,6 +420,7 @@ export default inject({
       this.signList = signCondition.signList;
       this.assessmentTask = signCondition.task;
       this.shadowDisplay = app.globalData.todayFirstLogin && !signCondition.task.done;
+      this.signConditionDone = signCondition.task.done;
     },
     async fetchTasks() {
       const tasks = await this.callAPI("groupSchedule.getTasks");
@@ -437,15 +439,20 @@ export default inject({
     async handleUserExchangeProduct(index) {
       uni.showLoading({ title: "加载中.." });
 
-      const target = this.recomProducts[index];
       const result = await this.callAPI('bonusProduct.exchangeProduct', {
-        id: target._id
+        id: this.recomProducts[index]._id
       });
 
       uni.hideLoading();
-      target.hasExchanged = result.success;
+      this.recomProducts[index].hasExchanged = result.success;
+
+      uni.navigateTo({ url: `/pages/webview/index?url=${item.url}` })
     },
     handleToggleShadow() {
+      if (this.signConditionDone) {
+        return;
+      }
+
       this.shadowDisplay = !this.shadowDisplay;
     },
     handleUserCheckIn() {
@@ -454,6 +461,3 @@ export default inject({
   }
 });
 </script>
-
-<style>
-</style>

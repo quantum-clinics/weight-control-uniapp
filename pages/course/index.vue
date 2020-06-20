@@ -117,12 +117,12 @@
       async handleUserExchangeProduct(index) {
         uni.showLoading({ title: "加载中.." });
 
-        const target = this.recomProducts[index];
         const { success } = await this.callAPI('bonusProduct.exchangeProduct', {
-          id: target._id
+          id: this.allProduct[index]._id
         });
 
-        target.hasExchanged = success;
+        this.allProduct[index].hasExchanged = success;
+        uni.navigateTo({ url: `/pages/webview/index?url=${item.url}` })
         uni.hideLoading();
       },
     },
