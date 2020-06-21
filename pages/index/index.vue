@@ -406,6 +406,7 @@ export default inject({
   },
   methods: {
     async fetchIndexDate() {
+      uni.showLoading({ title: 'Loading..' });
       await Promise.all([
         this.fetchSignCondition(),
         this.fetchTasks(),
@@ -414,6 +415,7 @@ export default inject({
 
       this.nickName = app.globalData.profile.nickName;
       this.pageDisplay = true;
+      uni.hideLoading();
     },
     async fetchSignCondition() {
       const signCondition = await this.callAPI("groupSchedule.getSignCondition");

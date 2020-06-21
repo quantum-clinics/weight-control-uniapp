@@ -52,12 +52,14 @@ export default inject({
   },
   methods: {
     async handleGetUserInfoByAliPay() {
-      console.log('onLoad ready')
+      uni.showLoading({ title: 'Loading..' });
       // 获取当前用户登陆code
       const { code } = await userLoginByUniApp();
       const { userInfo } = await getUserInfoByUniApp();
+
       if (!userInfo.nickName) {
         this.pageDisplay = true;
+        uni.hideLoading();
         return;
       }
       this.loadUserData(code, userInfo);
@@ -93,6 +95,7 @@ export default inject({
 
       if (result.needBind) {
         app.globalData.openid = result.openid;
+        uni.hideLoading();
         uni.redirectTo({
           url: "/pages/bind/index"
         });
@@ -103,11 +106,14 @@ export default inject({
       app.globalData.bonus = bonus;
 
       if (app.globalData.needRecord) {
+        uni.hideLoading();
         uni.switchTab({
           url: "/pages/micha/index"
         });
         return;
       }
+
+      uni.hideLoading();
 
       uni.switchTab({
         url: "/pages/index/index"

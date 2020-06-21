@@ -148,8 +148,10 @@
     },
     methods: {
       async fetchData() {
+        uni.showLoading({ title: 'Loading..' });
         const res = await this.callAPI('cashProduct.getAllCashExchangeBonus');
         this.refillList = res.list;
+        uni.hideLoading();
       },
       handleSelectIndex(index) {
         this.currentIndex = index;

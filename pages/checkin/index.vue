@@ -358,6 +358,7 @@
       },
       // 获取数据
       renderQuestion(id) {
+        uni.showLoading({ title: 'Loading..' });
         const { tasks } = this.getPrevPage();
         this.task = tasks.find((item) => item.id === id);
         this.recordFinish = this.task.done;
@@ -368,6 +369,7 @@
           this.taskMenus = this.task.questions;
         }
         this.pageDisplay = true;
+        uni.hideLoading();
       },
       // 答案范围有误
       handleValueChangeError(value) {

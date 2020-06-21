@@ -98,6 +98,7 @@
       },
       // 获取量表数据
       async fetchCheckList() {
+        uni.showLoading({ title: 'Loading..' });
         this.talksDocument = uni.createSelectorQuery().select(".talks");
         const res = await this.callAPI('system.getCheckList');
 
@@ -118,6 +119,8 @@
           quesitionsTask = res.task;
           this.nextQuesitionRender();
         }
+
+        uni.hideLoading();
 
         this.$nextTick(() => {
           this.talksReachBottom();

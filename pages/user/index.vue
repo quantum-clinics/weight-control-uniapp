@@ -252,6 +252,7 @@
     },
     methods: {
       fetchUserData() {
+        uni.showLoading({ title: 'Loading..' });
         const { nickName, avatarUrl, startDate, loseWeight } = app.globalData.profile;
         pageInit = true;
         this.nickName = nickName;
@@ -259,6 +260,7 @@
         this.startDate = startDate;
         this.loseWeight = loseWeight;
         this.pageDisplay = true;
+        uni.hideLoading();
       },
       joinTime(date) {
         return formatTime(date);

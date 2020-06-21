@@ -121,22 +121,14 @@ export default inject({
     },
     // 用户绑定账号
     async handleUserBindAccount() {
+      uni.showLoading({ title: 'Loading..' });
       await this.callAPI("user.bindAccount", {
         openid: app.globalData.openid,
         phone: this.userPhoneNumber,
         code: this.userVerCode
       });
 
-      
-      // if (app.globalData.needRecord) {
-      //   uni.switchTab({
-      //     url: "/pages/micha/index"
-      //   });
-      //   return;
-      // }
-
-      // const { bonus } = await this.callAPI('user.getUserBonus');
-      // app.globalData.bonus = bonus;
+      uni.hideLoading();
 
       uni.redirectTo({ url: "/pages/launch/index" });
     }
