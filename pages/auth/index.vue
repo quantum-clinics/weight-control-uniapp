@@ -1,15 +1,9 @@
 <style scoped>
-.auth-page {
-  height: 100vh;
-  width: 100vw;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.auth-bottom {
-  width: 50vw;
-}
+  .auth-page {
+    height: 100vh;
+    width: 100vw;
+    background: linear-gradient(180deg, #10CEFF, #0083FF);
+  }
 </style>
 
 <template>
