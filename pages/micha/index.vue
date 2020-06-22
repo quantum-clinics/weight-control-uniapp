@@ -28,6 +28,7 @@
             v-if="item.type === 1"
             :talker="item"
             :answers="answers"
+            :shareValueType="shareValueType"
             @valueChange="handleValueChange"
             @shareValueChange="handleShareValueChange"
           />
@@ -69,6 +70,7 @@
           userInputModel: false,
         },
         taskSchedule: {},
+        shareValueType: '',
       }
     },
     onShow() {
@@ -102,7 +104,10 @@
         this.talksDocument = uni.createSelectorQuery().select(".talks");
         const res = await this.callAPI('system.getCheckList');
 
+
         if (res.shareValue) {
+          this.shareValueType = res.shareValue.type;
+
           // 将量表添加至聊天列表中
           this.pushTalk2List({
             type: 1,
@@ -114,6 +119,7 @@
           const answers = {};
           res.questions.forEach((item) => (answers[item.id] = { text: '', photos: [] }));
           this.answers = answers;
+          this.shareValueType = '';
 
           questions = res.questions;
           quesitionsTask = res.task;
@@ -172,6 +178,7 @@
         const { success } = await this.callAPI('user.updateUser', {
           type,
         });
+        this.shareValueType = type;
         uni.hideLoading();
         uni.showToast({ title: '恭喜您参与成功' });
         questions = [];

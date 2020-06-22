@@ -213,10 +213,10 @@
 
       <div class="report__plans">
         <div
-          v-if="!!userChooseType"
+          v-if="!!shareValueType"
           class="report__plan flex flex-ai-center flex-jc-center report__plan--active"
         >
-          <span class="plan__span ft-32 ft-semi-bold">{{userChooseType}}</span>
+          <span class="plan__span ft-32 ft-semi-bold">{{shareValueType}}</span>
         </div>
 
         <div
@@ -246,7 +246,7 @@
 
       <div
         :class="['content__button box flex flex-column flex-ai-center', {'content__button--disabled': currentIndex < 0}]"
-        v-if="!userChooseType"
+        v-if="!shareValueType"
         @click="handleSubmit"
       >
         <span class="ft-36 ft-semi-bold ft-fff line-fill">{{talker.btnTitle}}</span>
@@ -272,15 +272,12 @@
   export default {
     props: {
       talker: Object,
+      shareValueType: String,
     },
     data() {
       return {
         currentIndex: -1,
-        userChooseType: '',
       }
-    },
-    mounted() {
-      this.userChooseType = app.globalData.profile.type;
     },
     methods: {
       handleSelectIndex(index) {

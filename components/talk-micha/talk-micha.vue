@@ -155,6 +155,7 @@
       <micha-report
         v-if="talker.shareValue"
         :talker="talker.shareValue"
+        :shareValueType="shareValueType"
         @shareValueChange="handleShareValueChange"
       />
     </div>
@@ -166,6 +167,7 @@
     props: {
       talker: Object,
       answers: Object,
+      shareValueType: 'String',
     },
     methods: {
       componentRender(type) {
