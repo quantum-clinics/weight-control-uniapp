@@ -389,8 +389,6 @@ export default inject({
     };
   },
   async onShow() {
-    console.log(this.pageDisplay);
-
     if (app.globalData.needRecord) {
       uni.switchTab({
         url: "/pages/micha/index"
