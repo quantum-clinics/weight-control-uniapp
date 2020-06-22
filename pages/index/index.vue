@@ -451,7 +451,7 @@ export default inject({
 
       uni.hideLoading();
       this.recomProducts[index].hasExchanged = result.success;
-      this.shadowDisplay = result.success;
+      this.shadowDisplay = false;
 
       uni.navigateTo({ url: `/pages/webview/index?url=${this.recomProducts[index].url}` })
     },

@@ -135,7 +135,7 @@
         });
 
         this.allProduct[index].hasExchanged = success;
-        this.shadowDisplay = success;
+        this.shadowDisplay = false;
         uni.navigateTo({ url: `/pages/webview/index?url=${this.allProduct[index].url}` })
         uni.hideLoading();
       },
