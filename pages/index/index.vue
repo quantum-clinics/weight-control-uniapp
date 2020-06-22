@@ -442,7 +442,6 @@ export default inject({
       this.recomProducts = recomProducts.list;
     },
     async handleUserExchangeProduct(index) {
-      console.log(index, this.recomProducts[index]);
       uni.showLoading({ title: "加载中.." });
 
       const result = await this.callAPI('bonusProduct.exchangeProduct', {
@@ -451,7 +450,6 @@ export default inject({
 
       uni.hideLoading();
       this.recomProducts[index].hasExchanged = result.success;
-      this.shadowDisplay = false;
 
       uni.navigateTo({ url: `/pages/webview/index?url=${this.recomProducts[index].url}` })
     },

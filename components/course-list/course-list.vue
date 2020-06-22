@@ -285,6 +285,7 @@
       },
       handleUserExchange() {
         this.$emit('userExchangeProduct', this.activeIndex);
+        this.shadowDisplay = false;
       },
       handleUserCheckProduct(item, index) {
 
