@@ -1,6 +1,6 @@
 <style scoped>
   .refill {
-    padding: 32rpx 0 132rpx;
+    padding: 32rpx 0 0;
     min-height: 100vh;
   }
 
@@ -31,6 +31,7 @@
   .refill__box {
     margin-top: 36rpx;
     padding-left: 32rpx;
+    padding-bottom: 132rpx;
   }
 
   .refill__title {
@@ -95,7 +96,7 @@
 </style>
 
 <template>
-  <div class="refill flex flex-column">
+  <div class="refill flex flex-column box">
     <div class="refill__header box flex flex-column flex-ai-center">
       <div class="header__count box ft-medium line-fill">{{bonus}}</div>
       <div class="header__currency flex flex-ai-center">

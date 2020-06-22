@@ -136,6 +136,15 @@
               <span class="font__big">75.6</span>
               <span class="font__util">公斤</span>
             </div>
+
+            <div
+              class="content__count flex"
+              v-if="__item.type === '三餐打卡'"
+            >
+              <span class="font__big">75.6</span>
+              <span class="font__util">公斤</span>
+            </div>
+
             <div class="content__change flex flex-ai-center">
               <img
                 src
