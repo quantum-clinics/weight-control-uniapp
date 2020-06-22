@@ -15,7 +15,7 @@
     background: linear-gradient(180deg, rgba(255, 150, 81, 1) 0%, rgba(255, 113, 81, 1) 100%);
     border-radius: 48rpx;
     border: 1rpx solid rgba(255, 138, 101, 1);
-    bottom: 200rpx;
+    bottom: 40rpx;
     left: 50%;
     transform: translateX(-50%);
   }

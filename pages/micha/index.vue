@@ -173,7 +173,8 @@
           type,
         });
         uni.hideLoading();
-        uni.showToast({ title: '恭喜您参与成功' })
+        uni.showToast({ title: '恭喜您参与成功' });
+        questions = [];
         app.globalData.needRecord = false;
         uni.switchTab({
           url: "/pages/index/index"
