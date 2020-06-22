@@ -26,7 +26,7 @@
     <div class="auth__page relative">
       <img
         mode="widthFix"
-        src="https://weight-control.qtclinics.com/static/2020060101/template/img/home-page-back.png"
+        src="/static/images/home-page-back.png"
         class="auth__background"
       />
 
@@ -37,7 +37,7 @@
         scope="userInfo"
         @getAuthorize="handleGetUserInfoByAliPay"
       >
-        <span class="ft-42 ft-semi-bold ft-fff">点我填写评估量表</span>
+        <span class="ft-42 ft-semi-bold ft-fff">授权登录</span>
       </button>
     </div>
   </base-page>
@@ -65,7 +65,7 @@ export default inject({
   },
   methods: {
     async handleGetUserInfoByAliPay() {
-      uni.showLoading({ title: 'Loading..' });
+      uni.showLoading({ title: '验证身份中……' });
       // 获取当前用户登陆code
       const { code } = await userLoginByUniApp();
       const { userInfo } = await getUserInfoByUniApp();
