@@ -167,7 +167,7 @@
     props: {
       talker: Object,
       answers: Object,
-      shareValueType: 'String',
+      shareValueType: String,
     },
     methods: {
       componentRender(type) {
