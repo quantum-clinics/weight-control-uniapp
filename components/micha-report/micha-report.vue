@@ -167,6 +167,10 @@
     color: #fff;
   }
 
+  .content__button--disabled {
+    background: rgba(0, 0, 0, .45);
+  }
+
 </style>
 
 <template>
@@ -241,7 +245,7 @@
       </div>
 
       <div
-        class="content__button box flex flex-column flex-ai-center"
+        :class="['content__button box flex flex-column flex-ai-center', {'content__button--disabled': currentIndex < 0}]"
         v-if="!userChooseType"
         @click="handleSubmit"
       >

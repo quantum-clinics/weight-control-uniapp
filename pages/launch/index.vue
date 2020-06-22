@@ -120,7 +120,7 @@ export default inject({
 
       if (app.globalData.needRecord) {
         uni.hideLoading();
-        uni.switchTab({
+        uni.redirectTo({
           url: "/pages/micha/index"
         });
         return;

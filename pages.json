@@ -9,7 +9,7 @@
 			}
 		},
 		{
-			"path": "pages/checkins/index",
+			"path": "pages/myCheckin/index",
 			"style": {}
 		},
 		{
