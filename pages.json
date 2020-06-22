@@ -9,6 +9,10 @@
 			}
 		},
 		{
+			"path": "pages/checkins/index",
+			"style": {}
+		},
+		{
 			"path": "pages/refill/index",
 			"style": {}
 		},

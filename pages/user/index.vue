@@ -219,6 +219,8 @@
       span: '充值',
     }, {
       icon: `${app.globalData.OSS}/micha/icon/icon-micha-about.png`,
+      type: 'navigateTo',
+      url: '/pages/webview/index?url=https://weight-control.qtclinics.com/micha',
       span: '关于米茶',
     },
   ];

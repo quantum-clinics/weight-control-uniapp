@@ -1,6 +1,6 @@
 <style scoped>
   .refill {
-    padding: 32rpx 0 48rpx;
+    padding: 32rpx 0 132rpx;
     min-height: 100vh;
   }
 
@@ -88,7 +88,9 @@
     border-radius: 44rpx;
     text-align: center;
     line-height: 88rpx;
-    margin: 400rpx auto 0;
+    bottom: 48rpx;
+    left: 50%;
+    transform: translateX(-50%);
   }
 </style>
 
@@ -124,7 +126,7 @@
     </div>
 
     <div
-      class="refill__button ft-medium ft-32 ft-fff"
+      class="refill__button fixed ft-medium ft-32 ft-fff"
       @click="handleRefillCurrency"
     >确认充值，去支付</div>
   </div>
