@@ -9,6 +9,18 @@
     padding: 48rpx 0 80rpx;
   }
 
+  .radian__box {
+    transition: opacity .25s linear;
+  }
+
+  .page__show {
+    opacity: 1;
+  }
+
+  .page__hide {
+    opacity: 0;
+  }
+
   .header__title {
     line-height: 56rpx;
   }
@@ -27,7 +39,7 @@
 
 <template>
   <base-page :errorMessage="errorMessage" v-if="pageDisplay">
-    <radian-box>
+    <radian-box :class="['radian__box', pageDisplay ? 'page__show' : 'page__hide']">
       <div class="course box">
         <div class="course__header relative">
           <div class="header__title ft-40 ft-semi-bold ft-fff">{{coursePage.title}}</div>
@@ -59,7 +71,6 @@
 
 
   const app = getApp();
-  let pageInit = false;
 
   export default inject({
     data() {
@@ -70,7 +81,7 @@
         coursePage: {},
       }
     },
-    onShow() {
+    async onShow() {
       if (app.globalData.needRecord) {
         uni.switchTab({
           url: "/pages/micha/index"
@@ -78,9 +89,12 @@
         return;
       }
 
-      if (pageInit) {
-        return
-      }
+      pages.page = 0;
+      pages.loading = false;
+      pages.finish = false;
+      this.pageDisplay = false;
+      this.allProduct = [];
+      this.total = 0;
 
       this.fetchClassDate();
     },
@@ -107,7 +121,6 @@
         pages.loading = false;
         pages.page += 1;
         pages.finish = this.allProduct.length === total;
-        pageInit = true;
 
         this.total = total;
         this.coursePage = app.globalData.coursePage;
@@ -122,7 +135,8 @@
         });
 
         this.allProduct[index].hasExchanged = success;
-        uni.navigateTo({ url: `/pages/webview/index?url=${item.url}` })
+        this.shadowDisplay = success;
+        uni.navigateTo({ url: `/pages/webview/index?url=${this.allProduct[index].url}` })
         uni.hideLoading();
       },
     },

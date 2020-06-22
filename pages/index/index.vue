@@ -388,7 +388,9 @@ export default inject({
       signConditionDone: false,
     };
   },
-  onShow() {
+  async onShow() {
+    console.log(this.pageDisplay);
+
     if (app.globalData.needRecord) {
       uni.switchTab({
         url: "/pages/micha/index"
@@ -399,6 +401,9 @@ export default inject({
     this.bonus = app.globalData.bonus;
 
     if (this.pageDisplay) {
+      uni.showLoading({ title: 'Loading..' });
+      await this.fetchRecomProducts();
+      uni.hideLoading();
       return
     }
 
@@ -448,8 +453,9 @@ export default inject({
 
       uni.hideLoading();
       this.recomProducts[index].hasExchanged = result.success;
+      this.shadowDisplay = result.success;
 
-      uni.navigateTo({ url: `/pages/webview/index?url=${item.url}` })
+      uni.navigateTo({ url: `/pages/webview/index?url=${this.recomProducts[index].url}` })
     },
     handleToggleShadow() {
       if (this.signConditionDone) {
