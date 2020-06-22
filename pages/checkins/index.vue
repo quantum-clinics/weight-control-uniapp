@@ -86,6 +86,11 @@
     margin-left: 8rpx;
   }
 
+  .font__sport {
+    color: rgba(43, 48, 73, 1);
+    line-height: 40rpx;
+  }
+
   .change__icon {
     width: 32rpx;
     height: 32rpx;
@@ -128,19 +133,11 @@
             </div>
           </div>
 
-          <div class="content flex">
-            <div
-              class="content__count flex"
-              v-if="__item.type === '体重打卡' || __item.type === '腰围打卡'"
-            >
-              <span class="font__big">75.6</span>
-              <span class="font__util">公斤</span>
-            </div>
-
-            <div
-              class="content__count flex"
-              v-if="__item.type === '三餐打卡'"
-            >
+          <div
+            class="content flex"
+            v-if="__item.type === '体重打卡' || __item.type === '腰围打卡'"
+          >
+            <div class="content__count flex">
               <span class="font__big">75.6</span>
               <span class="font__util">公斤</span>
             </div>
@@ -149,6 +146,26 @@
               <img
                 src
                 class="change__icon"
+              />
+              <span class="font__small">1.0</span>
+              <span class="font__util">公斤</span>
+            </div>
+          </div>
+
+          <div
+            class="content flex"
+            v-if="__item.type === '三餐打卡'"
+          >
+            <div class="content__count flex">
+              <span class="font__line">自评</span>
+              <span class="font__big">3</span>
+              <span class="font__util">公斤</span>
+            </div>
+
+            <div class="content__change flex flex-ai-center">
+              <img
+                  src
+                  class="change__icon"
               />
               <span class="font__small">1.0</span>
               <span class="font__util">公斤</span>

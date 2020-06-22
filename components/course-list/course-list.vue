@@ -184,10 +184,10 @@
 
       <div class="class__list box">
         <div
-            class="class__item"
-            v-for="(item, index) in list"
-            :key="index"
-            @click="handleUserCheckProduct(item, index)"
+          class="class__item"
+          v-for="(item, index) in list"
+          :key="index"
+          @click="handleUserCheckProduct(item, index)"
         >
           <div class="flex flex-ai-start flex-jc-between">
             <div class="item__title flex-fill ft-medium ft-32">{{item.title}}</div>

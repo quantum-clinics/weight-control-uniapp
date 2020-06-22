@@ -439,6 +439,7 @@ export default inject({
       this.recomProducts = recomProducts.list;
     },
     async handleUserExchangeProduct(index) {
+      console.log(index, this.recomProducts[index]);
       uni.showLoading({ title: "加载中.." });
 
       const result = await this.callAPI('bonusProduct.exchangeProduct', {

@@ -136,6 +136,7 @@
 <script>
   import inject from "@/static/js/inject";
   const app = getApp();
+  let tryUpdateCount = 5;
 
   export default inject({
     data() {
@@ -180,19 +181,9 @@
         uni.requestPayment({
           provider: "alipay",
           orderInfo: statement.tradeNo,
-          success: async (res) => {
-            uni.hideLoading();
-
-            const { bonus } = await this.callAPI('user.getUserBonus');
-            app.globalData.bonus = bonus;
-            this.bonus = bonus;
-
-            uni.showToast({
-              title: "支付成功",
-              icon: "success",
-              duration: 2000,
-              complete: function() {}
-            });
+          success: (res) => {
+            uni.showLoading({ title: '确认中...' });
+            this.accountUpdate(trade);
           },
           fail: (err) => {
             uni.hideLoading();
@@ -200,9 +191,38 @@
               title: "支付失败，请到订单中心重新支付",
               icon: "none",
               duration: 2000,
-              complete: function() {}
             });
           }
+        });
+      },
+      async accountUpdate(trade) {
+        if (tryUpdateCount < 0) {
+          uni.showToast({ title: '支付确认失败，请稍后重试或联系管理员……' });
+          return;
+        }
+
+        setTimeout(async () => {
+          const refillResult =  await this.callAPI('cashProduct.syncTrade', { trade });
+
+          if (!refillResult.success) {
+            tryUpdateCount -= 1;
+            return this.accountUpdate(trade);
+          }
+
+          this.updateUserBouns();
+        }, 1000)
+      },
+      async updateUserBouns() {
+        const { bonus } = await this.callAPI('user.getUserBonus');
+        app.globalData.bonus = bonus;
+        this.bonus = bonus;
+
+        uni.hideLoading();
+
+        uni.showToast({
+          title: "支付成功",
+          icon: "success",
+          duration: 2000,
         });
       },
     }
