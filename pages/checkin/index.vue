@@ -307,7 +307,7 @@
   import inject from "@/static/js/inject";
 
   const app = getApp();
-  const userServerImages = [];
+  let userServerImages = [];
   let valueChangeError;
 
   export default inject({
@@ -329,6 +329,7 @@
     },
     onLoad(options) {
       const { checkin, id } = options;
+      userServerImages = [];
 
       if (checkin) {
         this.fetchTaskDataByCheckIn(checkin);

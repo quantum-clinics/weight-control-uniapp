@@ -35,6 +35,8 @@ export default {
     needRecord: false, // 用户是否需要注册量表
   },
   async onLaunch() {
+    console.log('?????');
+
     // 获取当前平台信息
     const { provider } = await userGetProviderInfo();
     this.globalData.platform = provider[0];

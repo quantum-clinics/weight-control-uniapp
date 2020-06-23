@@ -448,6 +448,10 @@ export default inject({
         id: this.recomProducts[index]._id
       });
 
+      const { bonus } = await this.callAPI('user.getUserBonus');
+      app.globalData.bonus = bonus;
+      this.bonus = bonus;
+
       uni.hideLoading();
       this.recomProducts[index].hasExchanged = result.success;
 
