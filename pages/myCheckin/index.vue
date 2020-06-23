@@ -44,12 +44,17 @@
     color: rgba(0, 0, 0, .65);
   }
 
+  .type__span--meal {
+    color: rgba(244, 115, 2, 1);
+  }
+
   .header__tip {
-    height: 32rpx;
-    line-height: 32rpx;
-    background: rgba(255, 237, 233, 1);
+    height: 40rpx;
+    line-height: 40rpx;
+    background: rgba(241, 243, 255, 1);
     padding: 0 8rpx;
-    color: rgba(255, 74, 0, 1);
+    color: rgba(98, 105, 144, 1);
+    border-radius: 8rpx;
   }
 
   .header__icon {
@@ -105,7 +110,6 @@
     width: 32rpx;
     height: 32rpx;
     margin-right: 16rpx;
-    background: #dd524d;
   }
 
   .font__line {
@@ -139,144 +143,127 @@
 </style>
 
 <template>
-  <div class="container box">
-    <div
-      class="date-checkins"
-      v-for="(item, index) in checkins"
-      :key="index"
-    >
-      <div class="date ft-medium ft-28 line-fill">{{item.date}}</div>
-      <div class="checkins">
-        <div
-          class="checkin__item box"
-          v-for="(__item, __index) in item.list"
-          :key="__index"
-        >
-          <!-- Header -->
-          <div class="checkin__header flex flex-ai-center flex-jc-between">
-            <div class="header__type flex flex-ai-center">
-              <img
-                :src="__item.icon"
-                class="type__icon"
-              />
-              <span class="type__span ft-24 ft-semi-bold line-fill">{{__item.type}}</span>
+  <base-page :errorMessage="errorMessage" v-if="pageDisplay">
+    <div class="container box">
+      <div
+        class="date-checkins"
+        v-for="(item, index) in checkins"
+        :key="index"
+      >
+        <div class="date ft-medium ft-28 line-fill">{{item.date}}</div>
+        <div class="checkins">
+          <div
+            class="checkin__item box"
+            v-for="(__item, __index) in item.checkins"
+            :key="__index"
+            @click="handleUserViewCheckin(index, __index)"
+          >
+            <!-- Header -->
+            <div class="checkin__header flex flex-ai-center flex-jc-between">
+              <div class="header__type flex flex-ai-center">
+                <img
+                  :src="__item.titleIcon"
+                  class="type__icon"
+                />
+                <span :class="['type__span ft-24 ft-semi-bold', { 'type__span--meal': __item.type === '评分' }]">{{__item.title}}</span>
+              </div>
+              <div class="flex flex-jc-end flex-ai-center">
+                <span
+                  class="header__tip flex-fill ft-24 ft-semi-bold line-fill"
+                  v-if="__item.hasAdvisorReply"
+                >{{__item.hasAdvisorReplyTip}}</span>
+                <img
+                  :src="`${OSS}/micha/icon/icon-arrow-right-gray.png`"
+                  class="header__icon"
+                >
+              </div>
             </div>
-            <div class="flex flex-jc-end flex-ai-center">
-              <span
-                class="header__tip flex-fill ft-24 ft-semi-bold line-fill"
-                v-if="__index === 2"
-              >导师已点评</span>
-              <img
-                :src="`${OSS}/micha/icon/icon-arrow-right-gray.png`"
-                class="header__icon"
+
+            <!-- 体重/腰围打卡 -->
+            <div
+              class="content flex flex-ai-end"
+              v-if="__item.type === '数值'"
+            >
+              <div class="content__count flex">
+                <span class="font__big">{{__item.currValue}}</span>
+                <span class="font__util util__margin">{{__item.currUnit}}</span>
+              </div>
+
+              <div
+                class="content__change flex flex-ai-center"
+                v-if="__item.changeValue"
               >
-            </div>
-          </div>
-
-          <!-- 体重/腰围打卡 -->
-          <div
-            class="content flex flex-ai-end"
-            v-if="__item.type === '体重打卡' || __item.type === '腰围打卡'"
-          >
-            <div class="content__count flex">
-              <span class="font__big">75.6</span>
-              <span class="font__util util__margin">公斤</span>
+                <img
+                  :src="__item.changeIcon"
+                  class="change__icon"
+                />
+                <span class="font__small">{{__item.changeValue}}</span>
+                <span class="font__util">{{__item.changeUnit}}</span>
+              </div>
             </div>
 
-            <div class="content__change flex flex-ai-center">
-              <img
-                src
-                class="change__icon"
-              />
-              <span class="font__small">1.0</span>
-              <span class="font__util">公斤</span>
-            </div>
-          </div>
+            <!-- 三餐打卡 -->
+            <div
+              class="content flex"
+              v-if="__item.type === '评分'"
+            >
+              <div class="content__count flex">
+                <span class="font__line relative ft-24 ft-semi-bold line-fill">{{__item.selfTip}}</span>
+                <span class="font__big">{{__item.selfScore}}</span>
+                <img
+                  :src="__item.scoreIcon"
+                  class="font__icon"
+                />
+              </div>
 
-          <!-- 三餐打卡 -->
-          <div
-            class="content flex"
-            v-if="__item.type === '三餐打卡'"
-          >
-            <div class="content__count flex">
-              <span class="font__line relative ft-24 ft-semi-bold line-fill">自评</span>
-              <span class="font__big">3</span>
-              <img
-                :src="`${OSS}/micha/icon/icon-checkin-score.png`"
-                class="font__icon"
-              />
+              <div
+                class="content__count flex"
+                v-if="__item.advisorScore > 0"
+              >
+                <span class="font__line relative ft-24 ft-semi-bold line-fill">{{__item.advisorTip}}</span>
+                <span class="font__big">{{__item.advisorScore}}</span>
+                <img
+                  :src="__item.scoreIcon"
+                  class="font__icon"
+                />
+              </div>
             </div>
 
-            <div class="content__count flex">
-              <span class="font__line relative ft-24 ft-semi-bold line-fill">导师</span>
-              <span class="font__big">4</span>
-              <img
-                :src="`${OSS}/micha/icon/icon-checkin-score.png`"
-                class="font__icon"
-              />
+            <!-- 运动打卡 -->
+            <div
+              class="content__sport ft-32 ft-medium"
+              v-if="__item.type === '文本'"
+            >
+              {{__item.value}}
             </div>
-          </div>
-
-          <!-- 运动打卡 -->
-          <div
-            class="content__sport ft-32 ft-medium"
-            v-if="__item.type === '运动打卡'"
-          >
-            {{__item.span}}
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </base-page>
 </template>
 
 <script>
+  // TODO 缺省页面
   import inject from "@/static/js/inject";
-  const checkins = [
-    {
-      date: '2020年7月14日 星期三',
-      list: [
-        {
-          icon: '',
-          type: '体重打卡',
-          count: '75.6',
-          util: '公斤',
-          change: '1.0',
-        }, {
-          icon: '',
-          type: '腰围打卡',
-          count: '114.0',
-          util: '厘米',
-          change: '2.0',
-        }, {
-          icon: '',
-          type: '三餐打卡',
-          count: '3',
-          util: '公斤',
-          change: '1.0',
-        },
-      ],
-    }, {
-      date: '2020年7月13日 星期二',
-      list: [
-        {
-          icon: '',
-          type: '运动打卡',
-          span: '我今天做了很多运动啦！慢跑了5公里，然后又跳了7000个绳'
-        }, {
-          icon: '',
-          type: '三餐打卡',
-          count: '3',
-          util: '公斤',
-          change: '1.0',
-        },
-      ],
-    },
-  ];
   export default inject({
     data() {
       return {
-        checkins,
+        checkins: [],
+        pageDisplay: false,
+        tasks: [],
+      }
+    },
+    async onLoad() {
+      uni.showLoading({ title: 'Loading..' });
+      const { list } = await this.callAPI("checkin.getMyCheckins");
+      this.pageDisplay = true;
+      this.checkins = list;
+      uni.hideLoading();
+    },
+    methods: {
+      handleUserViewCheckin(index, __index) {
+        uni.navigateTo({ url: `/pages/checkin/index?checkin=${this.checkins[index].checkins[__index].checkin_id}`})
       }
     },
   });

@@ -91,11 +91,11 @@
     <div class="card__title ft-semi-bold ft-40">{{indexPage.title}}({{completeCount}}/{{totalCount}})</div>
     <div class="card__spc ft-28">{{indexPage.desc}}</div>
     <div class="card__list flex flex-ai-center">
-      <navigator
+      <div
         class="list__item flex flex-ai-center flex-jc-center flex-column"
         v-for="(item, index) in tasks"
         :key="index"
-        :url="`/pages/checkin/index?id=${item.id}`"
+        @click="handleUserViewCheckin(item)"
       >
         <div class="item__imagebox relative">
           <img
@@ -121,7 +121,7 @@
           </div>
         </div>
         <div :class="item.done ? 'item__span--finish' : 'item__span--unfinish'">{{item.title}}</div>
-      </navigator>
+      </div>
     </div>
   </div>
 </template>
@@ -148,6 +148,15 @@
         OSS: app.globalData.OSS,
         indexPage: app.globalData.indexPage,
       }
+    },
+    methods: {
+      handleUserViewCheckin(item) {
+        if (item.checkin) {
+          uni.navigateTo({ url: `/pages/checkin/index?checkin=${item.checkin}`});
+        } else {
+          uni.navigateTo({ url: `/pages/checkin/index?id=${item.id}`})
+        }
+      },
     },
   };
 </script>

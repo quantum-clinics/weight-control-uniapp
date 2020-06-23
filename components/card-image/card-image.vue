@@ -33,7 +33,6 @@
     width: 192rpx;
     height: 192rpx;
     margin: 0 8rpx 8rpx 0;
-    background: #ddd;
   }
 </style>
 
@@ -42,11 +41,19 @@
     <div class="header relative">您记录的体重图片</div>
     <div class="images flex">
       <img
-        v-for="(item, index) in [1, 2, 3, 4, 5]"
+        v-for="(item, index) in source.photos"
         :key="index"
-        src
+        :src="item"
         class="image"
       />
     </div>
   </div>
 </template>
+
+<script>
+  export default {
+    props: {
+      source: Object,
+    },
+  }
+</script>

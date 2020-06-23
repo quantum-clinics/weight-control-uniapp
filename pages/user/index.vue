@@ -199,29 +199,30 @@
       span: '我的咨询',
     }, {
       icon: `${app.globalData.OSS}/micha/icon/icon-my-report.png`,
-      type: 'navigateTo',
       span: '我的报告',
     }, {
       icon: `${app.globalData.OSS}/micha/icon/icon-my-function.png`,
       span: '我的方案',
     }, {
       icon: `${app.globalData.OSS}/micha/icon/icon-my-checkin.png`,
+      type: 'navigateTo',
+      url: '/pages/myCheckin/index',
       span: '我的打卡',
     }, {
       icon: `${app.globalData.OSS}/micha/icon/icon-my-course.png`,
-      url: '/pages/course/index',
       type: 'switchTab',
+      url: '/pages/course/index',
       span: '我的精品课',
-    }, {
-      icon: `${app.globalData.OSS}/micha/icon/icon-micha-refill.png`,
-      type: 'navigateTo',
-      url: '/pages/refill/index',
-      span: '充值',
     }, {
       icon: `${app.globalData.OSS}/micha/icon/icon-micha-about.png`,
       type: 'navigateTo',
       url: '/pages/webview/index?url=https://weight-control.qtclinics.com/micha',
       span: '关于米茶',
+    }, {
+      icon: `${app.globalData.OSS}/micha/icon/icon-micha-refill.png`,
+      type: 'navigateTo',
+      url: '/pages/refill/index',
+      span: '充值',
     },
   ];
   let pageInit = false;

@@ -30,10 +30,10 @@
 <template>
   <div :class="['input-box box', { 'input-box--finish': recordFinish }]">
     <input
-        :class="['input ft-34', {'input--finish': recordFinish}]"
-        :value="safeSourceValue(source)"
-        :disabled="recordFinish"
-        @input="handleUserInput"
+      :class="['input ft-34', {'input--finish': recordFinish}]"
+      :value="safeSourceValue(source)"
+      :disabled="recordFinish"
+      @input="handleUserInput"
     />
   </div>
 </template>

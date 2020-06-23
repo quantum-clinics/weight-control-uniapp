@@ -279,7 +279,7 @@
 
         <div
           class='button button--finish flex flex-jc-center flex-ai-center button__reagain'
-          v-if="recordFinish && canUpdate"
+          v-if="reCheckin"
           @click="handleReCheckin"
         >
           <img
@@ -312,7 +312,6 @@
   export default inject({
     data() {
       return {
-        id: '', // 页面类型
         taskMenus: [], // 所需回答问题列表
         task: {}, // 当前打卡数据
         answers: {}, // 用户所有回答
@@ -328,8 +327,22 @@
       };
     },
     onLoad(options) {
-      this.id = options.id;
-      this.renderQuestion(options.id);
+      const { checkin, id } = options;
+      console.log('options', options);
+
+      if (checkin) {
+        this.fetchTaskDataByCheckIn(checkin);
+        return
+      }
+
+      this.fetchTaskDataById(id);
+
+      // this.fetchTaskData(options.id);
+    },
+    computed: {
+      reCheckin() {
+        return this.recordFinish && this.canUpdate && this.task && this.task.questions && this.task.questions.length
+      },
     },
     methods: {
       safeIconSource(source) {
@@ -356,18 +369,27 @@
         const prePage = pages[pages.length - 2];
         return prePage.$vm;
       },
-      // 获取数据
-      renderQuestion(id) {
-        uni.showLoading({ title: 'Loading..' });
+      // 根据checkin获取打卡数据
+      async fetchTaskDataByCheckIn(checkin) {
+        const { tasks = [] } = this.getPrevPage();
+        this.task = tasks.find((item) => item.checkin === checkin);
+
+        const res = await this.callAPI('checkin.getOne', {
+          checkin,
+        });
+
+        this.recordFinish = true;
+        this.taskMenus = res.shareValue.answers;
+        this.canUpdate = res.shareValue.canUpdate;
+        this.pageDisplay = true;
+        uni.hideLoading();
+      },
+      // 根据id获取打卡数据
+      async fetchTaskDataById(id) {
         const { tasks } = this.getPrevPage();
+        this.recordFinish = false;
         this.task = tasks.find((item) => item.id === id);
-        this.recordFinish = this.task.done;
-        if (this.task.done) {
-          this.taskMenus = this.task.shareValue.answers;
-          this.canUpdate = this.task.shareValue.canUpdate;
-        } else {
-          this.taskMenus = this.task.questions;
-        }
+        this.taskMenus = this.task.questions;
         this.pageDisplay = true;
         uni.hideLoading();
       },
