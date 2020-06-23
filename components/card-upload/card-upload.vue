@@ -36,6 +36,7 @@
       />
 
       <img
+        v-if="!recordFinish"
         :src="`${OSS}/micha/icon/icon-image-delete.png`"
         class="upload__delete absolute"
         @click="handleDeleteImage(index)"
