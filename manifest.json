@@ -11,7 +11,7 @@
             "disableHostCheck" : true,
             "proxy" : {
                 "/apis" : {
-                    "target" : "https://stg-weight-control.qtclinics.com",
+                    "target" : "https://hyb.qtclinics.com",
                     "changeOrigin" : true,
                     "pathRewrite" : {
                         "^/apis" : ""
