@@ -11,7 +11,7 @@
   }
 
   .upload__cell {
-    margin-right: 32rpx;
+    margin: 0 24rpx 24rpx 0;
   }
 
   .upload__delete {
@@ -46,7 +46,7 @@
     <img
       :src="`${OSS}/micha/icon/icon-image-upload.png`"
       class="upload__button"
-      v-if="!recordFinish"
+      v-if="!recordFinish && images.length < canUpLoadMaxImageCount"
       @click="handleUserChooseImage"
       alt
     />
@@ -58,9 +58,8 @@
 
   export default {
     props: {
-      source: {
-        type: Object,
-      },
+      images: Array,
+      source: Object,
       recordFinish: {
         type: Boolean,
         value: false,
@@ -68,35 +67,34 @@
     },
     data() {
       return {
-        images: [],
         OSS: app.globalData.OSS,
       }
     },
-    mounted() {
-      this.images = this.source.photos ? [...this.source.photos] : [];
+    computed: {
+      canUpLoadMaxImageCount() {
+        if (this.source.options && this.source.options.length) {
+          return this.source.options[0].maxPhotosLength
+        }
+
+        return 4;
+      }
     },
     methods: {
       handleDeleteImage(index) {
-        this.images.splice(index, 1);
-        this.$emit("valueChange", {
+        this.$emit("someImageDelete", {
           questionId: this.source.id,
-          answer: {
-            text: '',
-            photos: [...this.images],
-          },
-        })
+          index,
+        });
       },
       handleUserChooseImage() {
-        const count = this.source.options ? (this.source.options.length ? this.source.options[0].maxPhotosLength : 4) : 4
         uni.chooseImage({
-          count: count - this.images.length,
+          count: this.canUpLoadMaxImageCount - this.images.length,
           success: (chooseImageRes) => {
-            this.images.push(...chooseImageRes.tempFilePaths)
             this.$emit("valueChange", {
               questionId: this.source.id,
               answer: {
                 text: '',
-                photos: [...this.images],
+                photos: [...chooseImageRes.tempFilePaths],
               },
             })
           }

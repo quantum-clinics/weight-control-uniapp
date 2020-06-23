@@ -174,7 +174,9 @@
             <card-upload
               :recordFinish="recordFinish"
               :source="item"
+              :images="answers[item.id].photos || []"
               @valueChange="handleValueChange"
+              @someImageDelete="handleSomeImageDelete"
             />
           </div>
 
@@ -327,7 +329,6 @@
     },
     onLoad(options) {
       const { checkin, id } = options;
-      console.log('options', options);
 
       if (checkin) {
         this.fetchTaskDataByCheckIn(checkin);
@@ -335,8 +336,6 @@
       }
 
       this.fetchTaskDataById(id);
-
-      // this.fetchTaskData(options.id);
     },
     computed: {
       reCheckin() {
@@ -377,6 +376,7 @@
           checkin,
         });
 
+        this.answers = {};
         this.recordFinish = true;
         this.taskMenus = res.shareValue.answers;
         this.canUpdate = res.shareValue.canUpdate;
@@ -387,6 +387,7 @@
       async fetchTaskDataById(id) {
         const { tasks } = this.getPrevPage();
         this.recordFinish = false;
+        this.answers = {};
         this.task = tasks.find((item) => item.id === id);
         this.taskMenus = this.task.questions;
         this.pageDisplay = true;
@@ -446,7 +447,14 @@
         uni.hideLoading();
         uni.showToast({ title: '图片上传成功!' });
 
+        console.log('userServerImages', userServerImages)
+
         this.answers[questionId].photos = [...userServerImages];
+        console.log(this.answers[questionId]);
+      },
+      // 图片删除
+      handleSomeImageDelete({ questionId, index }) {
+        this.answers[questionId].photos.splice(index, 1);
       },
       // 上传单个图片到服务器
       async uploadImage(file) {
