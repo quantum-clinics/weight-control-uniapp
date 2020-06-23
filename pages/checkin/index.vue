@@ -195,7 +195,6 @@
               :score="score"
               :source="item"
               :recordFinish="recordFinish"
-              :id="item.id"
               @valueChange="handleValueChange"
               @userUpdateScore="handleUserUpdateScore"
             />
