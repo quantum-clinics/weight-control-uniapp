@@ -8,6 +8,7 @@
 .input__box {
   width: 680rpx;
   margin: 50rpx auto;
+  overflow: hidden;
 }
 
 .border {
