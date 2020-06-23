@@ -26,7 +26,7 @@
   <div class="upload__box flex">
     <div
       class="upload__cell relative flex flex-jc-center flex-ai-center"
-      v-for="(item, index) in images"
+      v-for="(item, index) in showImages"
       :key="index"
     >
       <img
@@ -71,6 +71,9 @@
       }
     },
     computed: {
+      showImages() {
+        return this.source.photos || this.images;
+      },
       canUpLoadMaxImageCount() {
         if (this.source.options && this.source.options.length) {
           return this.source.options[0].maxPhotosLength

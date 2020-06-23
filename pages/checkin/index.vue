@@ -452,14 +452,11 @@
         this.answers[questionId].photos = [...userServerImages];
         console.log(this.answers[questionId]);
       },
-      // 图片删除
-      handleSomeImageDelete({ questionId, index }) {
-        this.answers[questionId].photos.splice(index, 1);
-      },
       // 上传单个图片到服务器
       async uploadImage(file) {
         try {
           const ext = file.slice((file.lastIndexOf(".") - 1 >>> 0) + 2);
+          // const ext = 'jpg';
           const ossParams = await this.callAPI('upload.getUploadData', {
             ext,
             type: 'ali-oss',
@@ -473,6 +470,11 @@
           })
         }
       },
+      // 图片删除
+      handleSomeImageDelete({ questionId, index }) {
+        userServerImages.splice(index, 1);
+        this.answers[questionId].photos.splice(index, 1);
+      },
       // 提交相关数据
       async submitCheckInData() {
         const {
@@ -481,6 +483,12 @@
           },
           answers,
         } = this;
+
+        console.log('打卡数据===>', {
+          task,
+          photo: [],
+          value: JSON.stringify(answers),
+        })
 
         return await this.callAPI('groupSchedule.checkin', {
           task,
