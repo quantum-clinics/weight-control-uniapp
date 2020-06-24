@@ -8,6 +8,7 @@
 <template>
   <web-view
     class="webview"
+    v-if="url"
     :src="url"
     :webview-styles="webviewStyles"
   />

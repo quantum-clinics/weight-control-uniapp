@@ -174,7 +174,9 @@
             <card-upload
               :recordFinish="recordFinish"
               :source="item"
+              :images="answers[item.id].photos || []"
               @valueChange="handleValueChange"
+              @someImageDelete="handleSomeImageDelete"
             />
           </div>
 
@@ -195,7 +197,6 @@
               :score="score"
               :source="item"
               :recordFinish="recordFinish"
-              :id="item.id"
               @valueChange="handleValueChange"
               @userUpdateScore="handleUserUpdateScore"
             />
@@ -279,7 +280,7 @@
 
         <div
           class='button button--finish flex flex-jc-center flex-ai-center button__reagain'
-          v-if="recordFinish && canUpdate"
+          v-if="reCheckin"
           @click="handleReCheckin"
         >
           <img
@@ -306,13 +307,12 @@
   import inject from "@/static/js/inject";
 
   const app = getApp();
-  const userServerImages = [];
+  let userServerImages = [];
   let valueChangeError;
 
   export default inject({
     data() {
       return {
-        id: '', // 页面类型
         taskMenus: [], // 所需回答问题列表
         task: {}, // 当前打卡数据
         answers: {}, // 用户所有回答
@@ -328,8 +328,20 @@
       };
     },
     onLoad(options) {
-      this.id = options.id;
-      this.renderQuestion(options.id);
+      const { checkin, id } = options;
+      userServerImages = [];
+
+      if (checkin) {
+        this.fetchTaskDataByCheckIn(checkin);
+        return
+      }
+
+      this.fetchTaskDataById(id);
+    },
+    computed: {
+      reCheckin() {
+        return this.recordFinish && this.canUpdate && this.task && this.task.questions && this.task.questions.length
+      },
     },
     methods: {
       safeIconSource(source) {
@@ -356,18 +368,31 @@
         const prePage = pages[pages.length - 2];
         return prePage.$vm;
       },
-      // 获取数据
-      renderQuestion(id) {
-        const { tasks } = this.getPrevPage();
-        this.task = tasks.find((item) => item.id === id);
-        this.recordFinish = this.task.done;
-        if (this.task.done) {
-          this.taskMenus = this.task.shareValue.answers;
-          this.canUpdate = this.task.shareValue.canUpdate;
-        } else {
-          this.taskMenus = this.task.questions;
-        }
+      // 根据checkin获取打卡数据
+      async fetchTaskDataByCheckIn(checkin) {
+        const { tasks = [] } = this.getPrevPage();
+        this.task = tasks.find((item) => item.checkin === checkin);
+
+        const res = await this.callAPI('checkin.getOne', {
+          checkin,
+        });
+
+        this.answers = {};
+        this.recordFinish = true;
+        this.taskMenus = res.shareValue.answers;
+        this.canUpdate = res.shareValue.canUpdate;
         this.pageDisplay = true;
+        uni.hideLoading();
+      },
+      // 根据id获取打卡数据
+      async fetchTaskDataById(id) {
+        const { tasks } = this.getPrevPage();
+        this.recordFinish = false;
+        this.answers = {};
+        this.task = tasks.find((item) => item.id === id);
+        this.taskMenus = this.task.questions;
+        this.pageDisplay = true;
+        uni.hideLoading();
       },
       // 答案范围有误
       handleValueChangeError(value) {
@@ -441,6 +466,11 @@
             content: '图片上传出错:' + ((e.errMsg || e.message) || err),
           })
         }
+      },
+      // 图片删除
+      handleSomeImageDelete({ questionId, index }) {
+        userServerImages.splice(index, 1);
+        this.answers[questionId].photos.splice(index, 1);
       },
       // 提交相关数据
       async submitCheckInData() {

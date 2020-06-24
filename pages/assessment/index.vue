@@ -258,6 +258,7 @@
       },
       // 获取数据
       renderQuestion() {
+        uni.showLoading({ title: 'Loading..' });
         const { assessmentTask } = this.getPrevPage();
 
         if (assessmentTask.done) {
@@ -271,6 +272,7 @@
 
         this.assessmentTask = assessmentTask;
         this.pageDisplay = true;
+        uni.hideLoading();
       },
       safeIconSource(source, value) {
         if (source && source.options && source.options.length && source.options[0].icons && source.options[0].icons.length) {

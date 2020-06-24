@@ -123,7 +123,7 @@
   }
 
   .dangers__item {
-    height: 40rpx;
+    /* height: 40rpx; */
     line-height: 40rpx;
     padding: 0 12rpx;
     background: rgba(240,245,248,1);
@@ -165,6 +165,10 @@
 
   .report__plan--active .plan__span {
     color: #fff;
+  }
+
+  .content__button--disabled {
+    background: rgba(0, 0, 0, .45);
   }
 
 </style>
@@ -209,6 +213,14 @@
 
       <div class="report__plans">
         <div
+          v-if="!!shareValueType"
+          class="report__plan flex flex-ai-center flex-jc-center report__plan--active"
+        >
+          <span class="plan__span ft-32 ft-semi-bold">{{shareValueType}}</span>
+        </div>
+
+        <div
+          v-else
           :class="['report__plan flex flex-ai-center flex-jc-center', { 'report__plan--active': currentIndex === index }]"
           v-for="(item, index) in talker.question.options"
           @click="handleSelectIndex(index)"
@@ -233,7 +245,8 @@
       </div>
 
       <div
-        class="content__button box flex flex-column flex-ai-center"
+        :class="['content__button box flex flex-column flex-ai-center', {'content__button--disabled': currentIndex < 0}]"
+        v-if="!shareValueType"
         @click="handleSubmit"
       >
         <span class="ft-36 ft-semi-bold ft-fff line-fill">{{talker.btnTitle}}</span>
@@ -259,6 +272,7 @@
   export default {
     props: {
       talker: Object,
+      shareValueType: String,
     },
     data() {
       return {

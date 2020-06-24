@@ -167,6 +167,11 @@
     left: 50%;
     transform: translateX(-50%);
   }
+
+  .close__image {
+    width: 60rpx;
+    height: 60rpx;
+  }
 </style>
 
 <template>
@@ -179,10 +184,10 @@
 
       <div class="class__list box">
         <div
-            class="class__item"
-            v-for="(item, index) in list"
-            :key="index"
-            @click="handleUserCheckProduct(item, index)"
+          class="class__item"
+          v-for="(item, index) in list"
+          :key="index"
+          @click="handleUserCheckProduct(item, index)"
         >
           <div class="flex flex-ai-start flex-jc-between">
             <div class="item__title flex-fill ft-medium ft-32">{{item.title}}</div>
@@ -230,7 +235,7 @@
           class="dialog__image"
         />
         <span class="dialog__title ft-semi-bold ft-40 line-fill">解锁本试听课程</span>
-        <span class="dialog__spc ft-32">需要兑换250积分，积分一单兑换后无法撤回。</span>
+        <span class="dialog__spc ft-32">需要兑换{{currentBouns}}积分，积分一旦兑换后无法撤回。</span>
         <div
           class="dialog__button ft-semi-bold ft-34 ft-fff"
           @click="handleUserExchange"
@@ -269,6 +274,7 @@
       return {
         shadowDisplay: false,
         OSS: app.globalData.OSS,
+        currentBouns: 0,
       }
     },
     methods: {
@@ -280,11 +286,13 @@
       },
       handleUserExchange() {
         this.$emit('userExchangeProduct', this.activeIndex);
+        this.shadowDisplay = false;
       },
       handleUserCheckProduct(item, index) {
 
+        this.currentBouns = item.bonus;
+
         if (item.hasExchanged) {
-          console.log('????')
           uni.navigateTo({ url: `/pages/webview/index?url=${item.url}` })
           return
         }

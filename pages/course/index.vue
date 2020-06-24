@@ -9,6 +9,14 @@
     padding: 48rpx 0 80rpx;
   }
 
+  .page__show {
+    opacity: 1;
+  }
+
+  .page__hide {
+    opacity: 0;
+  }
+
   .header__title {
     line-height: 56rpx;
   }
@@ -22,11 +30,12 @@
   .course__body {
     background: rgba(255, 255, 255, 1);
     border-radius: 30rpx;
+    transition: opacity .25s linear;
   }
 </style>
 
 <template>
-  <base-page :errorMessage="errorMessage" v-if="pageDisplay">
+  <base-page :errorMessage="errorMessage">
     <radian-box>
       <div class="course box">
         <div class="course__header relative">
@@ -35,7 +44,7 @@
           <div class="line-fill ft-semi-bold ft-fff">共 {{total}} 课</div>
         </div>
 
-        <div class="course__body relative">
+        <div :class="['course__body relative', pageDisplay ? 'page__show' : 'page__hide']">
           <course-list
             statusLock
             :list="allProduct"
@@ -59,7 +68,6 @@
 
 
   const app = getApp();
-  let pageInit = false;
 
   export default inject({
     data() {
@@ -70,7 +78,7 @@
         coursePage: {},
       }
     },
-    onShow() {
+    async onShow() {
       if (app.globalData.needRecord) {
         uni.switchTab({
           url: "/pages/micha/index"
@@ -78,15 +86,17 @@
         return;
       }
 
-      if (pageInit) {
-        return
-      }
+      pages.page = 0;
+      pages.loading = false;
+      pages.finish = false;
+      this.pageDisplay = false;
+      this.allProduct = [];
 
       this.fetchClassDate();
     },
     methods: {
       async fetchClassDate() {
-        uni.showLoading();
+        uni.showLoading({ title: 'Loading..'});
         pages.loading = true;
         const { page, pageSize } = pages;
         const { list, total } = await this.callAPI('bonusProduct.getBonusCourseProducts', {
@@ -107,7 +117,6 @@
         pages.loading = false;
         pages.page += 1;
         pages.finish = this.allProduct.length === total;
-        pageInit = true;
 
         this.total = total;
         this.coursePage = app.globalData.coursePage;
@@ -117,12 +126,12 @@
       async handleUserExchangeProduct(index) {
         uni.showLoading({ title: "加载中.." });
 
-        const target = this.recomProducts[index];
         const { success } = await this.callAPI('bonusProduct.exchangeProduct', {
-          id: target._id
+          id: this.allProduct[index]._id
         });
 
-        target.hasExchanged = success;
+        this.allProduct[index].hasExchanged = success;
+        uni.navigateTo({ url: `/pages/webview/index?url=${this.allProduct[index].url}` })
         uni.hideLoading();
       },
     },

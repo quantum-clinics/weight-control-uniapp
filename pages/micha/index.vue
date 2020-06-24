@@ -28,6 +28,7 @@
             v-if="item.type === 1"
             :talker="item"
             :answers="answers"
+            :shareValueType="shareValueType"
             @valueChange="handleValueChange"
             @shareValueChange="handleShareValueChange"
           />
@@ -52,9 +53,12 @@
 
 <script>
   import inject from '@/static/js/inject';
+  import {
+    userLoginByUniApp,
+    getUserInfoByUniApp,
+  } from "@/static/apis/login";
 
   const app = getApp();
-  let pageInit = false;
   let quesitionsTask = '';
   let questions = [];
 
@@ -70,6 +74,7 @@
           userInputModel: false,
         },
         taskSchedule: {},
+        shareValueType: '',
       }
     },
     onShow() {
@@ -82,14 +87,9 @@
     },
     methods: {
       renderPage() {
-        if (app.globalData.needRecord && !questions.length) {
+        if (!questions.length) {
           this.talksData = [];
           this.fetchCheckList();
-        }
-
-        if (!app.globalData.needRecord && !pageInit) {
-          this.talksData = [];
-          this.fetchTalkDate();
         }
 
         this.taskSchedule = app.globalData.taskSchedule;
@@ -104,8 +104,11 @@
       },
       // 获取量表数据
       async fetchCheckList() {
+        uni.showLoading({ title: 'Loading..' });
         this.talksDocument = uni.createSelectorQuery().select(".talks");
         const res = await this.callAPI('system.getCheckList');
+        this.shareValueType = app.globalData.profile.type;
+
 
         if (res.shareValue) {
           // 将量表添加至聊天列表中
@@ -125,18 +128,7 @@
           this.nextQuesitionRender();
         }
 
-        this.$nextTick(() => {
-          this.talksReachBottom();
-          this.pageDisplay = true;
-        });
-      },
-      // 获取数据
-      async fetchTalkDate() {
-        if (!this.talksDocument) {
-          this.talksDocument = uni.createSelectorQuery().select(".talks");
-        }
-
-        pageInit = true;
+        uni.hideLoading();
 
         this.$nextTick(() => {
           this.talksReachBottom();
@@ -182,30 +174,16 @@
         this.answers[id].text = value;
         this.handleUserInput(answer);
       },
-      // 用户选择量表
-      async handleShareValueChange({ type }) {
-        uni.showLoading({ title: '参与中..' });
-        const { success } = await this.callAPI('user.updateUser', {
-          type,
-        });
-        uni.hideLoading();
-        uni.showToast({ title: '恭喜您参与成功' })
-        app.globalData.needRecord = !success;
-      },
-      handleValueChangeError(value) {
-        this.message(value);
-      },
       // 渲染下一道问题
       nextQuesitionRender() {
         const nextQuestion = questions.find((item) => !this.answers[item.id].text);
-        console.log('回答完毕, 下一道题: ', nextQuestion);
         if (!nextQuestion) {
           this.questionReply = {
             id: '',
             type: '',
             userInputModel: false,
           };
-          // TODO finish
+
           this.submitQuestionCheckList();
           return
         }
@@ -244,19 +222,50 @@
       },
       // 提交健康量表
       async submitQuestionCheckList() {
+        uni.showLoading({ title: 'Loading...' });
         const { shareValue } = await this.callAPI('groupSchedule.checkin', {
           task: quesitionsTask,
           photo: [],
           value: JSON.stringify(this.answers),
         });
 
-        app.globalData.needRecord = false;
+        const { code } = await userLoginByUniApp();
+
+        const { userInfo } = await getUserInfoByUniApp();
+
+        const result = await this.callAPI("user.login", {
+          code,
+          profile: userInfo
+        });
+
+        app.globalData.profile = result.profile || {};
+        app.globalData.authorization = result.authorization;
+
+        uni.hideLoading();
 
         // 将量表添加至聊天列表中
         this.pushTalk2List({
           type: 1,
           shareValue,
         })
+      },
+      // 用户选择量表并参与
+      async handleShareValueChange({ type }) {
+        uni.showLoading({ title: '参与中..' });
+        await this.callAPI('user.updateUser', { type });
+        app.globalData.profile.type = type;
+        this.shareValueType = type;
+
+        uni.hideLoading();
+        uni.showToast({ title: '恭喜您参与成功' });
+        questions = [];
+        app.globalData.needRecord = false;
+        uni.switchTab({
+          url: "/pages/index/index"
+        });
+      },
+      handleValueChangeError(value) {
+        this.message(value);
       },
     }
   });

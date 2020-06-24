@@ -1,29 +1,52 @@
 <style scoped>
-.upload__box {
-  flex-wrap: wrap;
-}
+  .upload__box {
+    flex-wrap: wrap;
+  }
 
-.upload__image,
-.upload__button {
-  width: 192rpx;
-  height: 192rpx;
-}
+  .upload__cell,
+  .upload__button,
+  .upload__image {
+    width: 192rpx;
+    height: 192rpx;
+  }
+
+  .upload__cell {
+    margin: 0 24rpx 24rpx 0;
+  }
+
+  .upload__delete {
+    width: 40rpx;
+    height: 40rpx;
+    right: -15rpx;
+    top: -15rpx;
+  }
 </style>
 
 <template>
   <div class="upload__box flex">
-    <img
-      class="upload__image"
-      v-for="(item, index) in images"
+    <div
+      class="upload__cell relative flex flex-jc-center flex-ai-center"
+      v-for="(item, index) in showImages"
       :key="index"
-      :src="item"
-      alt
-    />
+    >
+      <img
+        class="upload__image"
+        mode="aspectFill"
+        :src="item"
+      />
+
+      <img
+        v-if="!recordFinish"
+        :src="`${OSS}/micha/icon/icon-image-delete.png`"
+        class="upload__delete absolute"
+        @click="handleDeleteImage(index)"
+      />
+    </div>
 
     <img
-      src="https://qtclinics-resource.oss-cn-shenzhen.aliyuncs.com/sleep/icons/upload-empty.png"
+      :src="`${OSS}/micha/icon/icon-image-upload.png`"
       class="upload__button"
-      v-if="!recordFinish"
+      v-if="!recordFinish && images.length < canUpLoadMaxImageCount"
       @click="handleUserChooseImage"
       alt
     />
@@ -31,11 +54,12 @@
 </template>
 
 <script>
+  const app = getApp();
+
   export default {
     props: {
-      source: {
-        type: Object,
-      },
+      images: Array,
+      source: Object,
       recordFinish: {
         type: Boolean,
         value: false,
@@ -43,23 +67,37 @@
     },
     data() {
       return {
-        images: [],
+        OSS: app.globalData.OSS,
       }
     },
-    mounted() {
-      this.images = this.source.photos ? [...this.source.photos] : [];
+    computed: {
+      showImages() {
+        return this.source.photos || this.images;
+      },
+      canUpLoadMaxImageCount() {
+        if (this.source.options && this.source.options.length) {
+          return this.source.options[0].maxPhotosLength
+        }
+
+        return 4;
+      }
     },
     methods: {
+      handleDeleteImage(index) {
+        this.$emit("someImageDelete", {
+          questionId: this.source.id,
+          index,
+        });
+      },
       handleUserChooseImage() {
         uni.chooseImage({
-          count: 4 - this.images.length,
+          count: this.canUpLoadMaxImageCount - this.images.length,
           success: (chooseImageRes) => {
-            this.images.push(...chooseImageRes.tempFilePaths)
             this.$emit("valueChange", {
               questionId: this.source.id,
               answer: {
                 text: '',
-                photos: [...this.images],
+                photos: [...chooseImageRes.tempFilePaths],
               },
             })
           }

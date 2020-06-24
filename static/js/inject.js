@@ -17,22 +17,44 @@ export default function (origin) {
         OSS: app.globalData.OSS,
       }
     },
+    onHide() {
+      uni.hideLoading();
+    },
     methods: {
       ...originMethods,
       callAPI(method, params, callBack) {
         return new Promise((resolve, reject) => {
           const onFinish = (err, data, pushs) => {
             if (err) {
+              uni.hideLoading();
+
               if (err.code === 100) {
                 // no permission error, redirect to launch page
                 return uni.reLaunch({
-                  url: '/pages/launch/launch',
+                  url: '/pages/launch/index',
                 });
               }
+
+              if (err.code === 20001) {
+                return uni.showModal({
+                  title: '提示',
+                  content: err.message,
+                  success: ({ confirm }) => {
+                    if (!confirm) {
+                      return
+                    }
+
+                    uni.navigateTo({
+                      url: '/pages/refill/index',
+                    })
+                  }
+                });
+              }
+
               if (!(callBack && callBack(err))) {
-                uni.hideLoading();
                 this.message(`[网络错误-代码:${err.code}] ${err.message}`);
               }
+
               return reject(err);
             }
             // if (pushs && pushs.trophy) {

@@ -1,6 +1,6 @@
 <style scoped>
   .refill {
-    padding: 32rpx 0 48rpx;
+    padding: 32rpx 0 0;
     min-height: 100vh;
   }
 
@@ -31,6 +31,7 @@
   .refill__box {
     margin-top: 36rpx;
     padding-left: 32rpx;
+    padding-bottom: 132rpx;
   }
 
   .refill__title {
@@ -88,12 +89,14 @@
     border-radius: 44rpx;
     text-align: center;
     line-height: 88rpx;
-    margin: 400rpx auto 0;
+    bottom: 48rpx;
+    left: 50%;
+    transform: translateX(-50%);
   }
 </style>
 
 <template>
-  <div class="refill flex flex-column">
+  <div class="refill flex flex-column box">
     <div class="refill__header box flex flex-column flex-ai-center">
       <div class="header__count box ft-medium line-fill">{{bonus}}</div>
       <div class="header__currency flex flex-ai-center">
@@ -124,7 +127,7 @@
     </div>
 
     <div
-      class="refill__button ft-medium ft-32 ft-fff"
+      class="refill__button fixed ft-medium ft-32 ft-fff"
       @click="handleRefillCurrency"
     >确认充值，去支付</div>
   </div>
@@ -133,6 +136,7 @@
 <script>
   import inject from "@/static/js/inject";
   const app = getApp();
+  let tryUpdateCount = 5;
 
   export default inject({
     data() {
@@ -148,8 +152,10 @@
     },
     methods: {
       async fetchData() {
+        uni.showLoading({ title: 'Loading..' });
         const res = await this.callAPI('cashProduct.getAllCashExchangeBonus');
         this.refillList = res.list;
+        uni.hideLoading();
       },
       handleSelectIndex(index) {
         this.currentIndex = index;
@@ -175,19 +181,9 @@
         uni.requestPayment({
           provider: "alipay",
           orderInfo: statement.tradeNo,
-          success: async (res) => {
-            uni.hideLoading();
-
-            const { bonus } = await this.callAPI('user.getUserBonus');
-            app.globalData.bonus = bonus;
-            this.bonus = bonus;
-
-            uni.showToast({
-              title: "支付成功",
-              icon: "success",
-              duration: 2000,
-              complete: function() {}
-            });
+          success: (res) => {
+            uni.showLoading({ title: '确认中...' });
+            this.accountUpdate(trade);
           },
           fail: (err) => {
             uni.hideLoading();
@@ -195,9 +191,38 @@
               title: "支付失败，请到订单中心重新支付",
               icon: "none",
               duration: 2000,
-              complete: function() {}
             });
           }
+        });
+      },
+      async accountUpdate(trade) {
+        if (tryUpdateCount < 0) {
+          uni.showToast({ title: '支付确认失败，请稍后重试或联系管理员……' });
+          return;
+        }
+
+        setTimeout(async () => {
+          const refillResult =  await this.callAPI('cashProduct.syncTrade', { trade });
+
+          if (!refillResult.success) {
+            tryUpdateCount -= 1;
+            return this.accountUpdate(trade);
+          }
+
+          this.updateUserBouns();
+        }, 1000)
+      },
+      async updateUserBouns() {
+        const { bonus } = await this.callAPI('user.getUserBonus');
+        app.globalData.bonus = bonus;
+        this.bonus = bonus;
+
+        uni.hideLoading();
+
+        uni.showToast({
+          title: "支付成功",
+          icon: "success",
+          duration: 2000,
         });
       },
     }

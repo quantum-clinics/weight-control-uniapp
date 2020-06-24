@@ -385,9 +385,10 @@ export default inject({
         background: '#fff',
       },
       bonus: 0,
+      signConditionDone: false,
     };
   },
-  onShow() {
+  async onShow() {
     if (app.globalData.needRecord) {
       uni.switchTab({
         url: "/pages/micha/index"
@@ -398,6 +399,9 @@ export default inject({
     this.bonus = app.globalData.bonus;
 
     if (this.pageDisplay) {
+      uni.showLoading({ title: 'Loading..' });
+      await this.fetchRecomProducts();
+      uni.hideLoading();
       return
     }
 
@@ -405,6 +409,7 @@ export default inject({
   },
   methods: {
     async fetchIndexDate() {
+      uni.showLoading({ title: 'Loading..' });
       await Promise.all([
         this.fetchSignCondition(),
         this.fetchTasks(),
@@ -413,12 +418,14 @@ export default inject({
 
       this.nickName = app.globalData.profile.nickName;
       this.pageDisplay = true;
+      uni.hideLoading();
     },
     async fetchSignCondition() {
       const signCondition = await this.callAPI("groupSchedule.getSignCondition");
       this.signList = signCondition.signList;
       this.assessmentTask = signCondition.task;
       this.shadowDisplay = app.globalData.todayFirstLogin && !signCondition.task.done;
+      this.signConditionDone = signCondition.task.done;
     },
     async fetchTasks() {
       const tasks = await this.callAPI("groupSchedule.getTasks");
@@ -437,15 +444,24 @@ export default inject({
     async handleUserExchangeProduct(index) {
       uni.showLoading({ title: "加载中.." });
 
-      const target = this.recomProducts[index];
       const result = await this.callAPI('bonusProduct.exchangeProduct', {
-        id: target._id
+        id: this.recomProducts[index]._id
       });
 
+      const { bonus } = await this.callAPI('user.getUserBonus');
+      app.globalData.bonus = bonus;
+      this.bonus = bonus;
+
       uni.hideLoading();
-      target.hasExchanged = result.success;
+      this.recomProducts[index].hasExchanged = result.success;
+
+      uni.navigateTo({ url: `/pages/webview/index?url=${this.recomProducts[index].url}` })
     },
     handleToggleShadow() {
+      if (this.signConditionDone) {
+        return;
+      }
+
       this.shadowDisplay = !this.shadowDisplay;
     },
     handleUserCheckIn() {
@@ -454,6 +470,3 @@ export default inject({
   }
 });
 </script>
-
-<style>
-</style>

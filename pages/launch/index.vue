@@ -1,31 +1,44 @@
 <style scoped>
-.auth-page {
-  height: 100vh;
-  width: 100vw;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+  .auth__page {
+    height: 100vh;
+    width: 100vw;
+    background: linear-gradient(180deg, #10CEFF, #0083FF);
+  }
 
-.auth-bottom {
-  width: 50vw;
-}
+  .auth__background {
+    width: 100vw;
+  }
+
+  .auth__button {
+    width: 584rpx;
+    height: 112rpx;
+    background: linear-gradient(180deg, rgba(255, 150, 81, 1) 0%, rgba(255, 113, 81, 1) 100%);
+    border-radius: 48rpx;
+    border: 1rpx solid rgba(255, 138, 101, 1);
+    bottom: 40rpx;
+    left: 50%;
+    transform: translateX(-50%);
+  }
 </style>
 
 <template>
-  <base-page
-    :errorMessage="errorMessage"
-    v-if="pageDisplay"
-  >
-    <div class="auth-page">
-      <!-- 支付宝登陆 -->
+  <base-page :errorMessage="errorMessage">
+    <div class="auth__page relative">
+      <img
+        mode="widthFix"
+        src="/static/images/home-page-back.png"
+        class="auth__background"
+      />
+
       <button
-        class="auth-bottom"
-        type="primary"
+        v-if="pageDisplay"
+        class="auth__button flex flex-ai-center flex-jc-center absolute"
         open-type="getAuthorize"
         scope="userInfo"
         @getAuthorize="handleGetUserInfoByAliPay"
-      >授权</button>
+      >
+        <span class="ft-42 ft-semi-bold ft-fff">授权登录</span>
+      </button>
     </div>
   </base-page>
 </template>
@@ -52,13 +65,26 @@ export default inject({
   },
   methods: {
     async handleGetUserInfoByAliPay() {
+      uni.showLoading({ title: '验证身份中……' });
       // 获取当前用户登陆code
       const { code } = await userLoginByUniApp();
+
       const { userInfo } = await getUserInfoByUniApp();
-      if (!userInfo.nickName) {
+
+      if (!userInfo.nickName && !userInfo.avatarUrl) {
         this.pageDisplay = true;
+        uni.hideLoading();
         return;
       }
+
+      if (!userInfo.nickName) {
+        userInfo.nickName = `米茶${Math.random()}`;
+      }
+
+      if (!userInfo.avatarUrl) {
+        userInfo.avatarUrl = ''
+      }
+
       this.loadUserData(code, userInfo);
     },
     async loadUserData(code, userInfo) {
@@ -74,9 +100,6 @@ export default inject({
       app.globalData.authorization = result.authorization;
       app.globalData.needRecord = !app.globalData.profile.record || !app.globalData.profile.type;
       app.globalData.todayFirstLogin = !!result.todayFirstLogin;
-
-      const { bonus } = await this.callAPI('user.getUserBonus');
-      app.globalData.bonus = bonus;
 
       const { coursePage, indexPage } = await this.callAPI("system.getAppLabels");
       app.globalData.indexPage = indexPage
@@ -95,18 +118,25 @@ export default inject({
 
       if (result.needBind) {
         app.globalData.openid = result.openid;
+        uni.hideLoading();
         uni.redirectTo({
           url: "/pages/bind/index"
         });
         return;
       }
 
+      const { bonus } = await this.callAPI('user.getUserBonus');
+      app.globalData.bonus = bonus;
+
       if (app.globalData.needRecord) {
-        uni.switchTab({
+        uni.hideLoading();
+        uni.redirectTo({
           url: "/pages/micha/index"
         });
         return;
       }
+
+      uni.hideLoading();
 
       uni.switchTab({
         url: "/pages/index/index"
