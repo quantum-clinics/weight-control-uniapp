@@ -1,8 +1,10 @@
 <style scoped>
-  .container {
-    padding: 0 32rpx 114rpx;
+  .page {
     min-height: 100vh;
     background: rgba(245, 245, 245, 1);
+  }
+  .container {
+    padding: 0 32rpx 114rpx;
   }
 
   .date-checkins {
@@ -140,111 +142,142 @@
     color: rgba(43, 48, 73, 1);
     line-height: 40rpx;
   }
+
+  .page__footer {
+    padding: 32rpx 0;
+  }
+
+  .footer__button {
+    width: 366rpx;
+    height: 88rpx;
+    border-radius: 44rpx;
+    text-align: center;
+    line-height: 88rpx;
+    color: rgba(0, 0, 0, .65);
+    background: rgb(250, 250, 250);
+    border: 1rpx solid rgb(202, 207, 216);
+  }
+
+  .footer__span {
+    margin-top: 24rpx;
+    color: rgba(0, 0, 0, .25);
+  }
 </style>
 
 <template>
   <base-page :errorMessage="errorMessage" v-if="pageDisplay">
-    <div class="container box">
-      <div
-        class="date-checkins"
-        v-for="(item, index) in checkins"
-        :key="index"
-      >
-        <div class="date ft-medium ft-28 line-fill">{{item.date}}</div>
-        <div class="checkins">
-          <div
-            class="checkin__item box"
-            v-for="(__item, __index) in item.checkins"
-            :key="__index"
-            @click="handleUserViewCheckin(index, __index)"
-          >
-            <!-- Header -->
-            <div class="checkin__header flex flex-ai-center flex-jc-between">
-              <div class="header__type flex flex-ai-center">
-                <img
-                  :src="__item.titleIcon"
-                  class="type__icon"
-                />
-                <span :class="['type__span ft-24 ft-semi-bold', { 'type__span--meal': __item.type === '评分' }]">{{__item.title}}</span>
+    <div class="page flex flex-column">
+      <div class="container flex-fill box">
+        <div
+          class="date-checkins"
+          v-for="(item, index) in checkins"
+          :key="index"
+        >
+          <div class="date ft-medium ft-28 line-fill">{{item.date}}</div>
+          <div class="checkins">
+            <div
+              class="checkin__item box"
+              v-for="(__item, __index) in item.checkins"
+              :key="__index"
+              @click="handleUserViewCheckin(index, __index)"
+            >
+              <!-- Header -->
+              <div class="checkin__header flex flex-ai-center flex-jc-between">
+                <div class="header__type flex flex-ai-center">
+                  <img
+                    :src="__item.titleIcon"
+                    class="type__icon"
+                  />
+                  <span :class="['type__span ft-24 ft-semi-bold', { 'type__span--meal': __item.type === '评分' }]">{{__item.title}}</span>
+                </div>
+                <div class="flex flex-jc-end flex-ai-center">
+                  <span
+                    class="header__tip flex-fill ft-24 ft-semi-bold line-fill"
+                    v-if="__item.hasAdvisorReply"
+                  >{{__item.hasAdvisorReplyTip}}</span>
+                  <img
+                    :src="`${OSS}/micha/icon/icon-arrow-right-gray.png`"
+                    class="header__icon"
+                  >
+                </div>
               </div>
-              <div class="flex flex-jc-end flex-ai-center">
-                <span
-                  class="header__tip flex-fill ft-24 ft-semi-bold line-fill"
-                  v-if="__item.hasAdvisorReply"
-                >{{__item.hasAdvisorReplyTip}}</span>
-                <img
-                  :src="`${OSS}/micha/icon/icon-arrow-right-gray.png`"
-                  class="header__icon"
+
+              <!-- 体重/腰围打卡 -->
+              <div
+                class="content flex flex-ai-end"
+                v-if="__item.type === '数值'"
+              >
+                <div class="content__count flex">
+                  <span class="font__big">{{__item.currValue}}</span>
+                  <span class="font__util util__margin">{{__item.currUnit}}</span>
+                </div>
+
+                <div
+                  class="content__change flex flex-ai-center"
+                  v-if="__item.changeValue"
                 >
-              </div>
-            </div>
-
-            <!-- 体重/腰围打卡 -->
-            <div
-              class="content flex flex-ai-end"
-              v-if="__item.type === '数值'"
-            >
-              <div class="content__count flex">
-                <span class="font__big">{{__item.currValue}}</span>
-                <span class="font__util util__margin">{{__item.currUnit}}</span>
+                  <img
+                    :src="__item.changeIcon"
+                    class="change__icon"
+                  />
+                  <span class="font__small">{{__item.changeValue}}</span>
+                  <span class="font__util">{{__item.changeUnit}}</span>
+                </div>
               </div>
 
+              <!-- 三餐打卡 -->
               <div
-                class="content__change flex flex-ai-center"
-                v-if="__item.changeValue"
+                class="content flex"
+                v-if="__item.type === '评分'"
               >
-                <img
-                  :src="__item.changeIcon"
-                  class="change__icon"
-                />
-                <span class="font__small">{{__item.changeValue}}</span>
-                <span class="font__util">{{__item.changeUnit}}</span>
-              </div>
-            </div>
+                <div class="content__count flex">
+                  <span class="font__line relative ft-24 ft-semi-bold line-fill">{{__item.selfTip}}</span>
+                  <span class="font__big">{{__item.selfScore}}</span>
+                  <img
+                    :src="__item.scoreIcon"
+                    class="font__icon"
+                  />
+                </div>
 
-            <!-- 三餐打卡 -->
-            <div
-              class="content flex"
-              v-if="__item.type === '评分'"
-            >
-              <div class="content__count flex">
-                <span class="font__line relative ft-24 ft-semi-bold line-fill">{{__item.selfTip}}</span>
-                <span class="font__big">{{__item.selfScore}}</span>
-                <img
-                  :src="__item.scoreIcon"
-                  class="font__icon"
-                />
+                <div
+                  class="content__count flex"
+                  v-if="__item.advisorScore > 0"
+                >
+                  <span class="font__line relative ft-24 ft-semi-bold line-fill">{{__item.advisorTip}}</span>
+                  <span class="font__big">{{__item.advisorScore}}</span>
+                  <img
+                    :src="__item.scoreIcon"
+                    class="font__icon"
+                  />
+                </div>
               </div>
 
+              <!-- 运动打卡 -->
               <div
-                class="content__count flex"
-                v-if="__item.advisorScore > 0"
+                class="content__sport ft-32 ft-medium"
+                v-if="__item.type === '文本'"
               >
-                <span class="font__line relative ft-24 ft-semi-bold line-fill">{{__item.advisorTip}}</span>
-                <span class="font__big">{{__item.advisorScore}}</span>
-                <img
-                  :src="__item.scoreIcon"
-                  class="font__icon"
-                />
+                {{__item.value}}
               </div>
-            </div>
-
-            <!-- 运动打卡 -->
-            <div
-              class="content__sport ft-32 ft-medium"
-              v-if="__item.type === '文本'"
-            >
-              {{__item.value}}
             </div>
           </div>
         </div>
+      </div>
+      <div class="page__footer flex flex-column flex-ai-center">
+        <navigator
+          open-type="navigateBack"
+          class="footer__button ft-medium ft-32 ft-fff"
+        >返回</navigator>
+        <text
+          v-if="!checkins.length"
+          class="footer__span ft-24"
+        >~ 您还没有打过卡，请先去打卡哦 ~</text>
       </div>
     </div>
   </base-page>
 </template>
 
 <script>
-  // TODO 缺省页面
   import inject from "@/static/js/inject";
   export default inject({
     data() {
