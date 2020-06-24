@@ -3,8 +3,9 @@
     min-height: 100vh;
     background: rgba(245, 245, 245, 1);
   }
+
   .container {
-    padding: 0 32rpx 114rpx;
+    padding: 0 32rpx 16rpx;
   }
 
   .date-checkins {
@@ -159,7 +160,7 @@
   }
 
   .footer__span {
-    margin-top: 24rpx;
+    margin-bottom: 24rpx;
     color: rgba(0, 0, 0, .25);
   }
 </style>
@@ -167,7 +168,7 @@
 <template>
   <base-page :errorMessage="errorMessage" v-if="pageDisplay">
     <div class="page flex flex-column">
-      <div class="container flex-fill box">
+      <div class="container box">
         <div
           class="date-checkins"
           v-for="(item, index) in checkins"
@@ -264,14 +265,15 @@
         </div>
       </div>
       <div class="page__footer flex flex-column flex-ai-center">
-        <navigator
-          open-type="navigateBack"
-          class="footer__button ft-medium ft-32 ft-fff"
-        >返回</navigator>
         <text
           v-if="!checkins.length"
           class="footer__span ft-24"
         >~ 您还没有打过卡，请先去打卡哦 ~</text>
+        <navigator
+          open-type="switchTab"
+          url="/pages/index/index"
+          class="footer__button ft-medium ft-32 ft-fff"
+        >返回首页</navigator>
       </div>
     </div>
   </base-page>

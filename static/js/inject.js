@@ -17,6 +17,9 @@ export default function (origin) {
         OSS: app.globalData.OSS,
       }
     },
+    onHide() {
+      uni.hideLoading();
+    },
     methods: {
       ...originMethods,
       callAPI(method, params, callBack) {

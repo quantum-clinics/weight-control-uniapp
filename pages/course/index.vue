@@ -9,10 +9,6 @@
     padding: 48rpx 0 80rpx;
   }
 
-  .radian__box {
-    transition: opacity .25s linear;
-  }
-
   .page__show {
     opacity: 1;
   }
@@ -34,12 +30,13 @@
   .course__body {
     background: rgba(255, 255, 255, 1);
     border-radius: 30rpx;
+    transition: opacity .25s linear;
   }
 </style>
 
 <template>
-  <base-page :errorMessage="errorMessage" v-if="pageDisplay">
-    <radian-box :class="['radian__box', pageDisplay ? 'page__show' : 'page__hide']">
+  <base-page :errorMessage="errorMessage">
+    <radian-box>
       <div class="course box">
         <div class="course__header relative">
           <div class="header__title ft-40 ft-semi-bold ft-fff">{{coursePage.title}}</div>
@@ -47,7 +44,7 @@
           <div class="line-fill ft-semi-bold ft-fff">共 {{total}} 课</div>
         </div>
 
-        <div class="course__body relative">
+        <div :class="['course__body relative', pageDisplay ? 'page__show' : 'page__hide']">
           <course-list
             statusLock
             :list="allProduct"
@@ -94,13 +91,12 @@
       pages.finish = false;
       this.pageDisplay = false;
       this.allProduct = [];
-      this.total = 0;
 
       this.fetchClassDate();
     },
     methods: {
       async fetchClassDate() {
-        uni.showLoading();
+        uni.showLoading({ title: 'Loading..'});
         pages.loading = true;
         const { page, pageSize } = pages;
         const { list, total } = await this.callAPI('bonusProduct.getBonusCourseProducts', {

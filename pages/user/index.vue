@@ -18,7 +18,6 @@
     width: 128rpx;
     height: 128rpx;
     margin-right: 24rpx;
-    background: #ddd;
   }
 
   .user__create {
@@ -225,7 +224,6 @@
       span: '充值',
     },
   ];
-  let pageInit = false;
 
   export default inject({
     data() {
@@ -247,8 +245,8 @@
         return;
       }
 
-      if (pageInit) {
-        return
+      if (this.pageDisplay) {
+        return;
       }
 
       this.fetchUserData();
@@ -257,7 +255,6 @@
       fetchUserData() {
         uni.showLoading({ title: 'Loading..' });
         const { nickName, avatarUrl, startDate, loseWeight } = app.globalData.profile;
-        pageInit = true;
         this.nickName = nickName;
         this.avatarUrl = avatarUrl;
         this.startDate = startDate;

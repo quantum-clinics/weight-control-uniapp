@@ -68,13 +68,23 @@ export default inject({
       uni.showLoading({ title: '验证身份中……' });
       // 获取当前用户登陆code
       const { code } = await userLoginByUniApp();
+
       const { userInfo } = await getUserInfoByUniApp();
 
-      if (!userInfo.nickName) {
+      if (!userInfo.nickName && !userInfo.avatarUrl) {
         this.pageDisplay = true;
         uni.hideLoading();
         return;
       }
+
+      if (!userInfo.nickName) {
+        userInfo.nickName = `米茶${Math.random()}`;
+      }
+
+      if (!userInfo.avatarUrl) {
+        userInfo.avatarUrl = ''
+      }
+
       this.loadUserData(code, userInfo);
     },
     async loadUserData(code, userInfo) {

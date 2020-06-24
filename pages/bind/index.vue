@@ -1,71 +1,94 @@
 <style scoped>
-.welcome-title {
-  margin-top: 40rpx;
-  margin-left: 40rpx;
-  font-size: 48rpx;
-}
+  .page {
+    min-height: 100vh;
+    background: #fff;
+  }
+  .welcome-title {
+    margin-top: 40rpx;
+    margin-left: 40rpx;
+    font-size: 48rpx;
+  }
 
-.input__box {
-  width: 680rpx;
-  margin: 50rpx auto;
-  overflow: hidden;
-}
+  .input__box {
+    width: 680rpx;
+    margin: 50rpx auto;
+    overflow: hidden;
+  }
 
-.border {
-  border: 1rpx solid #ddd;
-  border-radius: 100rpx;
-}
+  .border-radius {
+    border-radius: 100rpx;
+  }
 
-.input {
-  height: 100rpx;
-  padding-left: 40rpx;
-}
+  .border {
+    border: 1rpx solid #ddd;
+    padding-left: 40rpx;
+  }
 
-.input__btn {
-  height: 100rpx;
-  margin-left: 40rpx;
-}
+  .input {
+    width: 680rpx;
+    height: 100rpx;
+    padding: 0;
+  }
 
-.input__btn {
-  width: 250rpx;
-  text-align: center;
-  line-height: 100rpx;
-}
+  .code__box {
+    height: 100rpx;
+    overflow: hidden;
+  }
 
-.bind {
-  width: 680rpx;
-  height: 100rpx;
-  margin: auto;
-  line-height: 100rpx;
-  text-align: center;
-}
+  .code__input {
+    height: 96rpx;
+    padding: 0;
+  }
+
+  .input__btn {
+    height: 100rpx;
+    margin-left: 40rpx;
+  }
+
+  .input__btn {
+    width: 250rpx;
+    text-align: center;
+    line-height: 100rpx;
+  }
+
+  .bind {
+    width: 680rpx;
+    height: 100rpx;
+    margin: auto;
+    line-height: 100rpx;
+    text-align: center;
+  }
 </style>
 
 <template>
   <base-page :errorMessage="errorMessage">
-    <h1 class="welcome-title">欢迎来到米茶计划</h1>
-    <div class="input__box border box flex flex-ai-center">
-      <input
-        class="input flex-1 height-fill"
-        v-model="userPhoneNumber"
-        maxlength="11"
-        type="number"
-        placeholder="请输入手机号码"
-      />
+    <div class="page">
+      <h1 class="welcome-title">欢迎来到米茶计划</h1>
+      <div class="input__box border-radius border box flex flex-ai-center">
+        <input
+          class="input flex-1 height-fill"
+          v-model="userPhoneNumber"
+          maxlength="11"
+          type="number"
+          placeholder="请输入手机号码"
+        />
+      </div>
+      <div class="input__box box flex flex-ai-center">
+        <div class="code__box flex-1 border border-radius flex flex-ai-center">
+          <input
+            class="code__input height-fill"
+            type="number"
+            v-model="userVerCode"
+            placeholder="请输入验证码"
+          />
+        </div>
+        <div
+          class="input__btn box border border-radius"
+          @click="handleUserFetchCheckCode"
+        >{{fetchQrCodeButtonDisable ? countDown + 's后重发' : '获取验证码'}}</div>
+      </div>
+      <div class="bind box border-radius border" @click="handleUserBindAccount">绑定账户</div>
     </div>
-    <div class="input__box box flex flex-ai-center">
-      <input
-        class="input border flex-1 height-fill"
-        type="number"
-        v-model="userVerCode"
-        placeholder="请输入验证码"
-      />
-      <div
-        class="input__btn border"
-        @click="handleUserFetchCheckCode"
-      >{{fetchQrCodeButtonDisable ? countDown + 's后重发' : '获取验证码'}}</div>
-    </div>
-    <div class="bind border" @click="handleUserBindAccount">绑定账户</div>
   </base-page>
 </template>
 

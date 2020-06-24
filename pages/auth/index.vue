@@ -61,11 +61,17 @@ export default inject({
       // 获取当前用户登陆code
       const { code } = await userLoginByUniApp();
 
+      console.log('code', code)
+
       const { userInfo } = await getUserInfoByUniApp();
+
+      console.log('userinfo', userInfo)
 
       app.globalData.userInfo = userInfo;
 
       const res = await this.callAPI(userLoginByMiChaServer(code, userInfo));
+
+      console.log('micha server res', res);
 
       this.userLoginAfter(res);
     },
