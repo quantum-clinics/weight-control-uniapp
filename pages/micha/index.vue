@@ -25,7 +25,7 @@
           :key="index"
         >
           <talk-micha
-            v-if="item.type === 1"
+            v-if="item.role.advisor === 'advisor'"
             :talker="item"
             :answers="answers"
             :shareValueType="shareValueType"
@@ -34,7 +34,7 @@
           />
 
           <talk-user
-            v-if="item.type === 2"
+            v-if="item.role.advisor === 'user'"
             :talker="item"
           />
         </div>
@@ -62,6 +62,21 @@
   let quesitionsTask = '';
   let questions = [];
 
+  /*
+  * {
+        user: {
+            nickName: '米茶专家',    // 昵称
+            avatarUrl: 'https://tfs.alipayobjects.com/images/partner/T1yk8FXaBeXXXXXXXX',   // 头像
+            role: 'advisor',    // 身份，advisor表示专家，显示在左边，user表示用户，显示在右边，tip表示一些提示，是显示在中间的提示
+        },
+        content: {
+            type: "文本",
+            value: "有人说，瘦成闪电人生就像开挂一样。不过小量说：健康，才是真正的开挂人生。",
+        }
+    },
+
+  * */
+
   export default inject({
     data() {
       return {
@@ -81,9 +96,7 @@
       this.renderPage();
     },
     watch: {
-      talksData() {
-        this.talksReachBottom();
-      },
+      talksData() { this.talksReachBottom() },
     },
     methods: {
       renderPage() {
@@ -102,7 +115,7 @@
           }).exec()
         });
       },
-      // 获取量表数据
+      // 获取量表打卡数据
       async fetchCheckList() {
         uni.showLoading({ title: 'Loading..' });
         this.talksDocument = uni.createSelectorQuery().select(".talks");
