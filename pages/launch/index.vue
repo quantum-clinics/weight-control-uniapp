@@ -139,7 +139,7 @@ export default inject({
       uni.hideLoading();
 
       uni.switchTab({
-        url: "/pages/micha/index"
+        url: "/pages/index/index"
       });
     },
   }

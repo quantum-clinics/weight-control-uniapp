@@ -5,7 +5,10 @@
 }
 
 .header__currency {
-  margin-bottom: 8rpx;
+  height: 80rpx;
+  background: rgba(11, 121, 228, 1);
+  border-radius: 30rpx;
+  padding: 0 24rpx;
 }
 
 .currency__icon {
@@ -16,25 +19,68 @@
 
 .currency__span {
   color: rgba(255, 255, 255, 0.45);
+  margin: 0 16rpx 0 8rpx;
+  letter-spacing: 1px;
 }
 
-.info__count {
-  font-size: 88rpx;
-  line-height: 88rpx;
-  margin-right: 16rpx;
+.currency__count {
+  color: rgba(245, 245, 245, 1);
 }
 
-.info__hint {
-  height: 36rpx;
-  background: rgba(3, 112, 233, 1);
-  border-radius: 18rpx;
+.currency__update {
   padding: 0 12rpx;
-  margin: 44rpx 8rpx 0 0;
+  height: 36rpx;
+  background: rgba(0, 103, 203, 1);
+  border-radius: 18rpx;
 }
 
-.hint__title {
+.update__span {
   color: rgba(152, 202, 255, 1);
-  margin-right: 4rpx;
+  margin-right: 8rpx;
+}
+
+.header__cat {
+  height: 212rpx;
+  z-index: 1;
+}
+
+.cat__image {
+  width: 170rpx;
+  height: 148rpx;
+  background: rgba(0, 0, 0, .3);
+  bottom: -16rpx;
+  left: 0;
+}
+
+.cat__with {
+  top: 32rpx;
+  right: 16rpx;
+  max-width: 534rpx;
+  padding: 24rpx;
+  background: linear-gradient(
+    180deg,
+    rgba(234, 245, 255, 1) 0%,
+    rgba(187, 221, 255, 1) 100%
+  );
+  box-shadow: 0 12rpx 24rpx 0 rgba(24, 74, 227, .3), 0 -16rpx 16rpx 0 rgba(236, 244, 255, .65);
+  border: 2rpx solid rgba(255, 255, 255, .8);
+  color: rgba(43, 48, 73, 1);
+  line-height: 36rpx;
+  border-radius: 30rpx;
+}
+
+.cat__with::after {
+  display: block;
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-right: 10px solid rgba(234, 245, 255, 1);
+  left: -10px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .header__card {
@@ -42,7 +88,6 @@
   border-radius: 30rpx;
   padding-bottom: 32rpx;
   overflow: hidden;
-  margin-top: 32rpx;
   box-shadow: 0 24rpx 48rpx 0 rgba(144, 181, 216, 0.25);
 }
 
@@ -239,27 +284,24 @@
     <radian-box :style="radianStyle">
       <div class="header box relative">
 
-        <div class="header__currency flex flex-ai-center">
-          <img
+        <div class="header__currency box   flex flex-ai-center flex-jc-between">
+          <div class="flex flex-ai-center">
+            <img
               class="currency__icon"
               :src="`${OSS}/micha/icon/icon-currency.png`"
-          />
-          <span class="currency__span ft-semi-bold font-28">米茶币</span>
+            />
+            <span class="currency__span ft-semi-bold font-28">米茶币</span>
+            <span class="currency__count ft-40">{{bonus}}</span>
+          </div>
+          <div class="currency__update flex flex-ai-center">
+            <span class="update__span ft-semi-bold ft-20">昨日增加</span>
+            <span class="ft-24 ft-medium ft-fff">630</span>
+          </div>
         </div>
 
-        <div class="header__info flex">
-          <span class="info__count ft-medium ft-fff">{{bonus}}</span>
-
-          <!--
-          <div class="info__hint flex flex-ai-center flex-jc-center">
-            <span class="hint__title ft-semi-bold ft-20 line-fill">昨日奖励</span>
-            <span class="ft-fff ft-medium ft-24 line-fill">630</span>
-          </div>
-          <div class="info__hint flex flex-ai-center flex-jc-center">
-            <span class="hint__title ft-semi-bold ft-20 line-fill">领先同龄</span>
-            <span class="ft-fff ft-medium ft-24 line-fill">92%</span>
-          </div>
-          -->
+        <div class="header__cat box flex flex-jc-end relative">
+          <div class="cat__image absolute"></div>
+          <div class="cat__with box absolute ft-28 ft-medium">继续继续继续连续打卡3日继续继续继续连续打卡3日继续继续继续连续打卡3日，将迎来新的挑战！</div>
         </div>
 
         <div class="header__card flex flex-column flex-ai-center">

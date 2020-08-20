@@ -9,6 +9,10 @@
 			}
 		},
 		{
+			"path": "pages/index/index",
+			"style": {}
+		},
+		{
 			"path": "pages/myCheckin/index",
 			"style": {}
 		},
@@ -18,10 +22,6 @@
 		},
 		{
 			"path": "pages/micha/index",
-			"style": {}
-		},
-		{
-			"path": "pages/index/index",
 			"style": {}
 		},
 		{

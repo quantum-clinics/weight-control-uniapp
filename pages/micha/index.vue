@@ -19,6 +19,8 @@
   <base-page :errorMessage="errorMessage">
     <div :class="['micha box', pageDisplay ? 'micha--active' : 'micha--hide']">
       <div class="talks" ref="talks">
+        <micha-record />
+        adasdasdas
         <div
           class="talk__item"
           v-for="(item, index) in talksData"
@@ -102,7 +104,7 @@
       renderPage() {
         if (!questions.length) {
           this.talksData = [];
-          this.fetchCheckList();
+          this.fetchUserCheckinList();
         }
 
         this.taskSchedule = app.globalData.taskSchedule;
@@ -116,7 +118,7 @@
         });
       },
       // 获取量表打卡数据
-      async fetchCheckList() {
+      async fetchUserCheckinList() {
         uni.showLoading({ title: 'Loading..' });
         this.talksDocument = uni.createSelectorQuery().select(".talks");
         const res = await this.callAPI('system.getCheckList');
